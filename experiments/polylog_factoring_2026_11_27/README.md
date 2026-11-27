@@ -414,6 +414,26 @@ accuracy with probability at least $2/3$ requires at least
 $\log(3)/[-\log(1-h)]=\Theta(\sqrt N)$ draws for this estimator.
 This only addresses the estimator that samples the correction term by term.
 
+### When is a prime-order magnitude exactly one?
+
+For distinct primes $p,q$, let $N=pq$ and let $r\ge7$ be prime to $N$ and prime.
+At any one primitive $r$th root $z$ the following are equivalent:
+$|\Phi_N(z)|=1$, and at least one of $p,q$ is $\pm1\bmod r$.
+Sufficiency follows by cancellation of chord lengths. For necessity, the equality
+$\Phi_N(z)\Phi_N(z^{-1})=1$ propagates to all conjugate roots. The denominator
+spectrum $D$ from the sixth-moment calculation above then equals the numerator
+spectrum obtained with exponents $1,N$. Their moments give
+$p^2+q^2\equiv1+N^2\pmod r$, hence $(p^2-1)(q^2-1)\equiv0\pmod r$.
+
+This is an exact local factor-property test if the evaluator is available.
+Even 1% relative error at every conjugate suffices to resolve it by the
+rounded Fourier decoder. For each fixed public residue $n\ne0\bmod r$,
+both outcomes occur among semiprimes: choose factor residues $1,n$ for equality,
+or choose $a$ outside $\{1,-1,n,-n\}$ and use $a,n/a$ for inequality.
+Dirichlet's theorem supplies distinct primes in either pair of classes.
+At the smaller probe $r=5$, $N\equiv\pm2$ forces one factor to be $\pm1$,
+so all four magnitudes are then exactly one from public data.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
