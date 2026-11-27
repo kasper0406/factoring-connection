@@ -16,10 +16,11 @@ def multiplicity(n, limit):
     raise ValueError("Block exceeds the certified bound")
 
 
-def block_roots(n, start, limit, m):
+def block_square_roots(n, start, limit, m, square):
+    """Find the roots of x² = square (mod n) in one certified block."""
     variable = Symbol("x")
     linear = 2*start % n
-    constant = (start*start-1) % n
+    constant = (start*start-square) % n
     dimension = 2*m+1
     powers = [1]
     scales = [limit**i for i in range(dimension)]
@@ -39,7 +40,15 @@ def block_roots(n, start, limit, m):
         else:
             rows.append(row)
     lattice = Matrix([[value*scale for value, scale in zip(row, scales)] for row in rows])
-    short = list(lattice.lll()[0, :])
+    try:
+        reduced = lattice.lll()
+    except (AssertionError, OverflowError) as error:
+        from sympy.external.gmpy import GROUND_TYPES
+
+        if GROUND_TYPES == 'flint':
+            raise
+        raise RuntimeError('SymPy LLL failed on this basis. Retry with python-flint installed.') from error
+    short = list(reduced[0, :])
     assert sum(abs(value) for value in short) < n**m
     roots = Poly.from_list(
         [value//scale for value, scale in reversed(list(zip(short, scales)))],
@@ -47,8 +56,14 @@ def block_roots(n, start, limit, m):
     ).ground_roots()
     return [
         start+int(value) for value in roots
-        if value.is_Integer and 0 <= value <= limit and mixed_root(n, start+int(value))
+        if value.is_Integer and 0 <= value <= limit
+        and ((start+int(value))**2-square) % n == 0
     ]
+
+
+def block_roots(n, start, limit, m):
+    return [root for root in block_square_roots(n, start, limit, m, 1)
+            if mixed_root(n, root)]
 
 
 def parity(n, low, high, work):

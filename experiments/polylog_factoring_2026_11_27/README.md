@@ -22,6 +22,30 @@ For inputs with exactly two prime divisors, a constant-precision normalized Sali
 
 The Fourier decoder reuses one sample pool across its interval search. It recovered planted noisy signals on inputs up to 36 bits. The public predictor tests found no clear signal for the specified adaptive exponent rules or for the carry and Euclidean feature models on held-out moduli. [Decoder and calibration](quarter-fourier.md) · [Exponent screen](adaptive-exponent-screen.md) · [Held-out feature screen](carry-feature-screen.md)
 
+## Degree-eight benchmark and one reciprocal quotient range
+
+The smooth upper-digit moment uses $P_8(t)=B_8(t)/B_8(0)=1-20h^2-40h^3-30h^4$, where $h=t(1-t)$. Average $P_8(z/N)$ over the lifts of each unit lower digit $a$ in the isolation window and subtract the two public stationary blocks. For $d=\gcd(a^2-c_0^2,N)$ the upper digits run through $s+d\mathbb Z$ with multiplicity $d$. Bernoulli multiplication gives the exact block average $(d/N)^8P_8(s/d)$. The remaining stationary block on a singleton trial contributes $P_8(((z_0+2uj)\bmod N)/N)$. [Benchmark](bernoulli_moment.py) · [Isolation](affine-pair-bound.md)
+
+The local sum of eighth-power weights at $p^e$ is at most $2/(1-p^{-7})$ by the valuation counts in the input-isolation proof. Write $Q=2^{\omega(N)}$. Subtract the $Q$ stationary weights of one and average over the translated window. The expected supremum of the remaining signal is at most $(wQ/N)/1457$, using $\sum_{p\ge3}p^{-7}\le1/1458$. At the isolation width $wQ/N\le 1/8192$, Markov's inequality leaves a constant probability of a singleton with remainder at most $1/64$. A singleton in a width-one window has zero remainder. The Fourier series of $P_8$ gives $\|P_8-\cos(2\pi\cdot)\|_\infty<1/96$. With a $1/64$ comparison gap about zero, the bit can disagree with the cosine sign only on $|\cos|<1/24$. This union of two arcs occupies at most $N/24+2$ digits. The clean sign has coefficient $2\cos(\pi/(2N))/(N\sin(\pi/N))$ at frequency $2u$. The corrupted coefficient remains above $1/4$ for $N\ge15$. The query uses a fixed number of quadratic counts because a $z^k$ weight can be counted by adding $k$ variables in $[0,z)$. [Local valuation counts](square-input-isolation.md) · [Fourier recovery](quarter-fourier.md)
+
+For the reciprocal benchmark let $M=N^2$, $A=(c_0+Nj)^2\bmod M$, and $I=[L,H)$ be one interval of centered denominators with the same nearest quotient $q$. Inverse reciprocity rewrites
+$$e_M(A/x)=e_{|x|}(-\operatorname{sgn}(x)A\overline M)\,e^{2\pi i A/(Mx)}.$$
+Omitting the smooth correction over the centered range costs $O(\log N/N)$ in the normalized sum. Within the bin, $r=M-q|x|$ runs in a progression and a second inverse reciprocity step replaces the reciprocal modulus by $|r|$ when $q$ is a unit. Recursing on each remaining modulus individually retains the cost of visiting its denominator. [Reciprocity checks and evaluator](reciprocal_range.py)
+
+The prototype evaluates the whole bin at once in the original coordinate. For each unit lower digit $a\in W$, put $b(a)=1-c_0^2/a^2\bmod N$ and $Y_a=\{y:L\le a+Ny<H\}$. The normalized $j$-signal has coefficient
+$$ e_M(a+c_0^2/a)\,\frac1N\sum_{y\in Y_a} e_N(b(a)y) $$
+at the distinct frequency $2c_0/a\bmod N$. This gives the exact scan of $w$ lower digits and removes the upper-lift enumeration. For $b\ne0$, the finite geometric sum divided by $N$ has magnitude at most $1/(2|b|_N)$. Each derivative value has at most $Q$ preimages since it specifies one unit square. By orthogonality in $j$, truncating to $|b|_N\le K$ thus has mean squared error at most $wQ/(2NK)$ over uniform translations of $W$ and uniform $j$, at the actual bin endpoints. The stored spectrum serves every query digit. A fixed macroscopic interval retains the stationary coefficient with magnitude $|Y_a|/N=|I|/M+O(1/N)$.
+
+The truncated evaluator generates the retained digits by solving the $2K+1$ public congruences $(1-b)a^2=c_0^2\pmod N$, skipping nonunit coefficients. The same certified windows of size $\Theta(\sqrt N)$ used for mixed-root parity solve these general monic quadratics. Its preprocessing costs $O((K+1)(1+w/\sqrt N)\operatorname{poly}(\log N))$ bit operations, including empty blocks. Each subsequent digit uses only the retained coefficients. Fixed accuracy permits a fixed $K$ at the isolation width. Central windows still require exponentially many blocks in the bit length. [Certified block solver](lattice-window.md)
+
+The degree-eight control recovered a verified divisor on six synthetic singleton windows, including repeated factors. On the $N=1575$ fixture it used 22 progression weights in place of 34,650 direct lift weights per query. The bin diagnostic matched 90 literal sums against both reciprocity steps, checked the spectrum by Parseval, and compared the truncated solver with a full lower-digit scan. At $N=471311$ and width 3682, 688 lattice blocks retained one coefficient, with RMS truncation error $0.004342$. These figures measure work units and approximation error on controls. [Moment benchmark](bernoulli_moment.py) · [Bin benchmark](reciprocal_range.py)
+
+On the 36-bit control $N=38942974393$, the positive $q=2$ bin at start 12391793379 and width 131072 used 96 lattice blocks and retained one coefficient at $K=8$. The lower-digit scan took about 1.09 seconds and the truncated evaluation about 0.10 seconds in a run with FLINT. The normalized RMS truncation error was $5.61\times 10^{-6}$. The fixture uses known factors to place a singleton window. The evaluators take only the public window parameters. SymPy's Python LLL backend failed an internal assertion on one basis in this run. To use the FLINT backend, run the following from this directory.
+
+```sh
+uv run --no-project --with sympy --with python-flint==0.9.0 python reciprocal_range.py 38942974393 --start 12391793379 --width 131072
+```
+
 ## Acceptance test for an evaluator
 
 Use the unfactored input and public window parameters. Compare the exact residue with a direct row scan on both sides of a transition. For the first check, use the two semiprime controls 11,009 and 38,942,974,393, then add repeated-factor inputs such as 315 and 1,575. Include queries with no mixed roots, queries containing multiple mixed roots, and shifts for which the public-root or axis correction changes the raw count. Charge preprocessing, empty blocks, endpoint corrections and any auxiliary modulus construction. After the finite check, give a bound in the bit length for the entire split, including every query the decoder needs.
@@ -47,5 +71,7 @@ python fixed_discriminant_split.py
 python cyclic_class_queries.py
 python affine_parity.py
 python bounded_quadratic_roots.py
+python bernoulli_moment.py
+python reciprocal_range.py
 python tangent_progressions.py 38942974393
 ```
