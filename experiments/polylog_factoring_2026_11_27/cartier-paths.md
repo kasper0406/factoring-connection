@@ -527,3 +527,36 @@ Exact enumeration of the optimal mean accuracy for square/nonsquare
 product residues gave respectively $1372/2525,1392/2525$ at 101 and
 $32638/63567,10888/21189$ at 1009. These are uniform local averages,
 not success rates measured on a finite population of semiprimes.
+
+## Weak advantage averaged across probe primes
+
+For a fixed input suppose mean agreement with the shifted-sign words is
+at least $1/2+\delta$, averaging uniformly over shifts within a prime and
+weighting each prime by $\log\ell/\log M$, $M=\prod\ell$.
+Keep local lists at the lower threshold $1/2+\delta/2$ using probe primes
+at least $100(\delta/2)^{-4}$. The previous correlation proof bounds each
+list size by $L=\lceil4/\delta^2\rceil+2$, even at completely bad primes.
+The primes reaching the lower threshold have total log weight at least
+$\delta$: otherwise even perfect agreement there could not raise the average
+to the promise. Their product $G$ is at least $M^\delta$. We need not know
+which primes they are. All CRT list polynomials and their common monic
+lift $F$ of degree $L$ are formed exactly as before. Now $G\mid F(S)$.
+
+Take $d=\lceil2L/\delta\rceil$ and scale the basis
+$M,MX,\ldots,MX^{L-1},F,XF,\ldots,X^{d-L-1}F$ by $X\mapsto NX$.
+Its triangular determinant is $M^L N^{d(d-1)/2}$; every unscaled basis
+polynomial at $S$ is divisible by $G$. The LLL coefficient 1-norm bound
+is $\sqrt d\,2^{(d-1)/4}M^{L/d}N^{(d-1)/2}$. Since $L/d\le\delta/2$,
+choosing $M>(4dN)^{2d/\delta}$ makes this strictly less than $G$.
+The returned polynomial vanishes at $S$ over the integers; extract and
+verify its candidate integer roots. The threshold for $\log M$ and all
+work are polynomial in $\log N$ and $1/\delta$. This is a per-input
+promise. A bias averaged only over different inputs gives no such guarantee.
+
+For a planted check at $N=703$, take primes 17,23,29,31,41,43,47,53.
+The two local entries are $56\bmod\ell$ and $\lfloor\ell/3\rfloor+1$,
+except replace the former by 3 at 17. The correct residue 5 is absent
+there. With dimension three the returned integer polynomial was
+$-1269016+3829709X-67983X^2$, with root 56 and scaled coefficient
+1-norm below the product of the seven good primes. This checks the
+global recovery step on lists; it does not generate sign predictions.
