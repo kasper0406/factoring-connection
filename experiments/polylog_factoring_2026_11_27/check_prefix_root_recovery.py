@@ -2,6 +2,8 @@
 
 from math import gcd
 
+from bounded_quadratic_roots import interval_limit, quadratic_roots
+
 
 def recover_root(n, y, exists):
     """Assume n>1 coprime to 6 and y a unit square. Return a root mod n."""
@@ -9,7 +11,8 @@ def recover_root(n, y, exists):
     bound = 1 << bits
     period = 3
     residue = 1
-    while period <= 2 * bound:
+    limit = interval_limit(n)
+    while (bound - 1) // period > limit:
         next_period = 3 * period
         modulus = n * next_period
         zeros = modulus.bit_length() - bits
@@ -23,10 +26,16 @@ def recover_root(n, y, exists):
         else:
             raise ValueError("No consistent digit from the oracle")
         period = next_period
-    root = min(residue, period-residue)
-    if root >= bound or root*root % n != y:
-        raise ValueError("Decoded root failed verification")
-    return root % n
+    inverse = pow(period, -1, n)
+    for origin in (residue, period - residue):
+        if origin >= bound:
+            continue
+        maximum = (bound - 1 - origin) // period
+        offsets = quadratic_roots(n, 2 * origin * inverse,
+                                  (origin**2 - y) * inverse**2, maximum)
+        if offsets:
+            return (origin + period * offsets[0]) % n
+    raise ValueError("Selected progression contains no root")
 
 
 if __name__ == "__main__":
