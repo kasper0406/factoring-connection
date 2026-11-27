@@ -2712,6 +2712,39 @@ On N=187 and a=−1, direct group squaring and enumeration of sampler
 preimages gave 48 distinct points in each of the four local sign
 pairs and agreed with both local norm characters for every preimage.
 
+### Prescribing a norm by choosing the conic
+
+For any unit d modulo an odd semiprime N=pq with distinct primes,
+choose v uniformly modulo N and set a=v²−d. Keep a when its Jacobi
+symbol is −1. Then α=v+√a is a unit of norm exactly d, and
+g=α/conjugate(α) is a publicly constructible norm-one point. The
+preceding bijection sends square roots of d to halves of g and back.
+
+Write e_ℓ for the number (zero or two) of square roots of d modulo
+ℓ. The exact number of successful v is ((p−e_p)(q−e_q)−1)/2.
+Indeed the number giving nonzero Jacobi symbol is (p−e_p)(q−e_q).
+The sum of the Jacobi symbols over v is +1 by CRT: each local
+character sum is −1 since (v−y)(v+y)=d has exactly ℓ−1 solutions.
+Thus the probability is at least ((1−2/p)(1−2/q)−1/N)/2 ≥ 1/15,
+using p≥3, q≥5 after ordering. Construction takes at most fifteen
+trials in expectation. Enumeration for all 160 units d modulo 187
+gave 67, 76, 82 or 93 successful v out of 187, matching the formula.
+
+Conversely a point g=x+z√a presented without its sampler preimage
+admits α=1+g whenever gcd(2+2x,N)=1, since its norm is 2+2x
+and α/conjugate(α)=g. A proper gcd splits N. If x=−1 modulo N
+then z=0 since N is squarefree, and α=√a works. Thus, with the
+conic parameter allowed to vary, square decision for norm-one points
+and ordinary modular quadratic residuosity reduce to each other in
+randomized polynomial time (after a split, local decisions are easy).
+An algorithm returning a half on every square input would also factor
+N: plant d=t² for uniform unit t, recover a root t′ from the returned
+half, and compute gcd(t−t′,N). Conditional on d, the constructed
+instance is independent of which of its four roots was planted, so
+the gcd is proper with probability one half. The decision equivalence
+alone gives no such factoring reduction. Fixed-a algorithms have a
+different promise and the forward construction need not query them.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
