@@ -30,13 +30,15 @@ The code matched exhaustive root enumeration on 300 bounded progressions, includ
 
 ## When divisibility at every lift forces the standard shifts
 
-Let N be odd and squarefree, let y be a unit square, and put f(T)=(A+T)²−y. Suppose 1≤m≤p for every prime p dividing N. For H in ℤ[T], the following are equivalent:
+Let N>1 be odd, let y be a unit square, and put f(T)=(A+T)²−y. Fix m≥1 and a nonzero H in ℤ[T]. Write s=min(m,1+deg H). If s is at most the smallest prime factor of N, the following are equivalent:
 
 * N^m divides H(t) for every integer t satisfying f(t)=0 mod N, including every representative of each solution class.
 * H belongs to the ideal (N,f)^m in ℤ[T].
 
-Ideal membership immediately gives divisibility. For the converse, fix p dividing N and either of the two distinct roots a of f modulo p. For every integer u, CRT supplies an integer t congruent to a+pu modulo p^m and to roots of f at every other prime of N. Hence H(a+pu)=0 mod p^m. Expand H(a+Z) with integer coefficients c_j. Terms of index j≥m vanish modulo p^m at Z=pu. Evaluate the remaining polynomial in u at 0 through m−1. Its Vandermonde determinant is a unit modulo p^m since m≤p. It follows that p^m divides p^j c_j for each j<m. This is exactly membership in (p,T−a)^m.
+Ideal membership immediately gives divisibility. For the converse, take an exact prime-power factor P=p^e of N. Write y=h² mod P. The two roots a,b=−A±h mod P differ by a unit since p is odd and h is a unit. For every integer u, CRT supplies t congruent to a+Pu modulo P^m and to a root modulo N/P. Hence H(a+Pu)=0 mod P^m. Expand H(a+Z) with integer coefficients c_j. Terms j≥m vanish modulo P^m on substitution Z=Pu. Evaluate the remaining polynomial in u at 0 through s−1. Its Vandermonde determinant is a unit modulo P^m since s≤p. Thus P^m divides P^j c_j for j<s, and any coefficients with s≤j<m are zero. This gives membership in (P,T−a)^m. The same holds at b.
 
-For the two distinct roots a,b mod p, the ideals (p,T−a) and (p,T−b) are comaximal and their intersection is (p,f), by reduction modulo p. Thus the intersection of their m-th powers is (p,f)^m. Across primes the ideals (p,f) are again comaximal, with intersection (N,f) by CRT modulo N. Taking products of powers proves the claim.
+The two local ideals (P,T−a) and (P,T−b) are comaximal because a−b is a unit modulo P. Their intersection is (P,f): modulo P the product of the two monic linear factors equals f, and comaximal ideals intersect in their product. Thus the intersection of their m-th powers is (P,f)^m. Across exact prime powers the ideals (P,f) are again comaximal with intersection (N,f) by CRT modulo N. Taking products of powers proves the claim.
+
+In particular if H has polynomial degree in the input bit length, trial division through deg H+1 either finds a prime factor or certifies the interpolation condition for every m. This uses the degree of the expanded polynomial; a short arithmetic circuit can represent a polynomial of much higher degree.
 
 Consequently H/N^m lies in ℤ[T,f/N]. For this promise, even a different proof of divisibility at every lift gives the same class of normalized polynomials. The [capacity obstruction](https://arxiv.org/abs/1605.08065) then applies to a uniform real-interval smallness certificate. Divisibility proved only on bounded representatives or on roots satisfying an extra CM condition falls outside the equivalence.
