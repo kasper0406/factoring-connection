@@ -2097,6 +2097,32 @@ degree saving over exact inclusion–exclusion. A general algorithm
 would need a choice of small primes that separates the target and a
 uniformly sufficient, efficiently computable moment order.
 
+### Exact moment threshold on the ten-prime benchmark
+
+For the lower half in the preceding CRT experiment, the aggregate
+integer moments through order nine suffice to prove emptiness, and
+order eight leaves an integral ambiguity. For r in {0,…,10} use the
+polynomial F(r)=∏_{j=2}^{10}(1−r/j). It equals one at zero, 1/10 at
+one, and zero elsewhere on this domain. Its sum therefore bounds the
+survivor count from above. Equivalently compute the sum as
+Σ_{j=0}^9 (−1)^j (10−j) M_j/10 where M_j=Σ_t binom(r(t),j).
+The coefficients are the forward differences of F at zero.
+The measured moments give exactly 7/10.
+
+For the converse, the actual rejection histogram and an alternative
+nonnegative integer histogram indexed from zero through ten are
+
+    0 7 40 128 293 370 397 267 124 30 2
+    1 0 58 116 251 496 229 399 61 47 0
+
+Their generating polynomials differ by (1−z)^9(1+2z).
+The first eight derivatives and the values agree at z=1, so the two
+histograms give identical binomial moments M_0 through M_8. Any
+inference using only these aggregate integers, including parity
+and congruences, must allow both zero survivors and one. The second
+histogram is a witness to moment ambiguity. Realizability under the
+same arithmetic filters is an extra constraint outside this argument.
+
 ### A degree lower bound for small-prime interval certificates
 
 Let X_i(t) be the rejection bit of a filter modulo a distinct prime
