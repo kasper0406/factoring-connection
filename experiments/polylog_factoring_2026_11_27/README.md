@@ -884,6 +884,31 @@ $\Omega(\sqrt N/\log N)$ samples for fixed complex RMS accuracy.
 This variance bound does not establish a tail bound or cover structured
 quadrature, other estimators, or additional arithmetic subtractions.
 
+### Randomly rotated Fourier grids after removing imprimitive points
+
+On the odd squarefree target family $N=a^2+1$, retaining only points
+with coprime coordinates preserves all target points. Let $b_j(n)$ denote
+the resulting normalized angular coefficient at degree $4j$.
+Average the complex Fourier estimator over $Q$ equally spaced phases on
+a common radius with a uniform random initial rotation. The geometric sum
+eliminates all indices except $n\equiv N\pmod Q$. Orthogonality in the
+rotation leaves variance $\sum_{n\ne N,\ n\equiv N\,(Q)}
+|b_j(n)|^2\rho^{2(n-N)}$.
+
+For the two degrees indexed by $m,2m$, take primes $p<N$ congruent to $N$
+modulo $L=\mathrm{lcm}(4,Q)$, with $\gcd(Q,N)=1$. Each is $1\bmod4$,
+has one primitive orbit, and contributes $\cos^2 u+\cos^2(2u)\ge7/16$
+to the sum of variances, since $z+(2z-1)^2\ge7/16$ for $z=\cos^2 u$.
+Both radial weights are at least one, even with different radii for the
+two degrees. For $Q\le(\log N)^A$ with fixed $A$, Siegel-Walfisz gives
+$\gg_A N/(\varphi(L)\log N)$ such primes uniformly for large $N$.
+Averaging $B$ independent rotations of this grid for each degree divides
+the sum of errors by $B$. Thus fixed joint complex RMS accuracy requires
+$BQ=\Omega_A(N/\log N)$ phase evaluations up to a constant factor, since
+$\varphi(L)\le4Q$. This bound concerns arithmetic means on a common grid
+size at the two degrees and complex mean-square error. It neither assumes
+noise in a theta evaluation nor covers arbitrary deterministic quadrature.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
