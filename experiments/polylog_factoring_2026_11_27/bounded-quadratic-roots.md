@@ -636,6 +636,34 @@ recovered q for all 100 mixed-residue pairs of primes from 5 through
 79, testing every level up to 3^h>N. This refines the earlier oracle
 reduction on this promise. Computing V from N alone remains open here.
 
+**Two fixed bases cover all distinct-prime semiprimes coprime to 6.**
+Let S=p+q. Use the same index 3N at both bases 4 and 16. For r=1,2
+put G_r(t)=(4^(2rt)+4^(rt)+1)/3. As above the supplied cyclotomic
+residue gives D_r=G_r(p)G_r(q) via G_r(N)G_r(1)/Φ_(3N)(4^r).
+All divisions here are by ternary units after normalizing G.
+
+For a candidate sum s, compute D_r(s) as the norm of G_r(T) in
+T²−sT+N=0. More precisely, put U=(4^(rT)−1)/3. Its binomial expansion
+has kth term 3^(k−1)/k! times the falling factorial of rT for k≥1.
+These coefficients are ternary integral, vanish modulo 3 for k≥2,
+and tend to zero at least as fast as valuation (k−1)/2. Thus U≡rT
+modulo 3 as a restricted power series with integral coefficients.
+Use G_r=1+3(U+U²). The norm is the product at the two formal roots,
+so (D_r(s)−1)/3 reduces coefficientwise to
+r s + r²(s²−2N) modulo 3 by trace. Quadratic reduction and the norm
+formula preserve coefficientwise convergence in s.
+
+Consequently F(s)=(D_1(s)−D_2(s))/3 equals −s+3H(s), where H is
+an integral restricted power series. For any s,t, H(s)−H(t) is
+divisible by s−t in the ternary integers. Hence F preserves ternary
+distance, and exactly one of the three lifts matches at every digit,
+including the initial digit. The two residues modulo 3^(h+1) recover
+S modulo 3^h. Taking 3^h>N recovers S and then both factors by the
+quadratic formula. Evaluation on a candidate uses O(h) series terms
+in a rank-two algebra with polynomial bit cost. [Runnable check on
+190 prime pairs](check_fixed_index_sum.py). This removes the mixed
+residue restriction on the decoder. Producing its two inputs remains open.
+
 **Can a congruence table supply the first missing digit?** For every
 fixed input modulus M, mixed semiprimes with the same N mod M can
 give different Φ_(3N)(4) mod 27. Take D=lcm(9,M). Choose q in

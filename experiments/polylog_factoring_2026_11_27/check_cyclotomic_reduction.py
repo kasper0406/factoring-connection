@@ -64,11 +64,11 @@ def factor_with_query(n, residue, rng):
     return factors
 
 
-def reference_residue(index, modulus):
-    """Slow exact evaluation via 4^k−1 = product of Φ_d(4) over d dividing k."""
+def reference_residue(index, modulus, base=4):
+    """Slow exact evaluation via base^k−1 = product of Φ_d(base) over d dividing k."""
     @cache
     def value(k):
-        result = 4**k-1
+        result = base**k-1
         for d in divisors(k)[:-1]:
             result //= value(d)
         return result
