@@ -43,6 +43,13 @@ N=35,77,143 and all square unit targets verified constant Jacobi sign
 on 1,692 fibers and proper gcds on all 5,856 ordered pairs outside
 the two public choices.
 
+The follow-up question of computing the signed weight at a phase is
+already settled as an oracle equivalence on odd squarefree semiprimes.
+[Pointwise weights and quadratic residuosity](salie-phase-weights.md)
+gives both reductions. [Grouped sampling variance](salie-grouped-variance.md)
+covers independent sampling even with pointwise access. A sufficient
+open target is the [signed phase interval](salie-phase-bins.md).
+
 ## Variance of sampling individual terms
 
 The normalized complex summands each have absolute value $N^{-1/2}$. For any positive sampling probabilities $q_m$, the unbiased one-term importance estimator has second moment $\sum_m |a_m|^2/q_m\ge(\sum_m |a_m|)^2=\varphi(N)^2/N$ by Cauchy–Schwarz. On the two-prime-divisor family the target magnitude is at most 4, so the variance is $\Omega(N)$ for large inputs.
