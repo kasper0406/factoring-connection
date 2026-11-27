@@ -4349,3 +4349,34 @@ The argument applies to universal, input-independent positive gcd
 witnesses and bases of the stated bit length. General circuits can
 use additions between products or succinct bases with much larger
 integer bit length.
+
+### One-sided prime coverage when extra divisors are allowed
+
+Suppose a product of terms a^k±1 (a≥2, k≥1) only has to be divisible
+by every prime in (j,2j]. Permit arbitrarily large extra prime
+divisors. Measure input size S by the sum of bit lengths of the
+listed bases and exponents. On infinitely many dyadic bands, coverage
+alone forces S=Ω(j^(1/3)).
+
+Fouvry's shifted-prime result gives a positive proportion of primes p
+with a prime r|p−1 exceeding p^(2/3). Consequently infinitely many
+dyadic bands contain Ω(j/log j) such primes: otherwise summing over
+bands contradicts the positive proportion. Fix one such band. A hit
+by one term has d=ord_p(a) dividing K=2k. If r divides K, there
+are O(log(2K)/log j) possibilities for r>j^(2/3) in that term.
+Each supplies at most 1+j/r possible p in the band. If r does not
+divide K, then d divides (p−1)/r and hence d≤(2j)^(1/3).
+All hits in this latter case divide the product of a^i−1 for
+1≤i≤floor((2j)^(1/3)). Its logarithm is O(j^(2/3) log a),
+so it accounts for O(j^(2/3) log a/log j) distinct band primes.
+Summing both bounds gives O(j^(2/3) S/log j) special hits; comparison
+with the required number proves the claim. A term divisible by p
+cannot have p dividing its base, so all orders used here exist.
+
+This also applies if an integer witness divides such a product:
+exact divisions can remove primes but cannot cover a missing prime.
+The lower bound charges explicit integer descriptions; arbitrary
+straight-line programs can reuse gates or succinctly generate large
+bases. Source for the shifted-prime bound: Fouvry, Théorème de
+Brun-Titchmarsh; application au théorème de Fermat (1985); see also
+https://mathoverflow.net/questions/458013/ .
