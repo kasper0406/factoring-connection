@@ -2019,3 +2019,34 @@ The outstanding search cost is locating a sum satisfying the tests
 without scanning the interval. For large composite m the acceptable
 classes are implicit; the small-prime wheel cannot list them in
 polynomial space just from the short description.
+
+### Projecting the odd-prime sum sieve onto low bits
+
+For m=2^k the locally possible endings are the image of f(x)=x+N/x
+on odd x modulo m. For an input x let v be the 2-adic valuation
+of x−N/x, truncated at k. The fiber equation is
+(y−x)(y−N/x)=0 modulo m. When 2v<k it gives two disjoint classes
+modulo 2^(k−v), hence 2^(v+1) inputs in the fiber. This follows
+since the two differences have separation of valuation v: if their
+product vanishes modulo m, one has valuation v and the other at
+least k−v. When 2v≥k there is just one class modulo 2^ceil(k/2),
+of size 2^floor(k/2). The number of x with v≥j equals 2^(k−j)
+times the number of square roots of N modulo 2^j, since x is odd.
+Summing the reciprocal fiber sizes gives the image size in O(k)
+integer operations. At k=26 the counts for N≡1,3,5,7 modulo 8
+are respectively 1,398,104, 8,388,608, 4,194,304, and 8,388,608.
+
+For the 97-bit benchmark N=118464083331556819902753234409, *all*
+1,398,104 endings survive the earlier odd-prime tests through 31
+even after imposing the balanced sum interval. Here is a certificate.
+Write s=a+2^26 t for a proposed ending a. Modulo the odd sieve
+period P=100280245065, testing s is equivalent to testing
+2^26(t+a/2^26), using inversion modulo P. Thus the same set of
+acceptable positions is translated cyclically for each a. Each
+ending has at least 622,224 consecutive choices of t in the sum
+interval. Partition P into 322,329 adjacent blocks whose lengths
+are at most 311,112. The checker finds a passing position in each
+block. Every cyclic interval of 622,224 positions contains an entire
+block, including at wraparound. Consequently each ending has a
+passing lift. This is a benchmark-specific certificate and does
+not apply to extra predicates or narrower sum intervals.
