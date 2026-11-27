@@ -1775,3 +1775,24 @@ This suffices at inverse-polynomial advantage for each N, even though
 predictions of individual fixed bits need not have that advantage.
 The assumption concerns random *masks* of the even representative;
 an ordinary bit guess with a skewed marginal does not imply it.
+
+### The low bit selects one hidden prime character
+
+For N=pq with distinct odd primes, let s be the representative of S(u)
+in [0,N). Encode odd as +1 and even as −1. On all units, this signed
+low bit equals (u/ℓ) for one fixed ℓ in {p,q}. Indeed, equal local
+signs give 1 or N−1, with the required parities. Of the two mixed
+roots exactly one is odd. Take ℓ to be the prime where that odd mixed
+root equals +1. The two mixed sign patterns then give the same rule.
+Multiplication by the public Jacobi symbol gives the other local
+character. In particular the Jacobi symbol alone predicts the low bit
+with exactly half accuracy on uniform units, even conditional on either
+Jacobi sign, by independence of the two local signs.
+
+For N=77 the odd mixed root is 43, equal to +1 modulo 7, so this bit
+is the Legendre character modulo 7. An exact low-bit oracle therefore
+gives a quadratic-residuosity test on units (both recovered signs must
+be positive). This observation supplies no classical polynomial-time
+procedure for extracting the hidden prime from character values. The
+random-mask decoding argument above requires queries on many masks
+of a fixed root, which this single-bit oracle does not provide.
