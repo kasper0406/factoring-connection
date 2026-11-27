@@ -1290,3 +1290,30 @@ count m or a promise fixing it, plus the indicated traces. For
 omega(N)=O(log log N) the processing and requested precision are
 polynomial in log N. At unrestricted omega(N) even this matrix
 dimension can exceed any polynomial in the input bit length.
+
+### Recovering the missing zeroth trace from a pair-count bound
+
+Given an integer upper bound M>=m, use the preceding t_j for
+1<=j<=2M. If 2M>=N, direct enumeration already costs polynomial
+time in M. Otherwise a nonunit j yields a proper gcd in the
+splitting reduction. With the actual cosine traces available,
+build a real symmetric Toeplitz matrix B of size 2M+1 with zero
+diagonal and off-diagonal entry t_|i-j|. Then
+
+    m = -lambda_min(B).
+
+Indeed B+mI is one half of V V*, where V has one column for each
+of the 2m roots x at scale h and entry exp(2 pi i jx/N) in row j.
+It is positive semidefinite and has a kernel since there are more
+rows than columns. Removing the common diagonal shifts its lowest
+eigenvalue to -m. This proof needs no spacing estimate for the roots.
+
+Absolute trace errors <=1/(16M) perturb any row sum in absolute
+entry norm by <=1/8 and hence perturb the lowest eigenvalue by
+<=1/8. Computing that eigenvalue to another 1/8 and rounding its
+negative recovers m exactly. Thus a known polynomial upper bound
+replaces the need for the exact number of distinct primes in this
+postprocessing step. The determinant sign still requires finer
+traces as above. Tests with seeded perturbations recovered m in
+93 unit-scale instances across 9,45,105,315,385,1155,5005, using
+root-enumerated traces. No public fast trace evaluator is assumed.
