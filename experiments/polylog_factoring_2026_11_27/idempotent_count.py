@@ -49,7 +49,8 @@ class PackedQuery:
     def lift(self, primal):
         """Return the unique in-box point above these primal coordinates, if any."""
         length = len(self.congruences)
-        if len(primal) != length or any(not 0 <= v < self.modulus for v in primal):
+        if len(primal) != length or any(not low <= value <= high
+                                        for value, (low, high) in zip(primal, self.bounds)):
             raise ValueError('Expected one in-box value per primal coordinate')
         quotients = []
         for equation in self.congruences:
