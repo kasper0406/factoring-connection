@@ -5,7 +5,10 @@ from math import isqrt
 
 from sympy import Matrix, Poly, Symbol
 
-from fixed_window_split import mixed_root, split_from_windows
+if __package__:
+    from .fixed_window_split import mixed_root, split_from_windows
+else:
+    from fixed_window_split import mixed_root, split_from_windows
 
 
 def multiplicity(n, limit):
@@ -66,20 +69,25 @@ def block_roots(n, start, limit, m):
             if mixed_root(n, root)]
 
 
-def parity(n, low, high, work):
-    """Return mixed-root parity on the inclusive interval."""
+def interval_square_roots(n, low, high, square, work=None):
+    """Find all roots of x² = square (mod n) in an inclusive interval."""
     limit = max(1, isqrt(n)//8)
-    m = multiplicity(n, limit) if limit > 1 else None
-    result = 0
+    m = multiplicity(n, limit) if limit > 1 and high - low > 1 else None
     for start in range(low, high+1, limit+1):
         local_limit = min(limit, high-start)
-        work["blocks"] += 1
+        if work is not None:
+            work["blocks"] += 1
         if local_limit <= 1:
-            result ^= sum(mixed_root(n, x) for x in range(start, start+local_limit+1)) % 2
+            yield from (x for x in range(start, start+local_limit+1) if (x*x - square) % n == 0)
         else:
-            work["lattices"] += 1
-            result ^= len(block_roots(n, start, local_limit, m)) % 2
-    return result
+            if work is not None:
+                work["lattices"] += 1
+            yield from block_square_roots(n, start, local_limit, m, square)
+
+
+def parity(n, low, high, work):
+    """Return mixed-root parity on the inclusive interval."""
+    return sum(mixed_root(n, root) for root in interval_square_roots(n, low, high, 1, work)) % 2
 
 
 def find_factor(n, work):

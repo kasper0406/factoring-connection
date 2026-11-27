@@ -34,6 +34,8 @@ The evaluator matched 60 literal sums across ordinary moduli, square moduli, and
 
 On inputs with two prime-power components, averages of the magnitude and squared magnitude over long scale windows now have native polynomial-bit evaluators. The windows can lie entirely within the small-scale range when they have length $N/\operatorname{poly}(\log N)$ or more. An unusually low mixed line is found by an ordinary quadratic equation and gives a factor. Otherwise a public diagonal sum is accurate to inverse-polynomial additive error on those windows. [Window evaluator and complexity](coarse-phase-window.md)
 
+Multiplying the same window by an exponential at any supplied frequency gives a native test of a translated band. Certified quadratic lattice blocks recover a factor if that band contains a mixed line. On balanced primes, even all rational centers of polynomially bounded denominator cover only an exponentially small fraction of inputs. Selecting a productive center from the arithmetic of $N$ remains open. [Modulated window and coverage bound](modulated-phase-window.md)
+
 ### Variance after subtracting the public quartic terms
 
 For distinct odd primes $N=pq$, subtract $1+4e_M(-t)$ from the normalized quartic using the Gaussian completion below. The remaining contribution $R(t)$ is the average of $Z_s=e_M(-s^2/(4t)-s-t)(g_M(s)-N)$ over uniform $s\bmod M$, with $Z_s=0$ outside $1<\gcd(s,N)<N$. Its magnitude is at most four by the CRT product. At gcd $p$, the quadratic Gauss factor is $N\sqrt p$ times a signed fourth root of unity, with signs balanced. At gcd $p^2$ it is $Np$. The corresponding probabilities are $(p-1)(1-1/q)/p^2$ and $(1-1/q)/p^2$. The symmetric $q$ cases give the exact second moment

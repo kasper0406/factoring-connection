@@ -10,6 +10,7 @@ from mpmath import mp
 if not __package__:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
+from experiments.polylog_factoring_2026_11_27.lattice_window import interval_square_roots
 from experiments.polylog_factoring_2026_11_27.stationary_dual import prime_power_base
 
 
@@ -46,8 +47,23 @@ def find_low_frequency_component(modulus, labels, cutoff):
     return None
 
 
-def sum_on_multiples(frequency, modulus, start, stop, step):
-    """Real part of a geometric sum over step-multiples in [start, stop)."""
+def find_band_component(modulus, labels, center, cutoff):
+    """Use a public band to locate a mixed frequency and verify a component."""
+    square = modulus**2
+    half = pow(2, -1, square)
+    for left, right in combinations(labels, 2):
+        shift = (left + right) * half % square
+        target = (shift**2 - left * right) % square
+        low = center - cutoff - shift
+        for root in interval_square_roots(square, low, low + 2 * cutoff, target):
+            divisor = gcd(root + shift - left, modulus)
+            if 1 < divisor < modulus:
+                return divisor
+    return None
+
+
+def sum_on_multiples(frequency, modulus, start, stop, step, *, complex_sum=False):
+    """Sum a geometric progression over step-multiples in [start, stop)."""
     first = -(-start // step)
     count = (stop - 1) // step - first + 1
     if count <= 0:
@@ -58,11 +74,13 @@ def sum_on_multiples(frequency, modulus, start, stop, step):
     period = 2 * modulus
     center = phase * (2 * first + count - 1) % period
     width = phase * count % period
-    total = mp.cospi(mp.mpf(center) / modulus) * mp.sinpi(mp.mpf(width) / modulus)
+    angle = mp.mpf(center) / modulus
+    rotate = mp.expjpi(angle) if complex_sum else mp.cospi(angle)
+    total = rotate * mp.sinpi(mp.mpf(width) / modulus)
     return total / mp.sinpi(mp.mpf(phase) / modulus), count
 
 
-def factored_average(modulus, local, start, stop, component):
+def factored_average(modulus, local, start, stop, component, *, center=0):
     square = modulus**2
     complement = modulus // component
     prime = prime_power_base(component)
@@ -71,9 +89,9 @@ def factored_average(modulus, local, start, stop, component):
     idempotent = complement**2 * pow(complement**2, -1, component**2)
     total = 0
     for left, right in product(local, repeat=2):
-        frequency = (left * idempotent + right * (1 - idempotent)) % square
+        frequency = left * idempotent + right * (1 - idempotent) - center
         total += local[left] * local[right] * mp.fsum(
-            sign * sum_on_multiples(frequency, square, start, stop, step)[0]
+            sign * sum_on_multiples(frequency, square, start, stop, step, complex_sum=center != 0)[0]
             for step, sign in divisors
         )
     units = sum(sign * sum_on_multiples(0, square, start, stop, step)[1]
@@ -90,30 +108,36 @@ def validate_window(modulus, family, length, precision):
         raise ValueError('Expected nondegenerate phase, positive length and positive precision')
 
 
-def window_average(modulus, local, mass, start, length, precision):
+def window_average(modulus, local, mass, start, length, precision, center):
     trial_bound = max(32 * mass * precision, max(local) - min(local))
     square = modulus**2
+    center %= square
     component = find_small_component(modulus, trial_bound)
     if component is None:
         cutoff = min(square // 2, (mass * precision * square + length - 1) // length)
         if length < trial_bound:
             cutoff = square // 2
-        component = find_low_frequency_component(modulus, local, cutoff)
+        # Quotient enumeration stays within a polynomial factor of block search here.
+        if not center and cutoff <= modulus * modulus.bit_length()**2:
+            component = find_low_frequency_component(modulus, local, cutoff)
+        else:
+            component = find_band_component(modulus, local, center, cutoff)
     stop = start + length
     if component is not None:
-        return factored_average(modulus, local, start, stop, component), component
-    public = mp.fsum(weight**2 * sum_on_multiples(frequency, square, start, stop, 1)[0]
+        return factored_average(modulus, local, start, stop, component, center=center), component
+    public = mp.fsum(weight**2 * sum_on_multiples(frequency - center, square, start, stop, 1,
+                                                 complex_sum=center != 0)[0]
                      for frequency, weight in local.items())
     return public / length, None
 
 
-def average_squared(modulus, family, start, length, precision):
-    """Approximate the mean squared magnitude to absolute error 1/precision."""
+def average_squared(modulus, family, start, length, precision, *, center=0):
+    """Approximate the modulated mean squared magnitude to error 1/precision."""
     validate_window(modulus, family, length, precision)
     local = LOCAL[family]
     working_bits = 8 * modulus.bit_length() + 2 * length.bit_length() + precision.bit_length() + 48
     with mp.workprec(working_bits):
-        return window_average(modulus, local, sum(local.values())**2, start, length, precision)
+        return window_average(modulus, local, sum(local.values())**2, start, length, precision, center)
 
 
 def cubic_magnitude_weights(precision):
@@ -137,8 +161,8 @@ def quartic_magnitude_weights(precision):
     return local
 
 
-def average_magnitude(modulus, family, start, length, precision):
-    """Approximate the mean magnitude to absolute error 1/precision."""
+def average_magnitude(modulus, family, start, length, precision, *, center=0):
+    """Approximate the modulated mean magnitude to error 1/precision."""
     validate_window(modulus, family, length, precision)
     working_bits = 8 * modulus.bit_length() + 2 * length.bit_length() + 8 * precision.bit_length() + 48
     with mp.workprec(working_bits):
@@ -146,7 +170,7 @@ def average_magnitude(modulus, family, start, length, precision):
             local, mass = cubic_magnitude_weights(precision), 9
         else:
             local, mass = quartic_magnitude_weights(precision), 64
-        return window_average(modulus, local, mass, start, length, 2 * precision)
+        return window_average(modulus, local, mass, start, length, 2 * precision, center)
 
 
 def check():
@@ -201,5 +225,48 @@ def check():
     print(f'{2 * checks} direct unit averages and {coarse_checks + 2} unfactored long windows matched')
 
 
+def check_modulation():
+    modulus = 25 * 11
+    square = modulus**2
+    left_idempotent = 11**2 * pow(11**2, -1, 25**2)
+    right_idempotent = (1 - left_idempotent) % square
+    for center in (-3, 24_580, square - 4):
+        for family in LOCAL:
+            with mp.workprec(128):
+                start, length = square - 10, 55
+                terms = []
+                for scale in range(start, start + length):
+                    if gcd(scale, modulus) != 1:
+                        continue
+                    x, y = (mp.mpf(scale * idempotent % square) / square
+                            for idempotent in (left_idempotent, right_idempotent))
+                    value = ((4 * mp.cospi(4 * x) * mp.cospi(4 * y))**2 if family == 'cubic'
+                             else (5 + 4 * mp.cospi(2 * x)) * (5 + 4 * mp.cospi(2 * y)))
+                    terms.append(value * mp.expjpi(mp.mpf(-2 * center * scale % (2 * square)) / square))
+                observed, _ = average_squared(modulus, family, start, length, 64, center=center)
+                assert abs(observed - mp.fsum(terms) / len(terms)) < mp.mpf('1e-25')
+
+    left, right = 7001, 7103
+    modulus = left * right
+    square = modulus**2
+    planted = right**2 * pow(right**2, -1, left**2)
+    for family, label in (('cubic', 4), ('quartic', 1)):
+        center = (label * planted + modulus // 5) % square
+        observed, factor = average_squared(modulus, family, 1, 2 * modulus, 1, center=center)
+        assert factor in (left, right)
+        with mp.workprec(128):
+            exact = factored_average(modulus, LOCAL[family], 1, 1 + 2 * modulus, left, center=center)
+            assert abs(observed - exact) < mp.mpf('1e-25')
+
+    center = square // 3
+    observed, factor = average_squared(modulus, 'cubic', 1, 2 * modulus, 1, center=center)
+    assert factor is None
+    with mp.workprec(128):
+        exact = factored_average(modulus, LOCAL['cubic'], 1, 1 + 2 * modulus, left, center=center)
+        assert abs(observed - exact) < 1
+    print('6 direct modulated averages, 2 planted bands and 1 empty band matched')
+
+
 if __name__ == '__main__':
     check()
+    check_modulation()

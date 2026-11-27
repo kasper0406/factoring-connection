@@ -29,6 +29,8 @@ For the unsquared cubic magnitude use the local series $2|\cos(4\pi x)|$. Its co
 
 This evaluates a coarse average of the same magnitude seen by the decoder. The error proof removes the hidden high-frequency terms. On the remaining inputs, repeated coarse queries return explicit public diagonal sums and do not expose those phases. Any use of a smaller error after deconvolution must charge the resulting precision and window length.
 
+The evaluator also supports a supplied Fourier center at the same polynomial-bit scale. Translated quadratic lattice blocks replace the quotient scan in general bands. A hit yields a factor, while independently sampled centers and small rational centers have small coverage. [Modulated averages and coverage](modulated-phase-window.md)
+
 ## Checks
 
 The diagnostic compares 36 averages with direct summation over unit scales, including wraparound and a repeated prime. It also tests a low mixed line recovered without trial division. Ten further long-window cases compare the unfactored approximation with factor-supplied Fourier sums. [Evaluator and controls](coarse_phase_window.py)
