@@ -950,3 +950,30 @@ is of order k log k for B>1. This particular bound then improves
 with k only when a>d. Without any bit-length prefactor, any a>0
 suffices by taking B large relative to C/a. With the prefactor the
 same argument works for a>d by taking B sufficiently large.
+
+## Semiprime magnitude baseline using the public cosine
+
+For distinct odd primes tending to infinity, put s=2cos(2πc/N) on
+unit scales. An explicit factor-free estimate of |T_N(c)| is
+g(s)=(2/π)(√(4−s²)+s arcsin(s/2)). Its limiting RMS error is
+√(10/3−20/π²), about 1.14320. The optimal constant has limiting
+RMS 1.17128 and returning zero has limiting RMS 2.
+
+To derive this, the two phases (c/N,uc/N) become jointly uniform
+on the real two-torus for uniform units c as min(p,q) grows. For
+each fixed nonzero integer frequency pair (a,b), its expectation
+is the normalized Ramanujan sum at a+bu. The residues at the two
+primes are a+b and a−b up to interchange. At least one is nonzero
+for all sufficiently large primes, so its local unit average tends
+to zero. The Fourier criterion gives equidistribution. In the limit
+the second cosine is thus 2cos θ for an independent uniform angle θ.
+Integration gives Eθ|s+2cos θ|=g(s). This conditional mean minimizes
+limiting MSE among fixed continuous predictors of the public cosine.
+It places no restriction on predictors varying with N.
+
+The target's limiting second moment is 4 and its mean is 16/π²
+by the cosine product identity on the torus. Integrating g² at
+s=2cos θ gives 2/3+20/π², yielding the stated error. Enumeration
+over all unit scales gave RMS 1.13857 at N=101·103 and 1.14275 at
+N=1009·1013, versus 1.16258 and 1.17044 for the best constants on
+those inputs. The hidden root was used to score predictions only.

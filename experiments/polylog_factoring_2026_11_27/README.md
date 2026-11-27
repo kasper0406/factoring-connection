@@ -100,6 +100,10 @@ an evaluator's RMS by exactly 2^(k/2); a uniform stretched-exponential
 saving in ω(N) over that worst-case baseline suffices for factoring.
 [Baseline and amplification bound](salie-quarter.md#error-compared-with-returning-zero)
 
+For magnitude experiments on semiprimes, a factor-free predictor
+using the public cosine already attains limiting RMS error 1.14320
+as both primes grow. [Formula and comparison with constant estimates](salie-quarter.md#semiprime-magnitude-baseline-using-the-public-cosine)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |
