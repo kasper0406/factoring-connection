@@ -1638,3 +1638,15 @@ Proof: write z=|uv|=d²s with s squarefree on the base. For fixed σ>max(1/2,1�
 For the efficiently evaluated high-degree map y↦y^e with fixed positive odd e, the corresponding multiplier is y^((e−1)/2). The exact multiplicity of each image point on the square subgroup is gcd(e,(p−1)/2) gcd(e,(q−1)/2), so this quantity replaces the degree bound. In particular e=N gives a permutation for p<q≤2p: neither prime divides the other's half-order. Consequently N-th powering leaves the random-target smooth-representation probability exactly unchanged on this family despite its large formal degree.
 
 **Already tried — combining smooth outputs across targets.** The [smooth-construction audit, Theorem EQ1](../../notes/smoothbuild_results.md) and [hidden_root_class_factor](../../src/smoothbuild/core.py) already implement Dixon's hidden-root reduction. With K parity columns, any K+1 successful representations of independently sampled squares give a dependency; there is no full-rank prerequisite. If the constructor saw only the squares, the resulting gcd splits an odd modulus with at least two distinct prime factors with probability at least 1/2. A supplied square multiplier is absorbed into the saved root. The unresolved quantity is the public constructor's cost per success on random targets, including failed calls.
+
+**Fixed-budget relation yield.** For each bit length b below, use balanced_semiprime(b,seed) for seeds 0…3. From Python Random(f'relation-baseline:{b}:{seed}') draw 1,024 uniform unit roots per modulus (randrange(1,N), rejecting nonunits). Test the same least nonnegative squares t directly and via gauss_split(t,N)=(u,v). Use primes ≤b² in both tests, check u≡tv modulo N and require v a unit for a usable split. All 4,096 square targets per size enter the denominator.
+
+| b | Direct smooth t | Smooth u and v | Both methods |
+|---:|---:|---:|---:|
+| 32 | 151 | 1,206 | 46 |
+| 48 | 14 | 252 | 3 |
+| 64 | 0 | 42 | 0 |
+| 80 | 0 | 2 | 0 |
+| 96 | 0 | 1 | 0 |
+
+This measures relation yield per target for the existing constructors; it is neither a timing comparison nor an asymptotic rate estimate.
