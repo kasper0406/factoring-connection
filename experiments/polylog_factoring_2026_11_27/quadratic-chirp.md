@@ -4551,3 +4551,38 @@ q=2790871. Direct modular evaluation confirmed all 48 nonvanishings.
 The argument allows adaptive selection *within* the length-indexed
 list. It does not cover polynomial coefficients computed from the
 value of n, other local groups, or arbitrary modular queries.
+
+### A cubic local group outside the signed first-stage criterion
+
+For n=pq with distinct odd primes sample a uniform monic cubic f
+mod n and a uniform element z of A=(Z/nZ)[X]/f. Compute N(z)
+as the determinant of multiplication by z. A proper gcd of N(z)
+with n gives a split; retry if n divides N(z). Otherwise form
+g=z³/N(z) and test the gcd with n of all coefficients of g^E−1,
+where E=(n³−1)lcm(1,...,B).
+
+At a prime p where f is irreducible the unit group has order
+(p−1)(p²+p+1), and the field norm raises z to p²+p+1. The map
+g=z^(-(p−1)(p+2)) thus has cyclic image of order
+H(p)=(p²+p+1)/gcd(3,p+2). A uniform nonzero z gives a uniform
+image. The probability of irreducibility is (1−p^(-2))/3 by
+counting degree-three elements up to Frobenius conjugacy. The
+local cubics and elements at p and q are independent by CRT.
+Hence both cubics are irreducible and both z components nonzero
+with probability bounded below by an absolute constant. The algorithm
+does not need to recognize irreducibility at either hidden prime.
+
+If exactly one of H(p),H(q) divides E, then conditional on that
+event of irreducibility and nonzero sampling, one component is
+always killed and the other survives with probability at least
+1/2. Thus fresh trials yield expected polylogarithmic factoring
+for this class when B is polylogarithmic. This changes the local
+groups used in the preceding polynomial-exponent obstruction.
+
+At n=61597=31·1987 and B=3 none of the four signed first-stage
+pairs has a fully annihilated local group. The cubic image orders
+are 331 and 1316719, and only 331 divides E. The cubic
+X³+X+12 is irreducible at both primes (no local roots). For z=X
+the quotient g is 1+X/12. Direct powering modulo n and f returned
+g^E=7875+51243X+54994X²; the coefficient gcd of g^E−1 with n
+is 31. This example compares the first-stage guarantees only.
