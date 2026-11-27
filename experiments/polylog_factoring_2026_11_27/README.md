@@ -198,6 +198,8 @@ On squarefree semiprimes a separate Pollard–Strassen progression evaluator cos
 
 The asymptotic tradeoff is in the total query count. The earlier zero-bit decoder scans all $\ell$ possible values of $A$ at each retained auxiliary prime. With the lattice evaluator this costs $\widetilde O(\ell+N^{1/4})$ per prime, even when one bit is cheap. On two-component inputs and $\ell\nmid N$, the unstructured equality-query model has about $\ell/2$ possible unordered residue pairs $\{u,N/u\}$. Each point query tests just one pair. A random search for any nonzero-support position takes order $\ell$ queries in that model. A factorization algorithm must exploit more arithmetic than this scan, or evaluate at small primes without the $N^{1/4}/\ell$ block cost.
 
+For two components, a dense bit at $\ell\ge N^{1/4}$ gives a separate route to bulk extraction. An inverse-polynomial advantage in predicting the centered quarter sign of $P_N(A)\bmod\ell$ suffices for sampled Fourier recovery of the component sum modulo $\ell$, followed by the native lattice. On a balanced semiprime distribution, predictors based only on $N\bmod\ell$ have exponentially small average advantage. Even an arbitrary short summary of the full input before seeing $A$ needs about $\frac14\log_2N$ bits to support inverse-polynomial advantage. [Prediction reduction and congruence bound](dense-count-prediction.md)
+
 ### Shifted power-of-two bits and a binary search for a component
 
 Keep the odd input $N$ fixed and let a query ask whether $2^b$ divides $P_N(A)$ at a positive shift $A$. For two complete components $N=PQ$ and an odd $A$, write $u=v_2(P+A)$, $v=v_2(Q+A)$, and $c=v_2(N-A^2)$, with $c=\infty$ when $N=A^2$. The identity
