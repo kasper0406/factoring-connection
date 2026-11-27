@@ -1284,6 +1284,36 @@ same cost bound by subdivision. The proof requires coverage of a real arc;
 arithmetic tests which exclude entire regions without covering them, nonlinear
 coordinates, and formulas summing many levels at once remain outside its scope.
 
+### Auxiliary quadratics improve the direct arc exponent with a known point
+
+[circle_quadratic_arcs.py](circle_quadratic_arcs.py) takes a known integer
+point $z_0$ of norm $N$. In particular $a+i$ is public on $N=a^2+1$.
+Write $z=z_0(1+it)^2/(1+t^2)$ for $-1\le t\le1$. This covers a semicircle,
+hence every orbit up to negation. Integral points have rational parameter
+$t=\Im(z\bar z_0)/(N+\Re(z\bar z_0))$ on this semicircle.
+Set $B\ge4N^{3/10}$ within a constant factor of this bound. In each of
+$2B$ blocks let $t=(b+v)/B$ with $0\le v\le1$, and put
+$U=B^2+(b+v)^2$, $X+iY=z_0(B+i(b+v))^2$. Then $z=(X+iY)/U$.
+
+Use the five coefficient vectors in ascending powers of $v$ for
+$U^2,XU,YU,X^2-Y^2,2XY$. Their absolute determinant is
+$256N^3 B^{10}$. Indeed the unscaled basis at $z_0=1$, $t=v$ has
+determinant 256. Multiplication by $z_0$ on the two first harmonics and
+by $z_0^2$ on the two second harmonics contributes $N^3$. Substituting
+$t=(b+v)/B$ contributes $B^{-10}$ and clearing $B^4$ in each row gives
+$B^{20}$. LLL finds a nonzero integer combination $G$ with coefficient
+1-norm at most $2\sqrt5(256N^3 B^{10})^{1/5}<B^4$.
+At an integral point $G(v)/U^2$ is an integer, by construction, with absolute
+value below one. Hence $G(v)=0$. Extract all rational roots of this quartic,
+check the coordinates, and retain distinct orbits. Each fixed-dimensional
+block costs polynomial bit time. The full cost is
+$O(N^{3/10}\operatorname{polylog}N)$, beating the linear-strip exponent
+on the known-point family. This is an asymptotic comparison; the LLL and
+quartic steps carry greater overhead. Factoring first still has the better
+known exponent $1/5$ on the earlier semiprime family.
+Eight supplied-point checks, including $59+124i$, matched exhaustive orbit
+enumeration. Run from the repository root using its Python package path.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
