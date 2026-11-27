@@ -355,6 +355,23 @@ primitive contribution from $N$ alone. In particular $N$ modulo one probe
 order cannot generally give the local answer: $33$ and $305$ are both $16$
 modulo $17$, but their totients are $20$ and $240$, distinct modulo $17$.
 
+### Moving the probe inside the disk
+
+Write $N=pq$ with odd primes $p<q$, and put $a=R^p$ for $0<R<1$.
+Throughout $|z|\le R$ the four-chord identity gives
+$|\Phi_N(z)-(1-z)|\le 2(2a+2a^2)/(1-a)^2$ by expanding the numerator
+of the difference. At $R=\exp(-7/p)$ this is below 0.004. Thus the same
+linear polynomial already meets the 0.01 tolerance throughout that disk.
+At $R=\exp(-1/p)$, however, $z=-R$ gives
+$(1+R)-\Phi_N(-R)=(1+R)(a+R^q+aR^q-R^N)/((1+a)(1+R^q))$,
+at least $(e^{-1}-e^{-q})/4>0.08$.
+The transition for a fixed absolute signal therefore occurs at radial distance
+of order $1/p$ from the unit circle. At the origin the first coefficient where
+$\Phi_N$ differs from $1-z$ is the coefficient of $z^p$, equal to 1.
+This excludes extracting the first deviation by reading a polynomial-in-bit-length
+Taylor prefix for balanced semiprimes. The argument gives no lower bound on
+evaluation by a different representation.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
