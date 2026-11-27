@@ -612,6 +612,29 @@ a polynomial-bit exponent. This connects this specific proposed sampler
 to the classical multiplicative and norm-one order methods. It provides
 no exponent with the concentration promise.
 
+**Polynomial rules for the degree.** Let p<q be primes in [B,2B],
+and allow a shared menu of polylog(B) nonzero integer polynomials F of
+uniformly bounded degree and coefficient magnitudes at most a fixed
+power of B. The menu can depend on B; selection within it may depend on
+N. Use positive exponents |F(N)|, discarding zero. For either sign
+ε=±1 we have F(pq)=F(εp) modulo q−ε. If the power image in that group
+has size m≤L, then q−ε divides mF(εp). Fix p,F,ε and an integer
+L=polylog(B). Unless F(εp)=0, each m≤L allows at most B^o(1)
+choices of q, since the nonzero integer |mF(εp)| is polynomially
+bounded in B and its divisor count is B^o(1). The exceptional p with
+F(εp)=0 number at most the degree per polynomial and sign. Summing
+gives at most B^(1+o(1)) covered pairs out of B^(2−o(1)) prime pairs.
+Thus even input-dependent selection from this menu misses a fraction
+tending to one for the necessary small-image condition. This bounds
+the specific concentration mechanism, not the power of arbitrary
+algorithms using these degrees.
+
+As a finite check use the menu N−1, N+1, N²−1 and L=8. Enumerating
+all p<q in [B,2B) gave 117/210 pairs at B=100, 670/9,045 at B=1,000
+and 6,625/533,028 at B=10,000 for which at least one q-side group
+image had size at most eight. These are group-size checks with known
+factors, not measured factoring success rates.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
