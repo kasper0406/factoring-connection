@@ -4899,3 +4899,27 @@ In the latter case the gcd is 1 and the roots of X^2-DX+N recover
 both factors. For example at N=143 and b=16, D=24 gives roots 11
 and 13. An equality-only oracle still needs the earlier search;
 a full residue eliminates that refinement for semiprimes.
+
+### Integer evaluations in the first window
+
+Let P_b(X) be the degree-b prefix of (1+X)^N-1 and p the least
+prime divisor of composite N. For b<2p the formal identity modulo N is
+
+    P_b(X) = sum_{prime r|N, r<=b} (N/r) X^r.
+
+Indeed every index j<=b sharing a prime with N must itself be such
+a prime r. At unit indices use j binom(N,j)=N binom(N-1,j-1).
+At j=r use binom(N,r)=(N/r)binom(N-1,r-1), whose last factor
+is 1 modulo r by the product formula. Now Fermat's congruence
+x^r=x modulo r makes P_b(x)=x D modulo N at every integer x,
+where D is the cofactor sum from the preceding section. Hence an
+arbitrary collection of integer evaluations at this same cutoff
+can be reconstructed from P_b(1) alone.
+
+For N=143 and b=16 the formal prefix is 13 X^11 + 11 X^13,
+while every integer evaluation agrees with 24 X modulo 143.
+The distinction is visible already in the ring with T^2=-1,
+where P_b(T)=-2T. Its difference from 24T has coefficient -26
+with gcd(26,143)=13. This calculation assumes access to the
+prefix. Evaluating the full power in that ring would also include
+higher degrees.
