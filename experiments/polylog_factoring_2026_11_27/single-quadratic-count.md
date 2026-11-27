@@ -2319,6 +2319,42 @@ A method that selects among many more multipliers from the arithmetic
 of N, or skips large sets of midpoints, needs separate analysis.
 The balancing reduction itself uses interval occupancy and still holds.
 
+### Certifying a short interval of Fermat midpoints
+
+For odd M and integer midpoints A≤t≤B with A≥ceil(√M), set
+g(t)=t+√(t²−M). The possible larger factors lie in the exact integer
+interval [ceil(g(A)), floor(g(B))]. Conversely every divisor in that
+interval gives an integer midpoint in [A,B], since M is odd and
+g is increasing. Intersect with the balanced factor range if required.
+
+This permits the standard degree-one unknown-divisor lattice already
+used in [the affine decoder](../../src/trackE/coppersmith.py).
+For exact occupancy, retain every integer root of a certified short
+polynomial and test whether the corresponding candidate divides M and
+lies inside the requested interval. Returning a gcd from an outlying
+candidate could give an incorrect interval answer.
+
+For M=2989601243 we tested [56352,56360] (larger factor 70019)
+and [56340,56348] (empty), using one five-dimensional lattice per
+interval. With c the floor of the center of the integer factor
+interval and Y its covering radius, scale coefficient i by Y^i in
+the basis M², M(c+x), (c+x)², x(c+x)², x²(c+x)². The first LLL
+row in each case had sum of absolute entries below the square of the
+lower factor endpoint. Its unscaled polynomial must vanish at every
+valid offset: the value is divisible by the square of its factor
+and has strictly smaller absolute value. Exact integer-root extraction
+then gives both answers.
+
+A fixed positive exponent slack ε in the standard small-root theorem
+permits factor intervals of width O(M^(1/4−ε)) in polynomial bit time
+for 0<ε<1/4, since the larger factor is at least √M. For a fixed
+factor ratio strictly above one, g has bounded derivative, so the
+same scale of midpoint widths suffices there. Near √M the derivative
+diverges; the exact transformed width controls that case. Covering
+the entire balanced factor interval [√M,√(2M)] at this scale still
+takes order M^(1/4+ε) blocks. This provides a rigorous local stopping
+condition for an interval search.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
