@@ -674,6 +674,22 @@ list. This argument covers existence tests as well. Polynomials chosen
 from N, and algorithms using actual roots or other data, lie outside
 the claim.
 
+**Extracting a root on the mixed promise.** The standard
+root-extraction reduction applies even to an algorithm that, given N
+and a random unit cube a, only returns an integer y satisfying
+y³≡a mod q, where q≡2 mod 3 is hidden. Draw a uniform unit x and
+supply a=x³ mod N, keeping x private. Compute gcd(y−x,N). Since
+cubing is bijective modulo q, any correct y agrees with x there.
+Conditioned on a, the three equally likely values of x have distinct
+residues modulo p. For any correct y independent of x given a, at
+most one of the three agrees modulo p. Hence the gcd gives q with
+probability at least 2/3 conditional on correctness, or exactly 2/3
+for an extractor that always returns a full root. Every gcd can be
+verified. Exhaustive enumeration on the 100 mixed pairs from primes
+5 through 79 checked all 48,440 unit-cube fibers and every choice of
+full root. This identifies an already factoring-hard witness task on
+this promise. It supplies no method to construct that witness.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
