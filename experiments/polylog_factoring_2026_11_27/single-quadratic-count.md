@@ -957,3 +957,28 @@ hidden semiprime pair from the public one. A different return,
 where 2^d squares to one but is neither sign of one, already splits
 the modulus by gcd(2^d-1,N). Verified the formula at first signed
 returns for all 6,566 units at odd moduli from 3 through 179.
+
+### Distribution of short dyadic transcripts
+
+Fix N=pq with distinct odd primes, a nonpublic root u of unity,
+and a uniform unit scale c. Let W be k consecutive hidden quarter
+bits starting at c. For every prescribed word w,
+
+    | #{c : W=w} - phi(N)/2^k | <= 8.
+
+Indeed x=cu mod N permutes the units. The k adjacent-digit equality
+tests of x/N specify its first k+1 digits once its first digit is
+chosen. The two choices give complementary binary prefixes. Each
+prefix corresponds to a half-open interval of length N/2^(k+1)
+in [0,N). Inclusion-exclusion over 1,p,q,pq counts its units;
+each multiple count differs from interval length divided by its
+divisor by at most one. Summing the two interval errors gives eight.
+Thus the total variation distance from k fair independent bits is
+at most 4*2^k/phi(N).
+
+A fresh uniform unit and its public quarter sequence sample exactly
+the same distribution without u. This reproduces the marginal law
+but gives no coupling to the correct transcript at a specified c.
+Histograms alone cannot verify an evaluator. Exhaustively checked
+the count bound for all 45 semiprimes formed from odd primes
+through 31, for k=1 through the bit length of each modulus.
