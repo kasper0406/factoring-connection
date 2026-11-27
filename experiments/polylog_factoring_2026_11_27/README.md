@@ -66,89 +66,19 @@ does obtain a constant individual coefficient from a dense function;
 it needs a public approximation to the normalized sum with RMS error
 at most 1/2 over unit scales. That approximation is the open operation.
 
-For this Salié probe, grouping by phase and its negative preserves
-the optimal real single-sample variance. A third partner of the same
-phase outside the public inverse pair gives a factor by gcd.
-[Identity and exhaustive checks](salie-quarter.md#grouping-summands-with-the-same-phase)
+### Salié evaluator research ledger
 
-The [public part of the signed interval](salie-phase-bins.md#computing-the-two-public-translates-at-the-required-scale)
-admits a factor-free truncated Fourier evaluation with RMS error at
-most 1/16 after normalization. The same function at the unknown
-mixed-root shift remains to be evaluated.
+**Open target.** For an unfactored odd semiprime N and a requested unit c, predict whether the normalized Salié magnitude is at least one. An inverse-polynomial accuracy gain over always answering yes on that same N suffices for a randomized polynomial-time split. Always-yes accuracy tends to 61.6625% as both factors grow. [Threshold reduction](salie-quarter.md#beating-the-always-yes-threshold-classifier-on-a-semiprime)
 
-For an arbitrary odd modulus, an evaluator for the log magnitude of
-the normalized complete Salié sum to error 1/32 on unit scales would
-suffice for randomized polynomial-time factoring, even with unboundedly
-many distinct prime factors. Each local cosine contributes a Fourier
-frequency with gcd N/r for a prime power r exactly dividing N.
-[Reduction and checks](salie-quarter.md#factoring-from-the-logarithm-of-the-magnitude)
-
-Using log(1+|T|) retains a factor-revealing coefficient even for
-unboundedly many prime powers. A sufficiently small absolute constant
-RMS additive error on the magnitude over unit scales suffices.
-[Regularized magnitude reduction](salie-quarter.md#constant-additive-accuracy-for-the-magnitude)
-
-A magnitude evaluator uniform over odd moduli may even have RMS
-additive error polynomial in the input bit length. Known prime
-factors amplify the signal, and sampling each auxiliary coordinate
-in proportion to its squared local magnitude cancels the effect
-of division on mean-square error. [Proof and control](salie-quarter.md#amplifying-magnitude-with-known-prime-factors)
-
-The zero estimate has RMS at most 2^(ω(N)/2), with equality if all
-prime exponents exceed one. Adjoining k known prime squares reduces
-an evaluator's RMS by exactly 2^(k/2); a uniform stretched-exponential
-saving in ω(N) over that worst-case baseline suffices for factoring.
-[Baseline and amplification bound](salie-quarter.md#error-compared-with-returning-zero)
-
-For magnitude experiments on semiprimes, a factor-free predictor
-using the public cosine already attains limiting RMS error 1.14320
-as both primes grow. [Formula and comparison with constant estimates](salie-quarter.md#semiprime-magnitude-baseline-using-the-public-cosine)
-
-On an individual semiprime, any queryable predictor that improves
-mean squared error over that public cosine baseline by δ gives a
-randomized split in time polynomial in log N and 1/δ, plus the cost
-of the predictor calls. [Reduction and planted check](salie-quarter.md#factoring-from-any-inverse-polynomial-mse-gain-over-the-public-cosine)
-
-The square-bin sign correction has MSE gain at most O(B log N/√N)
-on balanced semiprimes, uniformly over B interval bins and their
-bounded weights. [Proof and best-fit controls](salie-quarter.md#factoring-from-any-inverse-polynomial-mse-gain-over-the-public-cosine)
-
-On unfactored odd inputs the mean log magnitude over L successive
-doublings is within log(N)/L of zero. Exact vanishing is equivalent to 4^L≡1 mod N, independent of the starting unit. Two neighboring window lengths
-at accuracy 1/(64L) per length suffice to recover the single-scale
-log magnitude. [Exact telescoping identity](salie-quarter.md#averaging-log-magnitudes-along-doubling-scales)
-
-Exact equality of complete Salié magnitudes on unit scales is decidable
-by comparing c² and d² modulo N. The squared value at scale one
-generates the compositum of the local real cyclotomic fields.
-[Proof and exact checks](salie-quarter.md#equality-of-magnitudes-at-two-unit-scales)
-
-A magnitude-ordering oracle on requested pairs of unit scales suffices
-for randomized polynomial-time factoring via threshold comparisons to
-random reference scales. [Comparison reduction](salie-quarter.md#factoring-with-magnitude-comparisons-alone)
-
-A single fixed decision |T_m(d)|≥1 also suffices on requested unit
-inputs across odd moduli. Known auxiliary factors set the comparison
-level by CRT. [Threshold calibration and precision](salie-quarter.md#one-fixed-magnitude-threshold-on-augmented-inputs)
-
-The fixed threshold at the original N already suffices for a split:
-some prime-power frequency has coefficient Ω(1/ω(N)). Thus a
-semiprime-only bit evaluator suffices for semiprime factoring.
-[Same-modulus proof](salie-quarter.md#splitting-the-original-modulus-with-the-fixed-threshold)
-
-On semiprimes the always-yes threshold classifier has limiting accuracy
-61.6625%. Any queryable classifier exceeding the *same input's*
-always-yes rate by an inverse polynomial gives a randomized split.
-[Baseline and weak-advantage reduction](salie-quarter.md#beating-the-always-yes-threshold-classifier-on-a-semiprime)
-
-Every one of the 32 square bins favored yes on both threshold
-benchmarks. For any fixed interval partition, equidistribution
-makes always-yes exactly optimal among bin-only classifiers once
-both factors are sufficiently large. [Counts and proof](salie-quarter.md#a-factor-free-sufficient-test-for-threshold-advantage)
-
-Even N-specific square intervals give at most O(B log N/√N)
-threshold accuracy gain over always-yes on balanced semiprimes for
-B disjoint no intervals. [Uniform bound and optimal finite fits](salie-quarter.md#a-factor-free-sufficient-test-for-threshold-advantage)
+| Approach tried | Result and scope |
+| --- | --- |
+| Numerical magnitude | With the prime powers supplied, one cosine per prime power evaluates the complete sum. From N alone, a public cosine baseline has limiting RMS error 1.14320 on semiprimes. An inverse-polynomial MSE improvement over its finite-input score suffices for a split. [Factored evaluator](salie-quarter.md#factored-evaluation-for-all-odd-moduli-and-scales) · [Baseline and recovery](salie-quarter.md#factoring-from-any-inverse-polynomial-mse-gain-over-the-public-cosine) |
+| Thresholds and comparisons | A fixed-threshold oracle on the original N gives a split for any odd N with multiple distinct primes. The magnitude-ordering and auxiliary-prime reductions give alternative oracle formulations. [Original modulus](salie-quarter.md#splitting-the-original-modulus-with-the-fixed-threshold) · [Ordering](salie-quarter.md#factoring-with-magnitude-comparisons-alone) · [Auxiliary primes](salie-quarter.md#one-fixed-magnitude-threshold-on-augmented-inputs) |
+| Error tolerance | Log magnitude to error 1/32 or magnitude to sufficiently small constant RMS error suffices on odd moduli. Adding k known prime squares reduces transferred RMS error by a factor of 2^(k/2) for evaluators valid on the augmented inputs. [Log magnitude](salie-quarter.md#factoring-from-the-logarithm-of-the-magnitude) · [Constant error](salie-quarter.md#constant-additive-accuracy-for-the-magnitude) · [Amplification and zero baseline](salie-quarter.md#error-compared-with-returning-zero) |
+| Grouping by phase or interval | The public inverse partner has the identical summand. A third distinct partner gives a factor. Single-phase weights are equivalent to a quadratic residuosity decision. Short Fourier completion evaluates the public part of the signed interval to normalized RMS error 1/16. The hidden translate remains open. [Inverse partners](salie-quarter.md#grouping-summands-with-the-same-phase) · [Phase weights](salie-phase-weights.md) · [Interval evaluator](salie-phase-bins.md#computing-the-two-public-translates-at-the-required-scale) |
+| Equality and doubling | Magnitudes agree exactly when the two scale squares agree. A length-L doubling window has mean log magnitude within log(N)/L of zero and vanishes exactly when 4^L≡1 mod N. These tests are polynomial-time on unfactored inputs. [Equality and field](salie-quarter.md#equality-of-magnitudes-at-two-unit-scales) · [Window identity](salie-quarter.md#averaging-log-magnitudes-along-doubling-scales) |
+| Predicting from intervals of c² mod N | On balanced semiprimes, B freely placed no-intervals gain at most O(B log N/√N) over always-yes. The tested square-bin sign correction obeys the same order bound for MSE gain. Every fixed benchmark bin favored yes. [Classifier bounds](salie-quarter.md#a-factor-free-sufficient-test-for-threshold-advantage) · [Magnitude experiment](check_square_bin_magnitude.py) |
+| Turning trained predictions into factors | The full FFT split both small benchmarks. Random frequency orderings with the same gcd checks had 66.75% and 23.48% chances of matching the observed ranks. The experiment used order N log N operations. [End-to-end control](https://github.com/kasper0406/factoring-connection/commit/bd91247) |
 
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
