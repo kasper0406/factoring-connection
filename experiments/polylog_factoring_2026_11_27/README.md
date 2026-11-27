@@ -613,6 +613,32 @@ these finitely many conics suffices for every such semiprime. The coverage and
 the small multipliers are unconditional; finding the witnesses efficiently
 is still open.
 
+### What two-dimensional lattice reduction needs
+
+For $N=pq$ with distinct primes greater than 5, fix a menu entry $d$ and
+a root $u^2=d\bmod N$. The lattice $L_u=\langle(N,0),(u,1)\rangle$
+has index $N$. Gauss reduction in the positive metric $t^2+dy^2$ returns
+a shortest nonzero vector in polynomial bit time using integer scalar products.
+The scaled covolume is $\sqrt d\,N$, so the planar Hermite bound gives
+$0<|t^2-dy^2|\le t^2+dy^2\le(2/\sqrt3)\sqrt d\,N<7N$.
+The strict lower bound uses that $d$ is nonsquare. Hence the norm is $kN$
+with $1\le|k|\le6$. A prime dividing $y$ and $N$ would also divide $t$
+and then divide $k$, impossible here. The short vector therefore returns
+exactly the original root $t/y=u\bmod N$.
+
+There is a converse obstruction for any proposed additive lattice on which
+the norm vanishes identically modulo $N$. If it contains $(s,v)$ with
+$v$ invertible modulo $N$, polarization against any $(t,y)$ gives
+$st=dvy\bmod N$. Since $s/v$ is a unit square root of $d$, this forces
+$t=(s/v)y\bmod N$ throughout the lattice. In particular one such lattice
+cannot combine two incompatible root choices. If a proposed basis has
+second coordinates $y_1,y_2$, compute $g=\gcd(y_1,y_2,N)$. A proper
+nonunit gcd factors $N$; $g=1$ gives a vector with second coordinate 1
+modulo $N$ by Bezout; $g=N$ forces all coordinates to vanish modulo $N$
+by squarefreeness. Thus constructing a nontrivial norm-divisible lattice
+already supplies a root or factor before reduction. This applies only to
+additive lattices with this exact divisibility property.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
