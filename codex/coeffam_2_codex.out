@@ -1,0 +1,64 @@
+Assume \(p,q\) are distinct odd primes of good reduction, \(\ell\nmid N\), and the curve or representation is fixed. **PROVED.** There is a genuine composite-index congruence \(HW_N\equiv C_pC_q\pmod N\). Its integer factors are the obstruction. For the stated \(S_3\) example, a different construction computes the desired bit without either Frobenius in \(\widetilde O(N^{1/4})\) time. A polylogarithmic bound remains open here.
+
+### 1. Hasse–Witt coefficient
+
+**PROVED.** Write \(h_r=(r-1)/2\) and \(C_r=[x^{r-1}]f^{h_r}\). Since \(h_N=h_p+ph_q\),
+\[
+f^{h_N}\equiv f(x)^{h_p}f(x^p)^{h_q}\pmod p.
+\]
+The first factor has degree \(3h_p<2p-1\), so its only possible contributing exponent congruent to \(-1\bmod p\) is \(p-1\). Thus
+\[
+C_N\equiv C_pC_q\equiv a_pC_q\pmod p.
+\]
+The last equality follows by summing \(f(x)^{h_p}\) over \(\mathbf F_p\). Interchanging \(p,q\) gives \(C_N\equiv C_pC_q\pmod N\).
+
+**REFUTED.** For \(f=x^3-x+1\), \(C_5=-2,\ C_7=3\), while \(a_5=-2,\ a_7=-4\). Hence \(HW_{35}=29\bmod35\), whereas \(a_5a_7=8\). Even computing the integer coefficient directly modulo \(\ell\) fails in general: \(C_{35}=411944\equiv5\bmod11\).
+
+**KNOWN (cost).** Dense powering costs \(\widetilde O(N)\) bit operations. Bostan–Gaudry–Schost give square-root complexity for suitable matrix products. Their coefficient recurrence divides by a factorial, and \((N-1)!\) vanishes modulo \(N\). Consequently their prime-field theorem does not justify a direct \(\widetilde O(\sqrt N)\) modular coefficient algorithm. Their block-product technique is shared with Pollard–Strassen, and a failed unit inversion can expose a factor. [Bostan–Gaudry–Schost, §4](https://mathexp.eu/bostan/publications/BoGaSc04.pdf)
+
+With factoring allowed, \(\widetilde O(N^{1/4})\) suffices for balanced primes. Factor by Pollard–Strassen, then extract the coefficient separately in each characteristic. Indeed, with \(h(x)=x^3f(1/x)\), the sequence \(C_{2m+1}=[x^m]h(x)^m\) is the diagonal of \(1/(1-th(x))\), hence algebraic. In known characteristic \(r\), extraction costs \(\widetilde O(\sqrt r)\log N\) for fixed \(f\). This also gives polylogarithmic extraction modulo fixed \(\ell\), subject to the counterexample above. I know no general factor-free \(N^{o(1)}\) bound for \(C_N\bmod N\). [Bostan–Caruso–Christol–Dumas, Theorem 4.1](https://arxiv.org/abs/1806.06543)
+
+### 2. Dwork, ASD and unit roots
+
+**KNOWN.** For elliptic formal-group differential coefficients \(b_n\) with \(b_1=1\), ASD gives \(b_{pq}\equiv a_pb_q\bmod p\). For the Beukers–Vlasenko matrices, under their unit-root hypotheses,
+\[
+\beta_{mp^s}\equiv\Lambda_p\,\sigma_p(\beta_{mp^{s-1}})\pmod{p^s}.
+\]
+At \(m=q,s=1\), the second factor is the Frobenius twist of the *index-\(q\) coefficient matrix*. Obtaining the unit-root operator at \(q\) requires the \(q\)-adic construction. Here \(v_p(N)=v_q(N)=1\), so the stated precision at each prime is one digit. [ASD congruences, Theorem 1.3](https://www.math.lsu.edu/~hoffman/papers/elmod.pdf) · [Dwork Crystals I](https://doi.org/10.1093/imrn/rnaa119)
+
+**REFUTED.** Write \(F_{<m}=\sum_{j<m}u_jt^j\). For a \(p\)-Lucas sequence, digit decomposition gives
+\[
+F_{<pq}(t)\equiv F_{<p}(t)F_{<q}(t^p)\pmod p.
+\]
+The proposed \(F(t)/F(t^N)\equiv F_{<N}(t)\pmod N\) fails even for the rescaled Legendre period \(u_j=\binom{2j}{j}^2\). At \(N=35\), comparing coefficients of \(t^{35}\) after clearing the denominator would require \(u_{35}\equiv u_1\bmod7\). Lucas gives \(u_{35}\equiv u_5=252^2\equiv0\), whereas \(u_1=4\). This also refutes the universal lift modulo \(N^2\). The dense Legendre truncation costs \(\widetilde O(N)\), by expanding \((1-4t)^{-1/2}\) and squaring its coefficients individually. [Dwork Crystals II](https://academic.oup.com/imrn/article/2021/6/4427/5850648)
+
+### 3. Division fields and straight-line programs
+
+**PROVED.** For a fixed program, including its integer exponents, reduction modulo \(p\) commutes gate by gate with ring operations, powering and inversion of units. Thus the reduced inputs **and the program** determine the reduced output. The stronger assertion omitting public exponent data is **REFUTED**: \(35\equiv65\bmod5\), yet \(2^{35}\equiv3\) and \(2^{65}\equiv2\bmod5\). Branching on a gcd also lies outside the lemma. Locality supplies no complexity lower bound for fixed \(E\).
+
+**PROVED.** For monic unramified \(P\), Frobenius permutes its reduced roots, so
+\[
+\operatorname{Res}(P,g(x^N))\bmod p
+=\prod_{P(\alpha)=0}g((\alpha^p)^q)
+=\prod_{P(\alpha)=0}g(\alpha^q).
+\]
+The gcd with \(x^N-x\) detects nonzero roots of order dividing \(N-1\), plus any zero root. Trace forms reduce to those of \(P\bmod p\). These operations cost \(\operatorname{poly}(\log N)\) in fixed degree when required pivots are units. A nonunit pivot can expose a factor.
+
+For the cubic, genuine Frobenius has mod-2 trace one exactly for cycle type \(3\), equivalently when the cubic has no root. On a degree-\(d\) component, undoing the extra power on all units by exponentiation requires \(q^{-1}\bmod(p^d-1)\), when it exists. That correction recovers the \(p\)-action only. The usual division-field test obtains the other cycle type from \(P\bmod q\). [Dokchitser–Dokchitser](https://arxiv.org/abs/1009.5388)
+
+### 4. Monsky–Washnitzer and a global trace
+
+**REFUTED.** An endomorphism lifting pointwise \(N\)-th powering would reduce to an additive map. Already in \(\mathbf F_p[x]\), \((1+x)^N=(1+x^p)^q\) has \(x^p\)-coefficient \(q\ne0\bmod p\). Substitution \(x\mapsto x^N\) exists on the affine line but acts differently on \(1+x\). Witt lifts cannot repair this reduction obstruction. The base \(\mathbf Z/N^2\) itself has only the identity unital endomorphism. Genuine local Kedlaya lifts use the residue characteristic explicitly, with \(\widetilde O(\sqrt p)\) cost available for a fixed curve. [Harvey](https://arxiv.org/abs/math/0610973)
+
+**KNOWN.** A global correspondence does give the requested trace: \(T_N=T_pT_q\) acts on the holomorphic modular eigenline of \(E\) by \(a_pa_q\). Direct correspondence enumeration has \((p+1)(q+1)\) terms. The exact eigenvalue identity leaves fast evaluation at an unfactored index open. [Hecke theory](https://people.mpim-bonn.mpg.de/zagier/files/scanned/IntroductionToModularForms/fulltext.pdf)
+
+### 5. A non-Frobenius test
+
+**PROVED.** The complete Jacobi sum \(\sum_{x\bmod N}(\frac{f(x)}N)\) equals \(a_pa_q\) **as an integer**, by CRT. Direct summation costs \(\widetilde O(N)\) and needs neither prime.
+
+For the \(S_3\) bit, choose a public balance bound \(B\ge\max(p,q)\), with \(B=O(\sqrt N)\). Then
+\[
+a_pa_q\bmod2
+=\mathbf1\!\left\{\gcd\!\left(N,\prod_{0\le j<B}f(j)\right)=1\right\}.
+\]
+Indeed, the interval covers both residue fields, and either local root forces its local trace to be even. For \(s=\lceil\sqrt B\rceil\), form \(G(X)=\prod_{i<s}f(X+i)\) by a product tree, evaluate at block starts \(0,s,2s,\ldots\) by monic multipoint evaluation, and handle the tail directly. This costs \(\widetilde O(\sqrt B)=\widetilde O(N^{1/4})\) over the unfactored modulus. **Open step:** decide this single unit test in \(\operatorname{poly}(\log N)\) time.

@@ -1,0 +1,59 @@
+### 1. The Hecke expansion and the first nonabelian coefficient
+
+**REFUTED.** \(G\) has two generators, but \(G\simeq C_2*_{\mathrm{pro}\text{-}2}\mathbf Z_2\). Complex conjugation generates the order-two factor. **KNOWN.** Bellaïche constructs \(\rho:G\to SL_2(A)\) with \(T_p=\operatorname{tr}\rho(\mathrm{Frob}_p)\), where \(A=\mathbf F_2[[x,y]]\). [Neumann, Theorem 3.7](https://www.numdam.org/article/AST_1977__41-42__239_0.pdf) · [Bellaïche, Theorem 1](https://people.brandeis.edu/~jbellaic/preprint/repgaluniv.pdf)
+
+**KNOWN / PROVED.** Write \([P]\) for an indicator and \(e=\lfloor p/16\rfloor\bmod2\). The complete truncations are
+
+| \(p\bmod8\) | \(T_p\bmod\mathfrak m^3\) | Additional terms modulo \(\mathfrak m^4\) |
+|---|---|---|
+| 1 | \(Ax^2+By^2\) | \(0\) |
+| 3 | \(x\) | \(Cx^3+(C+e)xy^2\) |
+| 5 | \(y\) | \((C+e)x^2y+Cy^3\) |
+| 7 | \([p\equiv7\bmod16]xy\) | \(0\) |
+
+In row 1, \(A=[p=a^2+8b^2,\ b\text{ odd}]\) and \(B=[p=a^2+16b^2,\ b\text{ odd}]\), with existential integer variables. Equivalently, \(A=0\) iff \(p=a^2+32b^2\), and \(B=0\) iff \(2\) is a fourth power modulo \(p\). In rows 3 and 5 write \(p=a^2+db^2\) with \(d=2,4\), respectively, and \(a\) odd. Then \(C=[b/a\equiv\pm3\bmod8]\). The pure cubic terms follow from the two theta series of index \((3,3)\). For the mixed terms, the adapted basis gives \(a_{30}+a_{12}=a_p(\Delta^{19})\) and \(a_{21}+a_{03}=a_p(\Delta^{21})\). Bellaïche’s abelian table gives \(e\) on the respective rows. [Nicolas–Serre, §§6–9](https://arxiv.org/abs/1204.1039) · [Bellaïche, §3.2](https://doi.org/10.2140/tunis.2025.7.453)
+
+**PROVED. The minimum is \(k=11\).** Since \(\Delta^{11}=m(3,0)\), its semiprime coefficient is \([x^3]T_pT_q\). For \(p\equiv1,\ q\equiv3\bmod8\), this equals \(A(p)\). Its governing dihedral extension of order eight distinguishes the identity from the nontrivial commutator. Chebotarev therefore gives both values even with \(p\equiv1\bmod 2^j\) for any fixed \(j\ge3\), with balanced \(q\) in a prescribed class above \(3\bmod8\). Below 11, even powers and \(k=1,3,5\) vanish at \(pq\). Powers 7 and 9 detect respectively the unordered residue pairs \(\{3,5\}\) and \(\{3,3\}\) modulo eight. [Nicolas–Serre, §§6–7](https://arxiv.org/abs/1204.1039)
+
+### 2. Evaluation without factoring
+
+**PROVED.** There are native speedups. For \(k=11\), the theta identity reduces the ternary count to counting \(N=a^2+2b^2\) with \(a>0\) odd and \(b\equiv3a\bmod8\), in \(\widetilde O(\sqrt N)\) bit operations. For general \(k\), multiplying the \(\operatorname{popcount}(k)\) binary-digit theta factors modulo \(q^{N+1}\) costs \(\widetilde O(N\,\operatorname{popcount}(k))\). [Nicolas–Serre, §8](https://arxiv.org/abs/1204.1039)
+
+**KNOWN; general polylogarithmic evaluation is open.** The Nicolas–Serre code reads the digits of **\(k\)** to compute nilpotence. Applying the prime-operator formulas at \(pq\) requires selecting \(T_p,T_q\). Bellaïche–Nicolas count indices with specified prime-factor behavior asymptotically. Neither construction evaluates that behavior from \(N\). Full-sequence 2-automaticity is **REFUTED** for every \(k>0\). Algebraicity of \(\Delta^k\) would imply algebraicity of \(\Delta\), hence automaticity of odd squares by Christol. Appending pairs of binary zeros would then make all positive squares automatic, contradicting Ritchie. The semiprime promise escapes this argument. [Nilpotence theorem](https://arxiv.org/abs/1204.1036) · [Bellaïche–Nicolas](https://people.brandeis.edu/~jbellaic/preprint/ParitecoefV6.pdf) · [Christol and Ritchie results](https://jtnb.centre-mersenne.org/item/10.5802/jtnb.718.pdf)
+
+### 3. What the oracle reveals
+
+**PROVED.** Put \(W_K=\langle\Delta^k:k\le K,\ k\text{ odd}\rangle\), \(B=A/\operatorname{Ann}(W_K)\), and \(H=\rho(G)\bmod B\). By Hecke duality and Chebotarev, the exact number of possible transcripts over balanced semiprimes of unrestricted size is
+\[
+\#\{\operatorname{tr}(u)\operatorname{tr}(v):u,v\in H\}.
+\]
+Its logarithm measures range size. Shannon entropy requires a distribution. Given \(N\bmod8\), at most \(\lceil K/8\rceil\) output coordinates can vary, since \(k\equiv N\bmod8\) is necessary. [Hecke duality](https://arxiv.org/abs/1204.1039)
+
+**PROVED.** For direct recovery of \(p\bmod 2^r\) to a constant-size list from the transcript and \(N\bmod2^r\), the uniform Frobenius threshold is \(K=\Theta(4^r)\). Indeed, the nilpotence theorem gives
+\[
+(A/\mathfrak m^h)^*\subset W_{4h^2},
+\qquad W_K\subset(A/\mathfrak m^{\lceil2\sqrt K\rceil})^* .
+\]
+For sufficiency take \(U=(\mathbf Z/2^r)^\times\). Bellaïche’s universality specializes \(T_\ell\mapsto[\ell]+[\ell^{-1}]\) in \(\mathbf F_2[U]\), by the cyclotomic character and its inverse. The augmentation ideal has nilpotence index \(2^{r-2}+1\) for \(r\ge3\). Adding \([N]+[N^{-1}]\) to the specialized product gives \([w]+[w^{-1}]\), \(w=p/q\). Even when this vanishes there are at most four choices for \(w\), hence at most sixteen for \(p\) from \(p^2=Nw\) in \(U\). [Nilpotence bounds](https://arxiv.org/abs/1204.1036) · [Universality, §4](https://people.brandeis.edu/~jbellaic/preprint/repgaluniv.pdf)
+
+**PROVED.** For necessity take \(h=\lceil2\sqrt K\rceil\). The truncated image has exponent dividing \(L=2^{1+\lceil\log_2 h\rceil}\), since every residual matrix squares to \(1\). For \(g=\mathrm{Frob}_5\), pairs \(g^{Lj},g^{-Lj}\) thus give identical transcripts and product residue \(1\), while \(5^{Lj}\) ranges over \(\gg 2^r/L\) residues. Chebotarev realizes these pairs. Thus polynomial \(K\) gives only \(O(\log K)\) uniformly recoverable low bits by this route. For \(n=\lceil\log_2N\rceil\), already \(r=n/4+O(1)\) suffices for balanced factoring by Coppersmith. The exponential threshold concerns direct residue recovery across unrestricted primes. A polynomial-time reduction exploiting the full integer \(N\) remains open. [Coppersmith, Theorem 4](https://nymity.ch/anomalous-tor-keys/bibliography/pdf/Coppersmith1997a.pdf)
+
+### 4. Hidden Legendre symbols
+
+**PROVED; factoring reduction open.** Full-domain hidden-factor symbols and decision-QRP are equivalent **for factoring reductions**. On Jacobi-\(+1\) units, QRP gives the common local sign. Choose a random Jacobi-\(-1\) unit \(b\). For Jacobi-\(-1\) input \(D\), QRP gives the sign of \(bD\). Trying both signs for \(b\) simulates the two consistent hidden characters. Run the factoring reduction both ways and verify. Conversely one hidden character decides QRP. A small-\(D\) factoring reduction would therefore solve the full-oracle open problem. [Okamoto–Pointcheval, Gap–Rabin](https://www.di.ens.fr/users/pointche/Documents/Papers/2001_pkc.pdf)
+
+### 5. Rédei and three squares
+
+**PROVED.** Use proper order class numbers. For \(N\equiv1\bmod4\), encode symbol \(-1\) by 1 and \(+1\) by 0. Let \(a,b,s,e\) encode \((2/p),(2/q),(p/q),(-1/p)\). Then
+\[
+h(-4N)\equiv4\big((a+b)s+eb\bmod2\big)\pmod8.
+\]
+Indeed the 2-rank is two, and the displayed bit is the maximal-rank test for the Rédei matrix, whose last two rows are \((a,e+s,e+s),(b,s,s)\) and whose rows sum to zero. [Stevenhagen, Theorem 3.1](https://arxiv.org/abs/1806.06250)
+
+**REFUTED in general.** For \(N\equiv3\bmod4\), \(h(-4N)=(2-(\frac{-N}{2}))h(-N)\). Reduced-form enumeration gives \(14,18\) for \((p,q)=(17,23),(17,31)\), with identical listed symbols and individual residues modulo eight. For twists write \(-4Nm=f^2d\), \(d\) fundamental. Multiply \(h(d)\) by \(f\prod_{\ell\mid f}(1-(d/\ell)/\ell)/[\mathcal O_d^\times:\mathcal O_{f^2d}^\times]\). With \(t\) prime discriminants in \(d\), \(h(d)\bmod8\) is zero for \(t\ge4\), and for \(t=3\) equals \(4[\operatorname{rank}R=2]\). These tests use the individual prime discriminants. [Cox, Theorem 7.24](https://www.math.utoronto.ca/~ila/Cox-Primes_of_the_form_x2%2Bny2.pdf) · [Williams–Currie, mixed-prime formulas](https://people.math.carleton.ca/~williams/papers/pdf/122.pdf)
+
+**KNOWN.** Gauss gives \(r_3(N)=12h(-4N),24h(-N),0\) for \(N\equiv1\bmod4,3\bmod8,7\bmod8\), respectively. Thus \(r_3(N)\equiv0\bmod16\) throughout. Reduced-form enumeration is factor-free. General native polylogarithmic evaluation of the nontrivial residues remains open. [Gauss’s formula](https://www.sciencedirect.com/science/article/abs/pii/S072308692600023X)
+
+### 6. A uniform family and its obstruction
+
+**PROVED.** Take the weight-\(\ell+1\) Eisenstein series normalized by \(a_1=1\), for primes \(\ell\ge5\). Fermat gives \(a_N=\sigma_\ell(N)\equiv1+N+p+q\bmod\ell\). Small primes with product exceeding \(p+q\) recover the sum by CRT and hence factor \(N\). This also illustrates why the fixed-form \(O(1)\)-bit premise needs a fixed finite output alphabet. **REFUTED** for the proposed finite-state evaluator: Yazdani proves \(\sigma_1\bmod\ell\) nonautomatic in every base on unrestricted indices. A uniform semiprime evaluator for these small moduli is equivalent to balanced factoring. [Eisenstein coefficients](https://websites.umich.edu/~asnowden/teaching/2013/679/L13.html) · [Yazdani, Corollary 3](https://www.numdam.org/item/JTNB_2001__13_2_651_0.pdf)
