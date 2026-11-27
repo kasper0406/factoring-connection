@@ -97,3 +97,15 @@ coefficient 1-norm passes the strict bound. Exhaustive scanning agreed on
 semiprimes and repeated factors. The windows included known-root
 neighborhoods as well as pseudorandom starts. This checks correctness
 on those inputs; it is not a runtime comparison with the tangent method.
+
+The same block works on a modular progression $x=a+sj$ for a unit
+step $s$. Put $u=s^{-1}\bmod N$ and solve the monic congruence
+$(j+au)^2-u^2=0\pmod N$ in the index interval. The determinant and
+radius bound are unchanged. The implementation matched scans on 102
+progressions across six odd moduli, including wraparound and negative
+steps. Thus a public list of polylogarithmically many progressions of
+length $O(\sqrt N)$ known to hit a mixed root suffices to split $N$.
+For a uniformly random start and fixed unit step on an odd semiprime
+with distinct factors, a length-$L$ progression hits either mixed root
+with probability at most $2L/N$ by the union bound. Choosing the step
+alone cannot improve that random-start guarantee.
