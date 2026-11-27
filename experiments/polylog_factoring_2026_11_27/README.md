@@ -76,6 +76,13 @@ admits a factor-free truncated Fourier evaluation with RMS error at
 most 1/16 after normalization. The same function at the unknown
 mixed-root shift remains to be evaluated.
 
+For an arbitrary odd modulus, an evaluator for the log magnitude of
+the normalized complete Salié sum to error 1/32 on unit scales would
+suffice for randomized polynomial-time factoring, even with unboundedly
+many distinct prime factors. Each local cosine contributes a Fourier
+frequency with gcd N/r for a prime power r exactly dividing N.
+[Reduction and checks](salie-quarter.md#factoring-from-the-logarithm-of-the-magnitude)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |

@@ -752,3 +752,45 @@ original summands agreed on every scale of every odd N from 3 through
 251 (15,875 values, maximum absolute discrepancy below 5·10^(−15)).
 The supplied factors determine the CRT phases; obtaining them from the
 unfactored index remains the computational issue for this formula.
+
+## Factoring from the logarithm of the magnitude
+
+A public evaluator for log|T(c)| with pointwise absolute error 1/32
+at unit scales suffices for randomized polynomial-time factoring of
+arbitrary odd N. No sign or phase of T is needed. With the factors
+known, the preceding cosine product supplies this precision in
+polynomial time. The log-error promise differs from additive error
+in the original sum when its magnitude is small.
+
+For the proof extend the unit-scale log magnitude to all c by the
+function L(c)=∑_{r} log(2|cos(2π c v_r/r)|), with r and v_r as
+above. The minimum angular distance from a cosine zero on an odd
+grid of size r is at least π/(2r). Thus each factor lies between
+1/r and 2 and |L|≤log N. In particular even an additive approximation
+to |T| within 1/(64N) suffices on units.
+
+For each exact prime power r, consider k=2v_r(N/r) mod N, with
+gcd(k,N)=N/r. Every other local summand has zero Fourier coefficient
+there by CRT. To bound the real part of the surviving coefficient,
+take x uniform mod r, z=cos(4πx/r), and f(z)=log(2+2z)/2.
+Then E z=0 and Var z=1/2. Since f'(z)≥1/4 on the sampled range,
+Cov(f(z),z)≥Var(z)/4=1/8 by the independent-copy covariance identity.
+This is the desired Fourier coefficient's real part. Consequently
+each component gives a frequency of constant unnormalized signal
+strength (normalized Fourier transform of the unscaled function L),
+regardless of the number of distinct primes.
+
+Simulate bounded-function Fourier queries by checking gcd(c,N)
+first. A proper gcd ends the search successfully. At c=0 return
+zero, changing any coefficient by at most log(N)/N. On units clip
+the evaluator to [−log N,log N]. Equivalently analyze a hypothetical
+function filled with exact L on proper nonunits: the simulation
+agrees until such a query immediately yields a divisor. The surviving
+coefficient after scaling by log N has size Ω(1/log N) for sufficiently
+large N. Use the [sampled heavy-frequency algorithm](quarter-fourier.md)
+and check gcd(k,N) for all returned frequencies. Small N and prime
+powers can be handled directly; recurse on proper splits and amplify
+success. FFTs of the proof extension for every odd N≤2000 with two
+or more distinct prime factors checked all predicted frequencies on
+676 moduli. The smallest observed real coefficient exceeded 0.2310.
+These checks use the factors and test the reduction.
