@@ -28,3 +28,38 @@ Indeed at one prime $r$, the squared Ramanujan coefficient gives two terms $(r-1
 ## Checks
 
 The diagnostic generated the Salié table by direct finite Fourier transforms on five moduli, including two with repeated prime factors. It verified every dual coefficient and every unit-shift autocorrelation. The three squarefree controls also passed the zero-shift energy formula. Run `python check_salie_autocorrelation.py` with NumPy and SymPy.
+
+## Correcting exceptional shifts by a three-query identity
+
+For distinct odd primes N=pq put C(x)=cos(2 pi ux/N), where u
+is either mixed root. For any target h and mask r one has exactly
+
+    C(h) = 2 C(r) C(h-r) - C(2r-h).
+
+This follows from the cosine product identity before averaging.
+With r uniform modulo N, all three query arguments are individually
+uniform, since 2 is invertible. No independence among the three
+arguments is required. On nonunits use the public cosine directly,
+since ux equals x or -x there.
+
+For example suppose a normalized Salié estimate on a uniform unit
+is within 0.038 with probability at least 0.9 (including fresh
+internal randomness). Subtract the public cosine pair, halve, and
+clip to [-1,1] to estimate C. Each masked cosine query now has
+error <=0.019 except with probability <=0.1. With probability
+>=0.7 all three are good. The resulting estimate of C(h) has
+error <=5*0.019=0.095: the product of two clipped estimates has
+error <=2*0.019, then double it and add the third error. This is
+inside the direct phase decoder's 0.1 cosine tolerance.
+
+Use independent masks and fresh oracle coins across trials. A median
+of O(log(Q/delta)) trials succeeds with failure at most delta/Q
+by Hoeffding, where Q=O(log N) is a bound on the number of decoder
+queries. Fresh trials after each adaptive query allow a union bound.
+One can therefore use the deterministic phase backtracking with
+overall success at least 1-delta on this weaker coverage promise.
+This is a local correction procedure given the average-case
+estimator; it does not construct that estimator. The separate
+heavy-Fourier recovery in salie-quarter.md tolerates a looser RMS
+promise when only factoring, rather than answering a chosen phase
+query, is required.
