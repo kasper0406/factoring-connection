@@ -4515,3 +4515,39 @@ At (r₁,r₂,r₃,r₄)=(11,13,17,19) the least positive prime
 representatives are p=1064933 and q=393109. For B=10 the four
 residual pairs, in (++,+−,−+,−−) order, are (266233,32759),
 (266233,39311), (481,799), and (59163,39311).
+
+### Simultaneous avoidance of length-indexed polynomial exponents
+
+For each bit length L allow a predetermined list of nonzero integer
+polynomials P(X), with list size, degrees and coefficient bit lengths
+bounded by fixed polynomials in L. Even trying all |P(n)| as
+exponents, times an lcm cutoff B=poly(log n), leaves both signed
+local groups with polynomially large residuals on infinitely many
+semiprimes. This includes lists containing products or powers
+provided the resulting degree and coefficient bounds hold.
+
+Indeed Linnik's theorem supplies an absolute constant C such that
+the construction using four primes in [R,2R] always has output
+bit length ≤C log R for large R. Pool the lists for every integer
+length up to this upper bound before choosing the classes. For each
+polynomial choose a nonzero coefficient. Their product has only
+poly(log R) bits in absolute value, so four distinct primes in the
+band can be chosen avoiding it. Over each selected field the total
+number of roots of all polynomials in the pool is bounded by their
+total degree, poly(log R). Choose x_i distinct from 0 and 1 outside
+the root union in the i-th field. Prescribe p residues
+(1,−1,x₃,−x₄) and q residues (x₁,−x₂,1,−1). The resulting primes
+are distinct, and n has residue x_i in each field. No listed
+polynomial value vanishes there. Each signed local order therefore
+retains its designated prime ≥R≥n^c for an absolute c>0. Products
+of tested exponents preserve this avoidance. With uniform group
+samples the preceding small-order collision probability bound still
+applies; polynomially many trials cannot restore constant success
+through that collision mechanism.
+
+For the twelve polynomials X^k±1, 1≤k≤6, the four primes
+31,37,41,43 and residues x_i=3,2,2,2 yield p=3192877,
+q=2790871. Direct modular evaluation confirmed all 48 nonvanishings.
+The argument allows adaptive selection *within* the length-indexed
+list. It does not cover polynomial coefficients computed from the
+value of n, other local groups, or arbitrary modular queries.
