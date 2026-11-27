@@ -474,3 +474,24 @@ O(1+min(B²,(N-2B)²)/N) square tests. Thus both endpoint regions
 of width O(sqrt(N)*poly(log N)) admit exact polylogarithmic bit
 time. At B near N/4, including the first midpoint in the earlier
 bisection, the cheaper bound still scales linearly in N.
+
+## A fixed quarter box and nonadaptive dyadic scales
+
+Suppose odd N has exactly two distinct prime divisors, with arbitrary
+positive exponents. Its square roots of one are ±1 and ±u, where
+1<u<N/2 picks a unique representative. Fix I=[1,floor(N/4)].
+At scale c=2^j mod N count ordered pairs in I² with xy=c² mod N.
+XOR out the known diagonal contributions ±c. By swap cancellation,
+the resulting bit is one precisely when the fractional part of
+2^j u/N lies in the first or last quarter of [0,1). No endpoint
+ties occur because N is odd and u is a unit.
+
+This bit says exactly that binary digits j+1 and j+2 of u/N agree.
+The first digit is zero. With L=bit_length(N), scales j=0,...,L-2
+recover the first L digits by keeping or flipping the preceding bit.
+Their dyadic interval has length 2^(-L)<1/N, so ceiling its lower
+endpoint times N recovers u. Its gcd with N after subtracting one
+splits N. All boxes and scales are fixed from N before the answers
+arrive. If N has more distinct primes the bit is instead a parity
+over multiple hidden pairs, so this single-root decoder does not
+apply. Uniform fast evaluation of even these fixed-box parities is open.
