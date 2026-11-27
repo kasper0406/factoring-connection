@@ -69,6 +69,12 @@ def test_hiary_semiprimes_and_primes():
             assert hiary_factor(prime_instance(bits, seed).N) is None
 
 
+def test_hiary_respects_interval_edges():
+    n = 1009 * 1013
+    for d in (1007, 1008, 1009, 1010):
+        assert hiary_factor(n, lo=d, hi=d) == (1009 if d == 1009 else None)
+
+
 def test_hiary_block_scan_finds_all_divisors_in_blocks():
     # skip trial division: every divisor in [N^{1/3}, sqrt N] must be found by the block phase
     rng = random.Random(5)

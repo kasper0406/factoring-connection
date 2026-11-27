@@ -121,7 +121,7 @@ def hiary_factor(N: int, *, trial_division: bool = True, stats: Optional[Dict[st
             if -H <= h <= H:
                 d = x + h
                 stats["divisor_tests"] += 1
-                if 1 < d < N and N % d == 0:
+                if wlo <= d <= whi and N % d == 0:
                     stats["found_in"] = "block"
                     return d
         x = x + 2 * H + 1
