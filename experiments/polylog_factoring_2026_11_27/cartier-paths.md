@@ -227,6 +227,31 @@ ordinary/supersingular distinction above to repeated factors. Neither
 height places the first local term below p. This addresses the dense
 prefix approach and does not preclude fast collective evaluation.
 
+**Content of a whole prefix.** Let G_T be the gcd of N and all
+coefficients of [N](X) in degrees 1 through T, T≥1. For p^e exactly
+dividing N and finite height h at p, its exact valuation is
+
+    v_p(G_T) = max(0, e − floor(log base p^h of T)).
+
+Indeed for each 1≤j≤e, start with [p^(e−j+1)] modulo p. Its first
+degree is (p^h)^(e−j+1) by composition over a field. Apply the outer
+[p] another j−1 times. The same induction above preserves this degree
+as the first nonzero one modulo p^j, increasing its valuation by one
+per step. The unit cofactor preserves the threshold. Counting the j
+for which that degree exceeds T proves the formula. At infinite height
+the entire p^e remains in G_T.
+
+For the multiplicative group this gives exactly
+G_T=N/gcd(N,lcm(1,...,T)). Equivalently k·binom(N,k)=N·binom(N−1,k−1)
+bounds the valuation below, and k=p^a attains the bound up to a=e.
+Direct integer binomial recurrence verified the identity at every
+1≤T≤N for 2≤N≤499 (124,749 prefixes). Thus the ordinary elliptic
+components and the binomial prefix remove the same prime-power layers;
+supersingular elliptic components remove a layer only at each p^(2a).
+The lcm identity specifies the aggregate. Computing the full lcm
+has order T bits and does not constitute a polynomial-bit evaluator
+when T is a power of N.
+
 For balanced factors put B=floor(√(2N)). Then p≤B<q², so the gcd
 of N and *all* coefficients through degree B is exactly q. In fact
 the first nonzero coefficient modulo N has index p, itself a factor.
