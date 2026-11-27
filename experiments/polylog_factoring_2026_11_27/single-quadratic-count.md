@@ -2189,6 +2189,35 @@ to reject this candidate, and a direct integer square test rejects
 it immediately. For r=1009, N=16248945 and s=8066, the first
 rejecting prime is 11.
 
+### The size of an explicit survivor list on general inputs
+
+For arbitrarily large even k, take X=2^k and partition [X,2X) into k
+equal subintervals. By the prime number theorem and averaging, one
+subinterval contains at least k primes: the mean is of order X/k².
+Choose k distinct primes there and take their product N, an odd
+squarefree integer of bit length b=Θ(k²). Its smallest prime factor
+is at least 2^k, eventually exceeding any fixed polynomial in b.
+
+The ratio of the largest to the smallest chosen prime is at most
+1+1/k. For any split into two sets of k/2 primes, the ratio of the
+larger product to the smaller is at most (1+1/k)^(k/2)<2. All these
+pairs are balanced. Unique factorization makes their unordered pairs
+distinct. A sum and the common product determine the unordered pair,
+so there are at least binom(k,k/2)/2 distinct genuine balanced sums.
+This grows as exp(Ω(√b)). Each discriminant is a perfect square and
+every sound square-discriminant filter passes every one.
+
+For k=20, the first twenty primes above 2²⁰ run from 1048583 to
+1048837. Their product has 401 bits. The product
+of the ten largest is less than twice the product of the ten smallest,
+verifying at least 92,378 balanced sums directly.
+
+Thus a uniform algorithm explicitly listing all surviving balanced
+sums can exceed polynomial output length before false positives enter
+the analysis. For general inputs an interval evaluator may return one
+verified witness or guide a split without listing all witnesses. A
+polynomial list bound remains meaningful under a semiprime promise.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
