@@ -611,3 +611,26 @@ certified 14 empty and 20 nonempty lists compared with zero
 certificates for K=0. The other 14 remained inconclusive. All
 certified lists matched exhaustive enumeration. These results
 concern small generated inputs and a fixed six-row basis.
+
+### Level enumeration on a wide interval
+
+Let g be any nonconstant integer combination of the six diagnostic
+basis polynomials before column scaling. In degree d=2j+i, the
+leading coefficient is a nonzero multiple of N^(2-j): the six
+basis degrees are distinct and f is monic. Write W for the span
+of the integer interval and h=floor(W/d). The d-th forward
+difference on d+1 equally spaced points in the interval has
+absolute value d! h^d |lc(g)|. The positive and negative weights
+each sum to 2^(d-1), so the difference is bounded above by
+2^(d-1) times the range (maximum minus minimum) of g there.
+Consequently the range divided by N² is at least
+
+    d! h^d / (2^(d-1) N^floor(d/2)).
+
+For W=floor(N/4)-O(1) and 1<=d<=5 this grows at least linearly
+in N. Even exact integer-domain extrema and an optimally chosen
+row therefore leave Omega(N) candidate levels for any method that
+enumerates every multiple of N² between the extrema. This argument
+does not require every intervening multiple to be attained. Using
+congruences to skip levels or computing their combined parity
+directly would be a different method.
