@@ -5,6 +5,11 @@ from random import Random
 
 from sympy import Matrix, Poly, Symbol, integer_nthroot
 
+try:
+    from flint import fmpz_mat
+except ImportError:
+    fmpz_mat = None
+
 from fixed_window_split import reference_count
 from nonadaptive_quarter import queries
 
@@ -34,8 +39,15 @@ def quadratic_roots(n, linear, constant, limit):
             row = [0]*shift + coefficients
             rows.append(row + [0]*(rank-len(row)))
     scales = [limit**i for i in range(rank)]
-    lattice = Matrix([[value*scale for value, scale in zip(row, scales)] for row in rows])
-    short = list(lattice.lll()[0, :])
+    scaled_rows = [[int(value*scale) for value, scale in zip(row, scales)] for row in rows]
+    if fmpz_mat is not None:
+        reduced = fmpz_mat(scaled_rows).lll()
+        short = [int(reduced[0, i]) for i in range(rank)]
+    else:
+        try:
+            short = list(Matrix(scaled_rows).lll()[0, :])
+        except (AssertionError, OverflowError) as exc:
+            raise RuntimeError("Install python-flint for this lattice size") from exc
     assert sum(abs(entry) for entry in short) < n**m
     auxiliary = Poly(sum((entry//scale)*x**i for i, (entry, scale) in
                          enumerate(zip(short, scales))), x)
