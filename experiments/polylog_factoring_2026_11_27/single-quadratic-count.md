@@ -893,3 +893,40 @@ by N gives the stated bound per nonconstant Walsh monomial. The
 constant monomial contributes O(1/N) by interval length. This
 argument leaves shifts chosen from the input scale, growing adaptive
 decision trees, and predictors using other features of c open.
+
+### Adaptive shifted Jacobi probes with bounded depth
+
+Keep balanced N=pq and a uniform unit scale. Allow the next shift
+to depend on N, independent randomness and all prior Jacobi
+answers. Assume along each nonzero-answer path the distinct shifts
+are distinct modulo both primes (exact repeats may be cached).
+A difference with a proper nonunit gcd would itself reveal a
+factor. Suppose the nonzero-answer binary tree has L leaves and
+depth k. Then the advantage for predicting the nonpublic quarter
+bit using only the transcript is
+
+    O(L (k+1)^2 log(N) / sqrt(N)).
+
+Fix the randomness. Replace a zero answer by a fresh fair sign and
+keep following the binary tree. This changes the prediction only
+on inputs encountering a zero. A union bound over the at most L-1
+binary query nodes gives probability O(L/sqrt(N)) for comparable
+primes, even before conditioning on reaching any given node.
+For a fixed leaf with prescribed signs e_i and shifts t_i its
+probability conditional on c in the modified process is exactly
+
+    product_i (1 + e_i chi(c+t_i))/2.
+
+Its expansion has coefficient absolute sum one. The preceding
+mixed character-sum estimate bounds its correlation with the
+folded quarter sign by O((k+1)^2 log(N)/sqrt(N)), initially over
+all residues. Sum this bound over leaves with their output signs.
+Conditioning the resulting bounded predictor on unit inputs costs
+O(1/sqrt(N)). Averaging over the independent randomness preserves
+the estimate.
+
+Since L<=2^k, depth at most (1/2-epsilon)log2(N) gives exponentially
+small advantage in bit length. The leaf bound also applies to
+polynomial-size binary trees of polynomial depth. It does not give
+a comparable result for arbitrary polynomial-time branching
+programs, whose unfolded trees can have exponentially many leaves.
