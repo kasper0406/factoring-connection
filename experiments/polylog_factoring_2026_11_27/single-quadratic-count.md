@@ -309,3 +309,29 @@ These are guarantees for the linear difference and an isolated
 stationary signal. The absolute value or threshold of a difference
 has a different spectrum. Computing the signed difference from
 unfactored input in polynomial bit time is still open.
+
+## One-sided comparison at the selected lag
+
+Under the comparable-semiprime and singleton conditions above,
+write the normalized corrected lag contrast as U(j)+E(j), with
+U(j)=±(I(z+hs)-I(z)), z=z_0+sj and I the upper half-window
+indicator used in the count. At the good dyadic lag let d be
+the least absolute residue of hs. Then N/4<=d<=floor(N/2).
+The positive part {U=1} is a single cyclic interval of length d
+in the z coordinate, for either stationary sign. Its normalized
+Fourier magnitude at s is sin(pi d/N)/(N sin(pi/N)), hence at
+least 1/(sqrt(2) pi).
+
+Use a one-sided comparator returning 0 below or at 1/4 and 1
+above or at 3/4, arbitrary in between. Whenever |E|<=1/4 it
+returns exactly the indicator of U=1. By the preceding mean bound
+with B=1024, disagreement occupies at most 48/1024 of all shifts.
+Even adversarial answers there change a normalized coefficient by
+at most that fraction. Thus its magnitude at s exceeds 0.178.
+This gives a constant heavy frequency for the existing sampled
+decoder after thresholding. The comparison is a single polarity
+of the packed count: take the two scales c+Nj and c+N(j+h)
+(reducing shifts modulo N) and subtract the public stationary
+correction for their difference. The lower digits and signed
+window are unchanged. Uniform polynomial bit cost for this
+one-sided threshold remains the required evaluator assumption.
