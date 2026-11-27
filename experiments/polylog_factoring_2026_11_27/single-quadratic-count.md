@@ -2388,6 +2388,41 @@ balanced inputs from 31 through 3999 coprime to 15 verified the
 existence of a balanced pair and four residue classes containing the
 larger factor for every such pair.
 
+### Combining an archimedean bin with the low product bits
+
+Let B≤p,q≤2B be primes with p≡1 and q≡3 modulo four, N=pq.
+Choose uniformly among these pairs. Set m=2^k with 8≤m≤B. A guide
+knows N modulo m and which of H intervals contains N. The interval
+partition may even depend on the observed residue. If the guide
+returns at most L guesses for (p+q) modulo m, its success rate is
+
+    O(L (log B)² (1/m + H/B)).
+
+Fix a product residue n, one interval of length Δ, and one guess s.
+The low-bit decoding argument gives at most four possible classes for
+p modulo m. Each has at most B/m+1 integer representatives. For each
+such p, q must lie in the single class n/p modulo m and an interval of
+length at most Δ/B. Thus there are at most 4(B/m+1)(1+Δ/(Bm))
+pairs for this guess, even counting composite candidates. Within a
+product residue the interval lengths sum to at most 3B² after clipping
+to [B²,4B²]. Summing over the m residues and L guesses and dividing
+by Θ(B²/(log B)²) prime pairs gives the bound. The denominator uses
+the prime number theorem only in the two fixed reduced classes modulo
+four. Randomized lists satisfy the same bound by conditioning.
+
+For example m of order B^(1/2+δ), 0<δ<1/2, is large enough for the
+preceding lattice threshold with a suitable fixed slack. Even H as
+large as B^(1−η), fixed η>0, gives vanishing success for any
+polylogarithmic list. This conclusion assumes the guide observes only
+the bin and residue. A statistic computed from the full N can behave
+differently within a bin.
+
+As a finite check take B=8192 and m=128, and divide [B²,4B²) into
+H equal intervals. Exhaustive counts on all 190080 eligible pairs
+give optimal single-guess hit counts 15352, 16405, and 19821 for
+H=1,8,64 respectively. In each (bin,residue) cell the best guess
+is the most frequent sum residue. These are exact finite optima.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
