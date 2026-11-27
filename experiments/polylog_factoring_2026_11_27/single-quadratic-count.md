@@ -2543,6 +2543,40 @@ Drawing z uniformly hits a nonzero eligible z with probability
 inputs. An independent evaluation of the count or a way to find such
 a z remains necessary.
 
+### The conic Fourier transform away from its origin
+
+For the preceding split-sign conic let F(h,k) be the unnormalized
+sum of exp(2πi(hx+kz)/N) over its points. Write r for the split
+prime and u for the inert prime. The inert component is the origin.
+Over r each line contributes r when its character is trivial and zero
+otherwise, by geometric summation. CRT rescales both local frequency
+coordinates by the same unit. Subtracting the doubly counted origin
+therefore gives the exact integer values
+
+* 2r−1 if h=k=0 modulo r,
+* r−1 if k²=a h² modulo r and (h,k) is nonzero modulo r,
+* −1 otherwise.
+
+Every nonzero frequency modulo N can be evaluated in polynomial bit
+time from the public inputs. First take gcd(h,k,N). If proper, use
+the resulting factorization and the formula. Otherwise this gcd is
+one. Take gcd(k²−a h²,N); a proper gcd again suffices, and a gcd of
+one gives −1. The gcd cannot be N in this branch since the equation
+at the inert prime would force both coordinates to vanish there.
+Thus every nonzero frequency with value different from −1 supplies
+a factor through these gcds. Their fraction among all frequencies,
+including the origin as exceptional, is (2r−1)/r².
+
+At (0,0) the value is the desired count. Its nearest nonzero grid
+neighbor (1,0) always has value −1. Continuity on the underlying
+real frequency axis does allow recovery from a much finer point:
+using representatives 0≤x<N, the real part of F(1/N,0) differs
+from F(0,0) by at most (2r−1)·2π²/N² by 1−cos(t)≤t²/2.
+But that phase is not a character modulo N, so the off-origin
+integer-frequency evaluator does not apply there. For N=187, a=−1,
+a direct numerical 2D FFT reproduced 30976 entries at −1, 3872 at
+16 and 121 at 33, with maximum deviation below 10⁻¹³.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
