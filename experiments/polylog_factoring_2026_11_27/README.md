@@ -958,6 +958,33 @@ evaluated to fixed absolute precision with polynomially many bit operations
 using guard bits for the at-most-$2^k$ product amplification, without listing
 the exponentially many orbits.
 
+### Fixed-degree, one-query amplification on unrestricted indices
+
+Define $C(n)=\frac14\sum_{x^2+y^2=n}\operatorname{Re}((x+iy)^4)$
+and $A(n)=C(n)/n^2$. The fourfold unit symmetry makes $C(n)$ integral.
+Gaussian factorization gives $A(uv)=A(u)A(v)$ for coprime indices,
+including vanishing coefficients. For a split prime $r=x^2+y^2$,
+$A(r)=2(1-8x^2y^2/r^2)$. A fixed positive proportion of primes
+have $A(r)\ge3/2$, by Hecke's prime number theorem for Gaussian primes
+in fixed angular sectors (take a narrow sector next to the real axis).
+
+Given $n$, take distinct such primes coprime to $n$ until the exact rational
+gain $G=\prod A(r)>n^2$, and let $M$ be their product. This needs
+$O(\log(2n))$ primes. At most $\log_2 n$ primes are skipped for dividing
+$n$; the fixed-sector prime count ensures scanning to $O((\log(2n))^2)$
+asymptotically suffices. Primality, circle enumeration for those small primes,
+and all rational comparisons therefore cost polynomial bit time.
+The query $nM$ has $O(\log(2n)\log\log(3n))$ bits. One reading of $A(nM)$
+with absolute error at most $1/4$ recovers $C(n)$ by multiplying by $n^2/G$
+and rounding. This works also at zero or negative coefficients. On the
+two-representation family the earlier exact angular moment is $H_N=C(N)/2$.
+
+The query uses the sum divided by four, with no division by the number of
+representations. The growing magnitude on the padded input is essential;
+a fixed relative error or a constant-error orbit average does not obtain
+this rounding guarantee. The evaluator must accept the padded indices,
+which generally leave the original semiprime family.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
