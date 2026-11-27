@@ -1042,3 +1042,42 @@ entire finite population, including training inputs. The small
 positive gain on the first input is real on that population and
 reverses sign on the second. These controls establish no uniform
 advantage. [Runnable comparison](check_square_bin_magnitude.py)
+
+**Limit for any fitted interval weights.** On balanced semiprimes
+the unmodified additive correction tested above has MSE gain at most
+O(B log N/√N) for B interval bins of c² mod N and any weights in
+[−1,1]. This includes weights selected with full knowledge of the
+answers. The implied constant can depend on the balance ratio.
+
+Let H(x) be the tested sign response at s=2cos(2πx), and let
+R(x,y)=V(x,y)−G(x). The gain is at most twice the correlation of
+the binned correction with R. The Fourier coefficients of H have
+O(1/j²) decay: on the finitely many pieces cut by cosine zeros
+and extrema the arcsine of the cosine is affine, the square root
+is an absolute sine, and H is continuous with piecewise smooth
+derivative. Hence H·R has bounded absolute coefficient sum, and
+can be truncated with O(1/K) uniform error by keeping the three
+generating indices (two for R, one for H) within K. Its modes (a,b)
+still have b≠0 and |a|+|b|≤5K. Set K=floor(min(p,q)/10).
+Then k=a+bu cannot vanish modulo N: that would require p dividing
+a+b and q dividing a−b (up to interchange), forcing both integers
+to vanish and hence b=0.
+
+For any such mode and one interval I, expand I(c² mod N) in its
+argument using normalized Fourier coefficients. Over all residues c,
+the zero-index term vanishes because k≠0. For j≠0 the normalized
+complete quadratic Gauss sum at (j,k) is bounded by
+√(gcd(j,N)/N) by squaring its magnitude and summing the linear
+phase. The interval coefficient is at most 1/(2|j|_N). Summing
+gives O(log N/√N), since multiples of p contribute at most
+O(log N/√p) to the harmonic sum weighted by √gcd(j,N), and likewise
+for q. Passing to unit inputs costs O(1/p+1/q) for bounded
+integrands. Summing the bounded Fourier mass and allowing the tail
+proves the claimed estimate per interval and hence across B bins.
+With polynomially many bins in log N the gain is smaller than
+every inverse polynomial in log N for sufficiently large balanced N.
+
+As an independent finite control, optimize each weight using the
+true residual over *all* units: in a bin set w=clip(∑HR/∑H²,−1,1).
+The maximum gains for 32 equal bins were 0.00974008 at 10403 and
+0.00012266 at 1022117. These are oracle fits specific to each N.
