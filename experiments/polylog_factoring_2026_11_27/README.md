@@ -372,6 +372,29 @@ This excludes extracting the first deviation by reading a polynomial-in-bit-leng
 Taylor prefix for balanced semiprimes. The argument gives no lower bound on
 evaluation by a different representation.
 
+### Magnitude-only samples with 1% relative error
+
+For $N=pq$ with distinct primes, let $r>5$ be a prime coprime to $N$.
+Use every nontrivial $r$th root $z$ and a 1%-relative estimate of
+$|\Phi_N(z)|$. Divide $|(1-z^N)(1-z)|^2$ by the squared estimate.
+The exact quotient is $D(z)$ for the Laurent polynomial
+$D(X)=(2-X^p-X^{-p})(2-X^q-X^{-q})$. Since $0\le D(z)\le16$,
+the absolute error is at most $16(0.99^{-2}-1)<0.33$. Supply $D(1)=0$.
+The normalized inverse discrete Fourier transform now gives every integer
+coefficient $c_j$ of $D$ modulo $X^r-1$ within 0.33, so rounding is exact.
+
+The sixth moment obeys
+$\sum_{j=0}^{r-1} j^6 c_j=60N^2(p^2+q^2)\pmod r$.
+Indeed exponents may be reduced modulo $r$ before taking their sixth powers.
+Before reduction, the moment is the sixth derivative of $D(e^t)$ at zero:
+each factor begins $-p^2t^2-p^4t^4/12$ or its counterpart for $q$.
+Divide modulo $r$ by $60N^2$. CRT with product exceeding $N^2$ gives
+$p^2+q^2$ as an integer and adding $2N$ gives $(p+q)^2$.
+The prime sizes and transform lengths are polynomial in the input bit length.
+At these probes $|\Phi_N(z)|\ge4/r^2$ by the chord bound, so ordinary
+polynomial-bit arithmetic suffices for the decoder. The outstanding evaluation
+problem is to obtain those real magnitudes from $N$ alone.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
