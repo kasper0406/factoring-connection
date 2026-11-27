@@ -376,6 +376,37 @@ every order-five, seven, and eleven case. The order-five decoder
 also agreed with modular Fibonacci fast doubling on all 200 inputs.
 These checks cover shift one and these four orders only.
 
+**A bound across primitive orders.** Let B≤p<q≤2B be primes,
+d=q−p, and fix 1/2<β<α<1 with B^β<d≤D=B^α. For any fixed C
+allow *all* odd orders 5≤l≤(log B)^C. Write u=1+ζ_l and σ_a(ζ_l)
+=ζ_l^a for units a modulo l. For large B both primes are units
+modulo l. Modulo any prime ideal over r=p or q, σ_r acts as r-th
+powering. The original defect u^(pq)−σ_(pq)(u) is therefore the
+r-th power of u^s−σ_s(u) in the residue field, with s the partner.
+At p this latter expression equals u^d σ_p(u)−σ_q(u).
+At q, multiplying it by u^d gives σ_q(u)−u^d σ_p(u).
+Here u is nonzero at every residue-field primitive root since l is
+odd and coprime to r. Consequently **both** local vanishing tests
+are characterized by divisibility of the same integer
+
+    A(l,d,p mod l) = Norm(u^d σ_p(u) − σ_q(u)).
+
+Once d and p modulo l are fixed, q modulo l is fixed too. This
+integer has O(l(d+1)) bits, since every conjugate of u has modulus
+at most 2. It is nonzero throughout this gap range for large B:
+in the embedding ζ_l=exp(2πi/l), |u|≥2cos(π/5)>1, every conjugate
+has magnitude at least 2sin(π/(2l))≥2/l, and |σ_q(u)|≤2. Thus
+|u|^d |σ_p(u)|>2. Each integer can have at most O(l(D+1)/log B)
+prime divisors in the dyadic range. Either such prime and d determines
+the pair, given the side. Summing over at most D gaps, l residue
+classes, and all permitted l gives O(D² polylog B) pairs with even
+one local hit. The prime bucket count above gives Ω(BD/log² B) pairs
+in this band. The covered fraction is at most B^(α−1) polylog B and
+tends to zero. This rules out a worst-case splitter based solely on
+these shift-one primitive resultants, even with adaptive choice among
+all the allowed orders. The identity for A is a counting device:
+constructing it as written uses the unknown gap.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
