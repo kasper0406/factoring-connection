@@ -810,6 +810,27 @@ The bound concerns the information supplied by these queries at
 common parameters. Algorithms can also use N itself, and a multiplier
 with a proper gcd with N already supplies a factor.
 
+### Two digits at several primes
+
+For n with at least two distinct prime factors, set t=φ(n)/2.
+The derivative identity above gives Φ_n(1)=1 and Φ'_n(1)=t.
+Consequently Φ_n(1+ℓ) mod ℓ² is exactly 1+ℓ(t mod ℓ) for each
+prime ℓ, including 2 and any prime dividing n. These queries all
+have index n. Read the second digit and combine by CRT, stopping
+when the prime product reaches n/2 since 0≤t<n/2. Primality and
+perfect-power checks handle the omitted input classes separately.
+By the prime number theorem for the primorial, primes up to O(log n)
+suffice and the number of queries is O(log n/log log n). Each
+base and modulus therefore has O(log log n) bits. Even a uniform
+evaluator polynomial in the *numerical* modulus and log n suffices
+for a polynomial-time reduction here.
+
+Exact divisor recursion recovered all 806 eligible totients for
+3≤n≤1000 in 3,674 queries. For n=77, for example, the second digits
+are 0,0,0,2 at primes 2,3,5,7, giving t=30. This is a change of
+query parameters for the existing reciprocity reduction. Computing
+the digit from n alone remains the missing operation.
+
 ### Evaluation at multiples of three
 
 For n>1 and 3 dividing b, the cyclotomic divisor product reduces modulo
