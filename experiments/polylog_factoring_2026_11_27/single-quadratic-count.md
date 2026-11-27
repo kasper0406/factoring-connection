@@ -537,3 +537,27 @@ each prefix allows early stopping while keeping a predetermined
 sequence of query scales. This argument also applies to any one
 root pair isolated by the hash variant. It changes query count,
 not the computational cost of a quarter-parity evaluation.
+
+## Short translated intervals via univariate small roots
+
+For an interval centered at a public integer A, use the monic
+quadratic f(T)=(A+T)^2-1 modulo N. Univariate Coppersmith finds
+all offsets of size below a fixed constant times sqrt(N) in
+polynomial bit time for fixed degree. A constant number of
+overlapping translates handles an interval of width sqrt(N),
+filtering endpoints and deduplicating recovered integers.
+Consequently parity on any such interval, or a difference of
+prefix parities across it, is computable from N without its
+factorization. The argument also works with a public unit scale
+by replacing 1 with c².
+
+After l=ceil(bit_length(N)/2) binary digits of a hidden root u/N,
+the dyadic cell confines u to an interval of width N/2^l<=sqrt(N).
+Run the translated quadratic solver and verify candidates by gcd.
+Thus at most l-1 quarter queries suffice on a singleton trial,
+even for comparable factors, for which small-denominator recovery
+alone can need nearly the full bit length. This is a theorem-based
+application; the wide prefix from 2 to floor(N/4) still spans
+Theta(sqrt(N)) such intervals if covered directly.
+
+[Don Coppersmith, Finding Small Solutions to Small Degree Polynomials, sections 1–3](https://cr.yp.to/bib/2001/coppersmith.pdf)
