@@ -187,6 +187,32 @@ excluding any simultaneous zero there. The resultant is
 uses known primes to plant the asymmetry. It checks the decoder and
 does not construct an auxiliary for unfactored inputs.
 
+**Which inputs can a fixed resultant construction separate?** Suppose
+the monic quadratic and auxiliary coordinates are fixed integer
+polynomials in the parameter n and the variable X, evaluated at n=N.
+Monic remaindering and the displayed resultant commute with reduction
+modulo N. Thus its three coefficients at N reduce to their values at
+n=0. Write C for the nonnegative gcd of these three integer values,
+allowing C=0. The decoder's answer on every N is exactly gcd(N,C).
+If C=0 it returns N for every input; otherwise the exceptional primes
+are precisely the prime divisors of this fixed integer. In the planted
+N=91 example the three coefficients 1085,322,21 have gcd 7 outright.
+
+In particular a fixed polynomial construction of this kind cannot make
+the resultant detect all inert Gaussian primes and reject all split
+ones. Factorization type can change for infinitely many primes, but the
+resultant tests existence of a *common geometric root*, and that test has
+only the exceptions encoded by C. For a menu shared at a size scale B,
+a pair p,q of distinct primes in [B,2B] can split only if their
+membership vectors among the supports of the nonzero C's differ.
+Even adaptive selection within the menu cannot separate identical
+vectors. Covering every pair requires all but at most one prime to
+divide the product of those C's, requiring total explicit bit length
+Ω(B) by the prime number theorem. This last storage estimate does
+not bound the cost of representing a huge integer by a short circuit.
+Formulas using digits of N, input-dependent exponents or divisions
+with rounding are outside the fixed-polynomial specialization.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
