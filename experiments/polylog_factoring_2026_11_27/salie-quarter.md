@@ -1019,3 +1019,26 @@ the zero-extended correction had largest absolute coefficient 0.06562
 at k=±101, with k=−1+u at the positive frequency under the chosen
 CRT orientation. The control deliberately used the factors. The
 reduction leaves open finding a public predictor with this gain.
+
+**Retest of the existing square-bin predictor.** Reuse its 32 bins
+of c² mod N, 100,000 public training draws, and fixed seed. Keep
+the mean sign in each bin instead of its majority bit. In the
+independent-angle model, a positive hidden cosine has mean 4/π.
+For s≥0 the magnitude conditional on that positive sign therefore
+has mean s+4/π. By symmetry, a predicted hidden-sign bias m gives
+the correction m·sign(s)(|s|+4/π−g(s)) to the public baseline.
+This is a testable model for the actual inputs. Training uses only
+the public signs, which have the same bin means as the hidden signs
+under the permutation c→uc. No hidden labels are used to select
+weights, bins or correction size.
+
+| N | MSE gain on 100,000 independent draws | MSE gain over all units |
+|---|---:|---:|
+| 10403 | +0.00427382 | +0.00448439 |
+| 1022117 | −0.00002786 | −0.00011562 |
+
+The exhaustive column scores the fixed trained predictor on the
+entire finite population, including training inputs. The small
+positive gain on the first input is real on that population and
+reverses sign on the second. These controls establish no uniform
+advantage. [Runnable comparison](check_square_bin_magnitude.py)
