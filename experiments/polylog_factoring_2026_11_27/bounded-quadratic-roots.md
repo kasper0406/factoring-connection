@@ -86,3 +86,11 @@ An exhaustive check over c with y=4 counted (unit norm, proper gcd, norm zero mo
 Choose primes p in [x,2x] and q in [3x,4x] independently and uniformly. Averaging over these ranges, E[gcd(p−1,q−1)] is O(log³ x). Indeed gcd(a,b)≤Σ_{d|a,d|b} d. For each d≤2x there are at most x/d+1 integers in each interval congruent to 1 modulo d. Summing d(x/d+1)² gives O(x² log x), and the prime number theorem gives Θ(x²/log² x) prime pairs. Hence the mean hit probability of the power denominator is O(log³ N/√N) on this distribution, uniformly in the unit square chosen for each N. A union bound retains negligible mean coverage for any polynomial-in-bit-length number of uniform shifts.
 
 There is also a bound for predetermined shifts at fixed N. Under a uniform unit-square target y, one may write y=r² with r uniform among units. For fixed c, each of c±r at ℓ=p,q hits the subgroup with probability at most g/(ℓ−1). Thus a list of L shifts chosen using N alone has success at most 2Lg(1/(p−1)+1/(q−1)), even when the most promising shift on that list is selected after inspecting y. This concerns the norm test; dependence on y that computes shifts outside such a list remains open.
+
+### Target-dependent rational shifts
+
+Fix N=pq and a shift c=P(y)/Q(y) with integer polynomials chosen from N alone. Suppose both degrees are at most d and Q is nonzero as a polynomial modulo each prime. For a uniform unit square y write y=r² with r a uniform unit. At ℓ=p or q, there are at most 2d possible nonzero r where Q(r²)=0. Count every pole as a potential success, including a gcd discovered while attempting division. For any of the g subgroup elements h and either sign, a hit at a regular input requires
+P(r²)−hQ(r²)±rQ(r²)=0 modulo ℓ.
+This polynomial is nonzero: its odd part is ±rQ(r²) while the remaining terms have even degree. Its degree is at most 2d+1. Consequently the local hit-or-pole probability is at most (2d+2g(2d+1))/(ℓ−1). Summing over the two primes bounds global coverage. Polynomial shifts use Q=1 and have no poles.
+
+The earlier separated-prime average therefore gives O((d+1)log³ N/√N). A union bound applies even if the target selects among polynomially many such formulas after evaluating them. This argument allows a large image of the shift. Its restriction is on the degrees of P and Q; a short repeated-squaring circuit can exceed that degree range.
