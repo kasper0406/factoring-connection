@@ -425,3 +425,39 @@ verified all 1883 distinct balanced odd prime pairs below 500, using
 the known factors only to generate the test hints. Computing the joint
 square class from N, or giving a short list guaranteed to include it,
 remains open.
+
+## A noisy sign decoder for a family of shifted products
+
+This changes the hint: allow shifts c in (p−c)(q−c), as opposed to the
+single CM product. For distinct prime factors of N, write S=p+q.
+At a prime ℓ≥101 coprime to N, define a binary word for each candidate
+s modulo ℓ by taking the quadratic character of c²−sc+N at every c,
+with zero assigned +1. Suppose supplied observations disagree with
+the true word in at most floor(ℓ/8) positions per prime. This permits
+noise at the roots and the decoder needs no separate zero indicator.
+
+If S²≠4N modulo ℓ, a unique nonsingular candidate lies within that
+distance. Indeed for distinct nonsingular s,t the two monic quadratics
+are squarefree and coprime: a shared root would be zero, excluded by N.
+The Weil bound on the character sum of their squarefree quartic
+product is 3√ℓ. At the at most four roots, assigning a binary sign
+changes the correlation by at most four. The Hamming distance is thus
+at least (ℓ−3√ℓ−4)/2 > ℓ/4. If p=q modulo ℓ the true word is
+constant +1. Every nonsingular candidate has sum of binary signs
+at most one, by the quadratic character sum −1 before assigning zeros.
+Hence no nonsingular candidate passes and this prime is skipped.
+
+Enumerate all s and combine accepted residues by CRT until the
+modulus exceeds N. Skipped primes divide |p−q|, so their product is
+below N. Consecutive primes starting at 101 with total product above
+N² suffice (a prime dividing N gives an immediate gcd). The prime
+number theorem bounds their size by O(log N) asymptotically, hence
+even direct exhaustive comparisons are polynomial in the bit length.
+Recover S and verify the two factors. Balance is unnecessary.
+
+The [decoder](check_shifted_product_signs.py) recovered three supplied
+prime pairs including 1009·1000003, and 1009·2221 where the first
+auxiliary prime 101 divides the difference. Each supplied word had
+floor(ℓ/8) deliberately flipped bits. The correct signs were generated
+from planted factors. At c=0 the sign is public from N; producing
+sufficiently accurate signs across the shifts from N alone is open.
