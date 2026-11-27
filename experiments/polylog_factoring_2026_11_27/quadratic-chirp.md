@@ -4975,3 +4975,26 @@ For example H_m(-i)=0 modulo N for 1<=i<=m does not imply that an
 integer lift has even one of these exact roots. The conjecture
 therefore gives no lower bound here for modular scalar evaluation,
 and its use above is conditional.
+
+### Fixed linear transitions for the shifted block sequence
+
+Let h(k)=H_m(mk) with H_m(X)=product_{i=1}^m(X+i).
+Suppose N has a prime divisor r>m. If h(k)=u A^k v modulo N
+for k=0,...,2m, with a fixed d-by-d matrix A and fixed row and
+column vectors, then d>=m+1. The parameters may depend on N and m.
+
+Reduce modulo r and form the matrix with entries h(i+j) for
+0<=i,j<=m. A linear realization factors it into rows u A^i and
+columns A^j v, so its rank is at most d. Taking successive forward
+differences in both indices (unit triangular basis changes) gives
+entries Delta^(i+j)h(0). These vanish when i+j>m, and equal
+m! m^m on the antidiagonal since the leading coefficient is m^m.
+The antidiagonal is nonzero modulo r. Thus the rank is m+1.
+The usual forward-difference vector of length m+1 attains the
+bound for all k, with one step adding the next difference to
+each entry except the last.
+
+This bound is unconditional for the specified linear model and
+sample range. The block-product algorithm can use fewer than 2m+1
+samples. The argument gives no such dimension bound for that
+shorter prefix alone or for directly computing its aggregate product.
