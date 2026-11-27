@@ -36,6 +36,10 @@ On inputs with two prime-power components, averages of the magnitude and squared
 
 Multiplying the same window by an exponential at any supplied frequency gives a native test of a translated band. Certified quadratic lattice blocks recover a factor if that band contains a mixed line. On balanced primes, even all rational centers of polynomially bounded denominator cover only an exponentially small fraction of inputs. Selecting a productive center from the arithmetic of $N$ remains open. [Modulated window and coverage bound](modulated-phase-window.md)
 
+Scales $t_0+Nj$ fold those bands to modulus $N$. A native window now needs only $\sqrt N/\operatorname{poly}(\log N)$ progression indices for polynomial-bit evaluation, with scales outside the earlier $2N$ range. Complete folded coverage still costs $\Theta(\sqrt N)$ lattice blocks. The center audit records the older geometric shortlist, predictor screens, and scope of arithmetic centers from near-rational factor ratios. [Bandwidth and center audit](bandwidth-center-audit.md)
+
+Complete quadratic weighting gives a separate native family when the outer quadratic coefficient is a multiple of $N$. At inverse-polynomial accuracy it evaluates the actual all-scale raw cubic or quartic on squarefree semiprimes, or finds a factor. Unit-coefficient weighted sums can preserve the point magnitude. Five centered literal squared-quartic chirps recover that magnitude even with repeated and imbalanced components. [Quadratic weighting](quadratic-chirp.md)
+
 ### Variance after subtracting the public quartic terms
 
 For distinct odd primes $N=pq$, subtract $1+4e_M(-t)$ from the normalized quartic using the Gaussian completion below. The remaining contribution $R(t)$ is the average of $Z_s=e_M(-s^2/(4t)-s-t)(g_M(s)-N)$ over uniform $s\bmod M$, with $Z_s=0$ outside $1<\gcd(s,N)<N$. Its magnitude is at most four by the CRT product. At gcd $p$, the quadratic Gauss factor is $N\sqrt p$ times a signed fourth root of unity, with signs balanced. At gcd $p^2$ it is $Np$. The corresponding probabilities are $(p-1)(1-1/q)/p^2$ and $(1-1/q)/p^2$. The symmetric $q$ cases give the exact second moment

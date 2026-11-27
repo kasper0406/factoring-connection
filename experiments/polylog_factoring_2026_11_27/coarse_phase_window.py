@@ -47,15 +47,14 @@ def find_low_frequency_component(modulus, labels, cutoff):
     return None
 
 
-def find_band_component(modulus, labels, center, cutoff):
+def find_band_component(modulus, period, labels, center, cutoff):
     """Use a public band to locate a mixed frequency and verify a component."""
-    square = modulus**2
-    half = pow(2, -1, square)
+    half = pow(2, -1, period)
     for left, right in combinations(labels, 2):
-        shift = (left + right) * half % square
-        target = (shift**2 - left * right) % square
+        shift = (left + right) * half % period
+        target = (shift**2 - left * right) % period
         low = center - cutoff - shift
-        for root in interval_square_roots(square, low, low + 2 * cutoff, target):
+        for root in interval_square_roots(period, low, low + 2 * cutoff, target):
             divisor = gcd(root + shift - left, modulus)
             if 1 < divisor < modulus:
                 return divisor
@@ -80,18 +79,23 @@ def sum_on_multiples(frequency, modulus, start, stop, step, *, complex_sum=False
     return total / mp.sinpi(mp.mpf(phase) / modulus), count
 
 
+def factored_lines(modulus, local, component):
+    complement = modulus // component
+    idempotent = complement**2 * pow(complement**2, -1, component**2)
+    for left, right in product(local, repeat=2):
+        yield left * idempotent + right * (1 - idempotent), local[left] * local[right]
+
+
 def factored_average(modulus, local, start, stop, component, *, center=0):
     square = modulus**2
     complement = modulus // component
     prime = prime_power_base(component)
     other = prime_power_base(complement)
     divisors = ((1, 1), (prime, -1), (other, -1), (prime * other, 1))
-    idempotent = complement**2 * pow(complement**2, -1, component**2)
     total = 0
-    for left, right in product(local, repeat=2):
-        frequency = left * idempotent + right * (1 - idempotent) - center
-        total += local[left] * local[right] * mp.fsum(
-            sign * sum_on_multiples(frequency, square, start, stop, step, complex_sum=center != 0)[0]
+    for frequency, weight in factored_lines(modulus, local, component):
+        total += weight * mp.fsum(
+            sign * sum_on_multiples(frequency - center, square, start, stop, step, complex_sum=center != 0)[0]
             for step, sign in divisors
         )
     units = sum(sign * sum_on_multiples(0, square, start, stop, step)[1]
@@ -121,7 +125,7 @@ def window_average(modulus, local, mass, start, length, precision, center):
         if not center and cutoff <= modulus * modulus.bit_length()**2:
             component = find_low_frequency_component(modulus, local, cutoff)
         else:
-            component = find_band_component(modulus, local, center, cutoff)
+            component = find_band_component(modulus, square, local, center, cutoff)
     stop = start + length
     if component is not None:
         return factored_average(modulus, local, start, stop, component, center=center), component
@@ -171,6 +175,36 @@ def average_magnitude(modulus, family, start, length, precision, *, center=0):
         else:
             local, mass = quartic_magnitude_weights(precision), 64
         return window_average(modulus, local, mass, start, length, 2 * precision, center)
+
+
+def average_on_stride(modulus, family, start, length, precision, *, center=0, squared=False):
+    """Average at scales start + N*j after modulation in the reduced frequency circle."""
+    validate_window(modulus, family, length, precision)
+    if gcd(start, modulus) != 1:
+        raise ValueError('Expected a unit starting scale')
+    center %= modulus
+    square = modulus**2
+    working_bits = 8 * modulus.bit_length() + 2 * length.bit_length() + 8 * precision.bit_length() + 48
+    with mp.workprec(working_bits):
+        if squared:
+            local = LOCAL[family]
+            mass, accuracy = sum(local.values())**2, precision
+        elif family == 'cubic':
+            local, mass, accuracy = cubic_magnitude_weights(precision), 9, 2 * precision
+        else:
+            local, mass, accuracy = quartic_magnitude_weights(precision), 64, 2 * precision
+        cutoff = min(modulus // 2, (mass * accuracy * modulus + length - 1) // length)
+        component = find_small_component(modulus, max(local) - min(local))
+        if component is None:
+            component = find_band_component(modulus, modulus, local, center, cutoff)
+        lines = (factored_lines(modulus, local, component) if component is not None
+                 else ((frequency, weight**2) for frequency, weight in local.items()))
+        total = mp.fsum(
+            weight * mp.expjpi(mp.mpf(2 * (frequency * start % square)) / square)
+            * sum_on_multiples(frequency - center, modulus, 0, length, 1, complex_sum=True)[0]
+            for frequency, weight in lines
+        )
+        return total / length, component
 
 
 def check():
@@ -267,6 +301,46 @@ def check_modulation():
     print('6 direct modulated averages, 2 planted bands and 1 empty band matched')
 
 
+def check_stride():
+    modulus = 25 * 11
+    square = modulus**2
+    left_idempotent = 11**2 * pow(11**2, -1, 25**2)
+    right_idempotent = (1 - left_idempotent) % square
+    for family, squared in product(LOCAL, (False, True)):
+        with mp.workprec(128):
+            terms = []
+            for index in range(31):
+                scale = 3 + modulus * index
+                x, y = (mp.mpf(scale * idempotent % square) / square
+                        for idempotent in (left_idempotent, right_idempotent))
+                value = ((4 * mp.cospi(4 * x) * mp.cospi(4 * y))**2 if family == 'cubic'
+                         else (5 + 4 * mp.cospi(2 * x)) * (5 + 4 * mp.cospi(2 * y)))
+                terms.append((value if squared else mp.sqrt(value)) * mp.expjpi(mp.mpf(-42 * index) / modulus))
+            observed, factor = average_on_stride(modulus, family, 3, 31, 4, center=21, squared=squared)
+            assert factor in (25, 11)
+            assert abs(observed - mp.fsum(terms) / len(terms)) < mp.mpf('0.25')
+
+    left, right = 7001, 7103
+    modulus = left * right
+    folded = right * pow(right, -1, left)
+    length = isqrt(modulus)
+    center = (folded + 10) % modulus
+    _, factor = average_on_stride(modulus, 'quartic', 1, length, 1, center=center, squared=True)
+    assert factor in (left, right)
+    center = modulus // 3
+    estimate, factor = average_on_stride(modulus, 'quartic', 1, length, 1, center=center, squared=True)
+    assert factor is None
+    with mp.workprec(128):
+        exact = mp.fsum(
+            weight * mp.expjpi(mp.mpf(2 * (frequency % modulus**2)) / modulus**2)
+            * sum_on_multiples(frequency - center, modulus, 0, length, 1, complex_sum=True)[0]
+            for frequency, weight in factored_lines(modulus, LOCAL['quartic'], left)
+        ) / length
+        assert abs(exact - estimate) < 1
+    print('4 direct stride averages, 1 planted reduced band and 1 empty reduced band matched')
+
+
 if __name__ == '__main__':
     check()
     check_modulation()
+    check_stride()
