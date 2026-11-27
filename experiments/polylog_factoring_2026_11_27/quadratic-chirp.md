@@ -4380,3 +4380,33 @@ straight-line programs can reuse gates or succinctly generate large
 bases. Source for the shifted-prime bound: Fouvry, Théorème de
 Brun-Titchmarsh; application au théorème de Fermat (1985); see also
 https://mathoverflow.net/questions/458013/ .
+
+### Input-dependent order exponent for semiprimes with shared group factors
+
+For n=pq with distinct odd primes set M=lcm(1,...,B) and E=(n−1)M.
+Write h=gcd(p−1,q−1), u=(p−1)/h and v=(q−1)/h. Since
+gcd(n−1,p−1)=h=gcd(n−1,q−1), p−1 divides E exactly when u
+divides M, and likewise for v and q. The algorithm uses only n and B.
+If either condition holds then one random trial splits n with probability
+at least 1/2. Take a uniform base in [1,n−1], checking its gcd, then
+write E=2^s e with e odd. Test gcd(g^(2^i e)−1,n) for i=0,...,s
+by modular powering followed by squaring.
+
+Indeed, if only one local group is annihilated by E, the fraction
+of units in the other killed by E is gcd(E,q−1)/(q−1)≤1/2
+(interchange primes if needed). The final gcd succeeds otherwise.
+If both groups are annihilated, the independent local order
+2-valuations differ with probability at least 1/2 and some stage
+separates them. Nonunits sampled here give a proper factor directly.
+For B polynomial in log n, the exponent and all arithmetic have
+polynomial bit cost. The guarantee requires a residual cofactor
+dividing M; it does not require all prime factors of p−1 or q−1
+to be small.
+
+For n=6533=47·139 and B=3, both local group orders contain 23,
+and their residual cofactors after removing h=46 are 1 and 3.
+Base 2 gives gcd(2^9798−1,n)=n but already at the odd exponent
+4899 the gcd is 47. The ≥1/2 bound was also checked by enumerating
+every base on all 56 eligible pairs of distinct odd primes below 48
+with B=3. This is a special case of order-based factoring; no
+condition covering arbitrary semiprimes is established.
