@@ -1131,3 +1131,36 @@ public inputs recovered a proper factor on each of seven moduli
 from 15 to 10403, using floating point for this small diagnostic.
 This is an end-to-end functional baseline with linear-scale
 enumeration per query, not a polylogarithmic sum evaluator.
+
+### Direct phase decoding tolerates 0.2 normalized Salié error
+
+Write C(h)=cos(2 pi hu/N). An additive 0.2 approximation of the
+real normalized sum on every requested unit shift yields an estimate
+of C(h) within 0.1 by subtracting the public cosine and dividing
+as above. Nonunit shifts have the public cosine. Clip estimates
+to [-1,1]. The following reduction uses O(log N) such queries.
+
+Choose a dyadic t with estimated cosine of absolute value <=0.81.
+The earlier dyadic distance argument gives a shift with distance in
+[1/8,3/8], where the true absolute cosine is at most sqrt(1/2).
+Thus a qualifying shift exists. At the chosen shift the true cosine
+has magnitude <=0.91, so the reference sine has magnitude >0.41.
+Orient the global root sign to make that sine positive.
+
+At a dyadic shift h use arccos of the estimated C(h) for the
+unsigned angle. For its sign use the difference of estimates
+C(h-t)-C(h+t), whose true value is twice the product of the two
+sines. If the sign is correct, angular error is at most
+arccos(0.9)<0.46 radians (the largest inverse-cosine change over
+an interval of width 0.1 occurs at an endpoint). A wrong sign
+requires |sin(2 pi hu/N)| <= 0.2/(2*0.41)<0.244. The true angle
+then lies within arcsin(0.244) of 0 or pi modulo sign. The unsigned
+estimate is within arccos(sqrt(1-0.244²)-0.1) of that same endpoint.
+Their sum is below 0.77 radians. Either way the circular error is
+strictly below pi/3, enough for nearest-half backtracking: the
+correct half differs from the preceding estimate by less than
+1.5*(pi/3)=pi/2, while the two halves are pi apart. At bit_length(N)
+doublings the final error in turns is below 1/(2N). Rounding and
+gcd finish the reduction. The strict margins permit fixed-precision
+angle estimates followed by exact rational backtracking. This is a
+pointwise guarantee distinct from the prior randomized RMS reduction.
