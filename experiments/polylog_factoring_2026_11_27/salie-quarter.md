@@ -425,3 +425,37 @@ Exhaustive majority fits using 32 equal intervals gave 5628/10200
 for 101*103 and 514124/1020096 for 1009*1013. These retrospective
 scores use known factors to choose the labels independently for each
 modulus. Summing over h weights every unit square equally.
+
+## Shifted Jacobi symbols on the square input
+
+For Y=h² and k fixed public shifts d_j, allow an arbitrary decision
+function on the k Jacobi symbols (Y+d_j | N). On balanced semiprimes
+its absolute sign correlation on unit h is bounded by
+
+    O(k/min(p,q) + 2^(k/2) (k+1)^2 log(2p) log(2q) / sqrt(N)).
+
+To see this, expand the Boolean decision function on nonzero answers
+in Walsh monomials. Its multilinear extension stays in [-1,1] and
+its coefficient l1 norm is <=2^(k/2). Each zero event has probability
+<=2/(p-1)+2/(q-1) by the quadratic root count. On a monomial the
+sign correlation splits by CRT into two local averages of the quarter
+sign times the quadratic character of a product of <=k polynomials
+of the form (other_prime*i)^2+d_j. Remove even root multiplicities
+at a cost of O(k) omitted terms per unnormalized sum. If the remaining
+polynomial is nonconstant, complete the quarter sign in additive
+Fourier modes. The Weil bounds for the squarefree polynomial character
+sum, including a linear additive twist, give O((k+1)sqrt(r)) per
+completed sum at prime r. The sign has Fourier l1 norm O(log(2r)).
+If the polynomial was a constant times a square, the character is
+constant away from its roots and the signed sum is O(k+1). This
+also covers the empty monomial. Multiplying local bounds and summing
+Walsh coefficients proves the estimate without any condition on
+collisions among the shifts.
+
+For fixed eta>0 and k<=(1-eta)log2 N the advantage is negligible
+in the bit length on balanced inputs. Using d=1,2,3,4 and allowing
+separate labels for zero answers, exact best in-sample accuracy
+was 52.2353% at 101*103 and 50.3811% at 1009*1013. To enumerate,
+tabulate signed counts by the four local Legendre symbols at each
+prime, then multiply counts while multiplying the symbols
+coordinatewise. The computed labels use the factors.
