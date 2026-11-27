@@ -27,3 +27,16 @@ A uniform random translate retains each mixed root with probability $w/N$, even 
 ## Checks
 
 The code matched exhaustive root enumeration on 300 bounded progressions, including a repeated-prime input. It also split three inputs end to end after querying the shortened quarter-window transcripts. The 19-bit input 471,311 took 13 scaled disk queries and one reference. The code uses SymPy for lattice reduction and integer polynomial roots. Run `python bounded_quadratic_roots.py`.
+
+## When divisibility at every lift forces the standard shifts
+
+Let N be odd and squarefree, let y be a unit square, and put f(T)=(A+T)²−y. Suppose 1≤m≤p for every prime p dividing N. For H in ℤ[T], the following are equivalent:
+
+* N^m divides H(t) for every integer t satisfying f(t)=0 mod N, including every representative of each solution class.
+* H belongs to the ideal (N,f)^m in ℤ[T].
+
+Ideal membership immediately gives divisibility. For the converse, fix p dividing N and either of the two distinct roots a of f modulo p. For every integer u, CRT supplies an integer t congruent to a+pu modulo p^m and to roots of f at every other prime of N. Hence H(a+pu)=0 mod p^m. Expand H(a+Z) with integer coefficients c_j. Terms of index j≥m vanish modulo p^m at Z=pu. Evaluate the remaining polynomial in u at 0 through m−1. Its Vandermonde determinant is a unit modulo p^m since m≤p. It follows that p^m divides p^j c_j for each j<m. This is exactly membership in (p,T−a)^m.
+
+For the two distinct roots a,b mod p, the ideals (p,T−a) and (p,T−b) are comaximal and their intersection is (p,f), by reduction modulo p. Thus the intersection of their m-th powers is (p,f)^m. Across primes the ideals (p,f) are again comaximal, with intersection (N,f) by CRT modulo N. Taking products of powers proves the claim.
+
+Consequently H/N^m lies in ℤ[T,f/N]. For this promise, even a different proof of divisibility at every lift gives the same class of normalized polynomials. The [capacity obstruction](https://arxiv.org/abs/1605.08065) then applies to a uniform real-interval smallness certificate. Divisibility proved only on bounded representatives or on roots satisfying an extra CM condition falls outside the equivalence.
