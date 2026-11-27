@@ -158,6 +158,20 @@ Small modular answers also suffice for deterministic decoding. With $K=\lfloor\l
 
 The unamplified count $E=\prod_i(p_i^{e_i}+1)$ itself suffices for a randomized split on any odd nonsquare input with at least two distinct primes. Choose a component $p^e$ with odd $e$, so $p+1\mid E$. In the quadratic ring modulo $N$, sample public $D,a,b$ and form $x=(a+b\sqrt D)/(a-b\sqrt D)$ when its denominator has invertible norm. A proper gcd of the norm already splits $N$. On the event that $D$ is a nonsquare modulo $p$ and $(a,b)$ is nonzero there, the reduction of $x$ is uniform in the cyclic group of order $p+1$. CRT makes this component independent of any other prime component. Write $E=2^j E_0$ with $E_0$ odd. In the chain $x^{E_0},x^{2E_0},\ldots,x^E$, the first identity time modulo $p$ has each atom of probability at most $1/2$. It therefore differs from the identity time modulo a second prime with probability at least $1/2$, including the case where the second component never reaches the identity. A gcd of the two coefficients of a chain value minus one with $N$ splits at that point. Any nonunit norm at other primes still gives an early gcd when the norm is a unit at $p$. The event at $p$ has absolute constant probability. Exact square-root preprocessing reduces the all-even exponent case to this one, and primality and perfect-power tests handle leaves. This uses the same rank-two count and a randomized group calculation, with one count per split.
 
+## Native unweighted counts and joint phase moments
+
+The number of stationary residues can be evaluated from $N$ without listing the roots. First remove any maximal perfect power, which preserves the distinct prime factors. For a composite base $B$, strip all prime powers with prime at most $\lfloor B^{1/3}\rfloor$ using the repository's bounded Pollard–Strassen product and remainder trees. The remaining cofactor has at most two prime factors counted with multiplicity. Primality and an exact square test distinguish an empty cofactor, a prime, a prime square, and a product of two distinct primes. In the last case the cofactor can stay intact. This gives $2^{\omega(N)}$ idempotents, $2^{\omega(N)}$ cubic critical roots when $\gcd(N,6)=1$, and $3^{\omega(N)}$ quartic critical roots when $N$ is odd. [Product and remainder trees](https://doi.org/10.1137/S0097539704443793)
+
+The bounded search costs $\widetilde O(B^{1/6})$ bit operations, including location of the small prime factors by gcd. The reference checked direct enumeration for 512 moduli and six larger controls covering prime powers and unsplit cofactors. At the 70-bit input $N=1050809297549059047257$ it left the input intact and certified four idempotents and nine quartic critical roots with 3,189 block gcds. The code uses proved primality in its classification. It computes counts of stationary points, so it leaves their separate phase weights unresolved. [Unweighted evaluator](stationary_count.py)
+
+These counts suffice for a broad class of exact joint moments. For odd $N$, and with $3\nmid N$ when using the cubic, take uniform unit $t\bmod N^2$. Form a joint moment of normalized cubic values $F(m_jt)$ and squared quartic magnitudes $|G(m_jt)|^2$, with each multiplier a unit and fixed nonnegative integral exponents $r_j$. Each prime component $q_i=p_i^{e_i}$ contributes the same Laurent polynomial $H(z)$ evaluated at a local unit phase with denominator $q_i^2$. A cubic factor is $z^{m_j}+z^{-m_j}$, and a squared quartic factor is $5+2(z^{m_j}+z^{-m_j})$. The absolute degree of the joint polynomial is at most $D=\sum_jm_jr_j$. If $D<\min_i q_i^2/p_i$, the only retained local term is the constant coefficient. The average over units of $e_{q_i^2}(h\,t)$ is zero at nonzero $|h|<q_i^2/p_i$. CRT independence then gives the exact joint moment $([z^0]H)^{\omega(N)}$. In particular these moments carry the unweighted component count and no phase location data. The diagnostic matched 25 joint moments and two cases at the first alias boundary. [Moment controls](phase_moment_control.py)
+
+Run the native count with the dependencies used by the existing polynomial product code.
+
+```sh
+uv run --no-project --with sympy --with python-flint==0.9.0 --with gmpy2 python experiments/polylog_factoring_2026_11_27/stationary_count.py
+```
+
 ## Factor-supplied range control and hardness of arbitrary windows
 
 The retained reciprocal spectrum can be evaluated with $O((K+1)2^{\lceil\omega(N)/2\rceil}\operatorname{poly}(\log N))$ work per digit at fixed accuracy and a fixed number of denominator intervals, given the prime powers of $N$. For a retained slope $b$, square roots of $(1-b)^{-1}$ modulo the prime-power components of $N^2$ give CRT sign choices. Lift a candidate lower digit to $r=a+Nh$ with $(1-b)r^2=c^2\pmod{N^2}$. Then the phase at $a$ is $(2-2b)r+ba\pmod{N^2}$ by subtracting the lift change $Nbh$ from the phase at $r$. Its exponential factors across two half lists, with a single wrap correction $e_N(-b)$ when the lower digits sum to at least $N$. Sort the right half list by lower digit and take prefix sums of phase weights. Each left choice queries shifted right intervals where the geometric lift weight is constant. The ordering is reused between digits. Square roots and lifting are included in the setup. The input factorization is supplied. [CRT evaluator](crt_range.py)
@@ -205,6 +219,7 @@ python small_scale_phase_check.py
 python idempotent_count.py
 python count_precision.py
 python idempotent_residues.py
+python phase_moment_control.py
 python crt_range.py
 python stationary_hardness.py
 python tangent_progressions.py 38942974393
