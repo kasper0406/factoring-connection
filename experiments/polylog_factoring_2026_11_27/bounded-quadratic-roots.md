@@ -213,6 +213,31 @@ not bound the cost of representing a huge integer by a short circuit.
 Formulas using digits of N, input-dependent exponents or divisions
 with rounding are outside the fixed-polynomial specialization.
 
+**Gaussian N-th powering control.** For N=rs, distinct odd primes,
+sample a uniform unit z of the Gaussian algebra modulo N. Test each of
+z^N=z and z^N=conjugate(z) using a gcd of N with both coordinate
+differences. At r≡3 mod 4 the unit group is cyclic of size r²−1 and
+conjugation is r-th powering. The numbers of local units passing the
+two tests are respectively gcd(N−1,r²−1) and gcd(s−1,r²−1).
+At r≡1 mod 4 the units are pairs of nonzero scalars and conjugation
+swaps the pair. The counts are gcd(s−1,r−1)² and gcd(s²−1,r−1)
+out of (r−1)²: the swap test determines the second coordinate from
+the first and requires the first to be fixed by s²-th powering.
+Full local enumeration verified both counts on all 72 ordered pairs of
+distinct odd primes below 30.
+
+For factors in [B,2B], the conjugation test hits either component with
+probability O(1/B), by the two counts. For the identity test put
+g=gcd(s−1,r−1). The local hit probability is at most g/(r−1)
+in both cases: in the inert case gcd(N−1,r²−1)≤g(r+1), and in
+the split case square the ratio. Thus proper splitting probability
+at least δ implies (r−1)/g≤2/δ on some side. Since
+g=gcd(N−1,r−1), the public multiple
+(N−1)·lcm(1,...,ceil(2/δ)) then covers that side's scalar group
+order, enabling the earlier repeated-squaring decoder. These are tests
+of full coordinate equality on uniform units; they do not analyze
+other sampling laws, partial-coordinate gcds, or additive identities.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
