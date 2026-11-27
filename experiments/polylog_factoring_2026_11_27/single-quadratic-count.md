@@ -1164,3 +1164,11 @@ doublings the final error in turns is below 1/(2N). Rounding and
 gcd finish the reduction. The strict margins permit fixed-precision
 angle estimates followed by exact rational backtracking. This is a
 pointwise guarantee distinct from the prior randomized RMS reduction.
+
+check_salie_disagreement.py now also rounds the publicly summed real
+value to the nearest multiple of 0.4 before querying the direct
+phase decoder. Its interval [-4,4] permits 21 answers. The decoder
+rounds angles to 1/4096 of a turn before exact rational backtracking.
+Both public-sum paths recovered verified factors on 15, 77, 143,
+323, 1147, 2021 and 10403. The earlier 184 rate-oracle simulations
+also passed after sharing the backtracking routine.

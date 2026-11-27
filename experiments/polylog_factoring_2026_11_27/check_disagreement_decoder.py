@@ -25,8 +25,12 @@ def recover_factor(n, rate):
         phase = min((r, -r), key=lambda s: abs(folded(anchor + s) - observation))
         phases.append(phase % 1)
 
-    phase = phases.pop()
-    for estimate in reversed(phases):
+    return factor_from_phases(n, phases)
+
+
+def factor_from_phases(n, phases):
+    phase = phases[-1]
+    for estimate in reversed(phases[:-1]):
         phase = min((phase / 2, (phase + 1) / 2),
                     key=lambda s: folded(s - estimate))
     root = round(phase * n) % n
