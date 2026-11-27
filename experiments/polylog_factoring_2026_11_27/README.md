@@ -762,6 +762,25 @@ right removes the field-selection cost. Producing a point with the required
 gcd remains the factoring search itself. Example: $N=77$, $D=13$,
 $(T,Y,Z)=(-149,-2,17)$ gives gcd 7.
 
+### A smaller denominator on the single public conic
+
+Write $a=\lfloor\sqrt N\rfloor$, $D=N-a^2>0$, $\gcd(a,N)=1$ as above.
+For every odd proper prime divisor $p>2\sqrt{D/3}$ there is a point with
+$1\le Z\le2\sqrt{D/3}$ and $\gcd(T-aY,N)=N/p$, even if $p^2\mid N$.
+For existence take a shortest nonzero vector $(t,y)$ in
+$t=-ay\bmod p$, with squared length $t^2+Dy^2$. The planar Hermite bound
+gives $t^2+Dy^2=cp$ with $1\le c\le2\sqrt{D/3}<p$.
+Thus $p$ divides neither $t$ nor $y$. Put $s=\sqrt{-D}$ and set
+$T+Ys=(a+s)(t+ys)^2/p$. Both coefficients are integral because
+$(a+s)(t+ys)\equiv y(a+s)(s-a)=-Ny\equiv0\bmod p$.
+Taking norms gives $T^2+DY^2=Nc^2$, and direct subtraction gives
+$T-aY=-2(N/p)ty$. Hence $Z=c$ has the claimed properties.
+If some common coordinate factor also divides $N$, its gcd with $N$ already
+splits the input (it is at most $c<p$); otherwise primitive reduction preserves
+the extracted divisor. Since $D\le2a$, the denominator bound is $O(N^{1/4})$.
+The short-vector lattice in the proof uses $p$. Bounding $Z$ alone gives
+no procedure to find $T,Y$ from $N$ within polynomial bit time.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
