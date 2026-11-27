@@ -560,3 +560,36 @@ there. With dimension three the returned integer polynomial was
 $-1269016+3829709X-67983X^2$, with root 56 and scaled coefficient
 1-norm below the product of the seven good primes. This checks the
 global recovery step on lists; it does not generate sign predictions.
+
+## Combining signs from candidate factor sums
+
+At a prime $\ell\nmid N(p-q)$ let $k$ candidate sums be given.
+If none equals $S=p+q\bmod\ell$, even the best Boolean function of
+their $k$ shifted signs has absolute correlation with the true word at most
+$$2^{k/2}\left((2k+1)/\sqrt\ell+(2k+2)/\ell\right).$$
+The function can depend on $N$ and $\ell$; its only shift-dependent inputs
+here are the candidate signs. Remove duplicate candidates and substitute
+constant signs for singular candidates. Expand the function in Boolean
+Fourier characters; Parseval bounds its coefficient 1-norm by $2^{k/2}$.
+For each monomial multiply the true quadratic by its selected candidate
+quadratics. The result is squarefree because distinct quadratics in this
+family share no root, and has degree at most $2k+2$. The Weil bound and
+the at most $2k+2$ zero-sign corrections give the displayed estimate.
+Agreement advantage is half the correlation.
+
+For integer estimates $T_i$ common to all probes, if none is the true sum,
+the exceptional primes divide $(p-q)\prod_i(S-T_i)$. Their total log
+weight is at most the logarithm of the absolute value of that integer.
+Consequently for polynomial-bit estimates and $k=O(\log\log N)$, one can
+choose polynomial-in-bit-length probe primes large enough, and total log
+modulus large enough, to make the overall advantage smaller than any
+specified inverse-polynomial target. An exact estimate can be tested
+directly via the discriminant. This obstruction does not cover functions
+that also inspect the shift in other ways.
+
+For $N=1009\cdot2221$, the three estimates one unit around
+$\lfloor2\sqrt N\rfloor=2993$ were tested by grouping all shifts by their
+three signs and scoring the true majority within each group. Even allowing
+the truth to choose the optimal eight-entry table gave 50.9662% at 10091
+and 50.3960% at 65537. These are ceilings for those features at those
+probes, not achieved scores of a trained public predictor.
