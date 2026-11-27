@@ -509,6 +509,39 @@ would already suffice. The input-index notation alone does not give
 an efficient circuit for the residue. This is a scalar equivalent to
 totient evaluation on the stated domain, not a new factoring algorithm.
 
+**Fixed base, small moduli.** For distinct odd primes p,q and N=pq,
+let l be a prime not dividing N, M=4^l−1 and V=Φ_N(4) mod M.
+V is a unit: a prime dividing both would divide 4^N−1 and 4^l−1
+and hence 3, whereas Φ_N(4)=1 mod 3 since Φ_N(1)=1.
+By the divisor-product identity, the public residue
+3(4^N−1)/V mod M equals (4^a−1)(4^b−1) mod M for
+a=p mod l, b=q mod l. No division by either nonunit 4^a−1 or
+4^b−1 is required. Compute 4^N by modular powering.
+
+This code uniquely determines the unordered pair of nonzero residues.
+In cyclic base-four positions its signed coefficients are +1 at 0
+and at a+b mod l, and −1 at each of a,b, counting repetitions.
+For two codes the constant +1 cancels and each difference coefficient
+has magnitude at most 3. Their sum is zero, so the represented
+integer has absolute value strictly below 3(1+4+...+4^(l−1))=M
+(the only extremal vectors have all digits of the same sign).
+Equality modulo M now means integer zero, forcing every difference
+digit zero by successive reduction modulo four. Since a,b are nonzero,
+neither coincides with the sum position or the constant position;
+the negative digits recover their multiset. A lookup over O(l²)
+pairs suffices.
+
+Accumulate a+b mod l by CRT until the prime product exceeds N.
+This recovers p+q exactly and the quadratic gives both factors.
+A prime dividing N encountered during selection already splits it.
+The prime number theorem allows all l=O(log N), so the number of
+queries and the binary length of every modulus are polynomial in
+the input length. Direct divisor-product residues verified all 2,870
+eligible triples from distinct odd prime factors below 80 and query
+primes below 50. This is a deterministic semiprime reduction to
+modular evaluation at base four. Generating these residues without
+factor information is the unresolved step.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
