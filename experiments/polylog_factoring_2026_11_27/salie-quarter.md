@@ -1106,3 +1106,29 @@ threshold, not a lower bound for all decoders. Direct complex sums over
 square roots verified the telescoping identity at all units for odd
 moduli 3 through 201 and lengths 1 through 16 (132,512 comparisons;
 largest absolute discrepancy below 6.1·10^−14).
+
+**Exact zero test for the window.** For odd N>1, unit c and L≥1,
+A_L(c)=0 if and only if 4^L≡1 modulo N. In particular the answer
+is independent of the starting unit and is decidable by binary
+modular exponentiation in polynomial time in log N and log L.
+
+To exclude cancellation between distinct prime powers, exponentiate
+twice the telescoping log sum. For each exact prime power r this
+gives a positive local ratio
+sin²(2π·2^L x/r)/sin²(2πx/r), with x=cv_r a unit. It lies in
+Q(ζ_r) and is the quotient of a Galois conjugate by its original
+value, so its field norm is one. If the product of the ratios is
+one, any automorphism of Q(ζ_r) extends by CRT to one fixing all
+the other local fields. Applying it to the identity shows the r-th
+ratio is rational. Positivity and norm one force it to equal one.
+Equality of the sine squares gives 2^L≡±1 mod r, since 2x is a
+unit. Conversely those local signs make every ratio one. For odd
+prime powers these are exactly the solutions to y²=1, proving
+the criterion. Mixed local signs give a proper gcd(2^L−1,N);
+finding a suitable L is the usual order problem. The shortest
+zero window is the multiplicative order of 4 modulo N.
+
+Direct root sums at every unit for odd moduli 3 through 201 and
+1≤L≤32 agreed with the test on 265,024 windows, including 12,164
+zeros. The proof establishes exactness independently of the
+floating-point check.

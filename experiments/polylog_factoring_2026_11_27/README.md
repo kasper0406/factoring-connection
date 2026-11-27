@@ -114,7 +114,7 @@ on balanced semiprimes, uniformly over B interval bins and their
 bounded weights. [Proof and best-fit controls](salie-quarter.md#factoring-from-any-inverse-polynomial-mse-gain-over-the-public-cosine)
 
 On unfactored odd inputs the mean log magnitude over L successive
-doublings is within log(N)/L of zero. Two neighboring window lengths
+doublings is within log(N)/L of zero. Exact vanishing is equivalent to 4^L≡1 mod N, independent of the starting unit. Two neighboring window lengths
 at accuracy 1/(64L) per length suffice to recover the single-scale
 log magnitude. [Exact telescoping identity](salie-quarter.md#averaging-log-magnitudes-along-doubling-scales)
 
