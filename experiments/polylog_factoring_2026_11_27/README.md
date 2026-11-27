@@ -781,6 +781,28 @@ the extracted divisor. Since $D\le2a$, the denominator bound is $O(N^{1/4})$.
 The short-vector lattice in the proof uses $p$. Bounding $Z$ alone gives
 no procedure to find $T,Y$ from $N$ within polynomial bit time.
 
+### Harmonic theta coefficient for the denominator-one circle
+
+For the preceding $N=77$ example an integral point is $(-5,-2,1)$:
+$25+13\cdot4=77$ and $\gcd(-5+16,77)=11$.
+
+For $N=a^2+1=pq$ odd with distinct primes, define the fourth harmonic
+moment $H_N=\frac18\sum_{x^2+y^2=N}\operatorname{Re}((x+iy)^4)$, with the
+real part taken after the fourth power. Unique factorization in the Gaussian
+integers gives exactly two representations up to sign changes and interchange:
+each prime splits, and conjugating just one prime factor gives the other orbit.
+There are eight points in each orbit. One representative is $(a,1)$; call the
+other $(t,y)$ with $t>y>0$. Since the summand equals $N^2-8x^2y^2$,
+$$ (ty)^2=(2N^2-8a^2-H_N)/8. $$
+Square roots then give $t+y$ and $t-y$ from $N\pm2ty$, hence both coordinates.
+The ratios $t/y$ and $a$ modulo $N$ agree at precisely one prime up to a
+global sign, by the two Gaussian-factor choices; $\gcd(t-ay,N)$ splits $N$.
+Thus an exact single coefficient of the harmonic theta series suffices here.
+The ordinary circle count is always 16 on this family. Extracting the harmonic
+coefficient at a composite index in polynomial bit time is the missing step;
+the direct sum enumerates the circle points. This observation is restricted
+to the stated input family.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
