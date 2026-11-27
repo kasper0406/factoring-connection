@@ -5224,6 +5224,12 @@ For the same odd mixed root u, the paired moment (W(S)−W(S XOR {0}))/2 equals 
 
 For an explicit query model, split the mask into (v,w) and write α for a frequency prefix on the v coordinates. By orthogonality the sum of squared normalized Fourier coefficients extending α equals E[g(v,w)g(v′,w)χ_α(v XOR v′)], with v,v′,w independent and uniform (the two calls share w). Fresh coins in each call give bounded unbiased samples. Estimate each queried energy to additive ε² by repetition, retain estimates at least 2ε², and cap the retained list at 1/ε² per depth, restarting on overflow. With simultaneous accurate estimates, every prefix of u survives and every retained prefix has true energy at least ε². Parseval bounds their number. Hoeffding's bound with a union bound over O(b/ε²) adaptive queries makes this event have constant probability using polynomially many calls. This argument needs chosen, correlated mask queries to the predictor; independent labeled samples alone do not implement the energy estimator.
 
+#### Predicting a single signed moment
+
+Write W(S)=χ_u(S)+χ_v(S) for the unnormalized mixed-root moment on a uniform mask. Exactly half the masks give zero, because χ_u and χ_v agree on the hyperplane orthogonal to u XOR v. Let a callable bounded real score g(S) in [−1,1] predict the sign on the nonzero half. If its conditional signed correlation E[g sign(W) | W≠0] is at least η, then E[g W]≥η. This is the sum of the two normalized Fourier coefficients of g at u and v, so one is at least η/2. Goldreich–Levin with ordinary uniform-mask queries therefore lists a mixed root in polynomial time for inverse-polynomial η. The decoder need not recognize which masks have W=0. Fresh predictor randomness can be averaged as in the preceding proof.
+
+For a three-label predictor outputting −2,0,2, use its output divided by two as g. Overall exact-label accuracy at least 3/4+ε implies correct nonzero labels on at least 1/4+ε of all masks. Incorrect opposite signs account for at most 1/4−ε, hence E[g W]≥4ε. At exactly 3/4 accuracy there is a calibration example: a predictor supplied with the zero pattern can return zero there and random signs elsewhere. It attains 3/4 but its expected signed score vanishes everywhere. Thus signed correlation on nonzero masks is the more direct success criterion. The example presumes access to the zero pattern and makes no claim about the difficulty of computing it.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
