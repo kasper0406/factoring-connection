@@ -34,6 +34,8 @@ The field-model correlation bound transfers with that total-variation error. For
 $$O\!\left((2^{b/2}+1)X^{-1/4}\log X\right).$$
 An inverse-polynomial mean advantage therefore needs $b\ge\tfrac14\log_2 N-O(\log\log N)$ in this model. A fixed polynomial number of possible summary values supplies at most $O(\log\log N)$ bits. The bound leaves open algorithms that use the full input during each query.
 
+An additive large-sieve argument on semiprime products also bounds long CRT transcripts from independently sampled auxiliary primes. The combined modulus can reach $N^{1-\eta}$ for fixed $\eta>0$, while conveying negligible additional information about fixed shifts. [Several public congruences](congruence-summary.md)
+
 ## Diagnostic
 
 The sampled decoder split all four fixture moduli using their planted exact signs and again using planted fifth-harmonic signs. The second predictor had measured agreement from 56.7% to 61.4%, and the diagnostic selected the fifth harmonic explicitly. The proof searches all harmonics up to the bound when the predictor's errors are unknown. The fixtures reach 60 bits and include a repeated prime. A separate exhaustive control computes the maximum field-model bias at four small auxiliary primes. A native predictor that sees the full input remains open. [Sampled decoder and controls](dense_count_prediction.py)
