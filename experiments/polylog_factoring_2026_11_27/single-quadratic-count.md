@@ -1405,3 +1405,36 @@ efficient way to locate or count its entries. The argument rules
 out compressing every pointwise phase across this split before
 coefficient extraction; it gives no lower bound on computing the
 single summed coefficient, even via a different phase-sum identity.
+
+### Existence alone on prefix 0000 suffices for a semiprime split
+
+Let N=pq for distinct odd primes, n=bit_length(N), B=2^(n-4).
+Suppose an evaluator answers only whether a unit square y has any
+root below B. No count or parity is supplied. Put A(h)=[|h|_N<B]
+and let u be a mixed root of one. The answer on y=h² is
+F(h)=A(h) OR A(uh). Extend F by A(h) at nonunits, where uh=±h.
+This extension is computable and invariant under h -> uh.
+
+For uniform h on all residues let alpha=(2B-1)/N. Since A<=F
+and E F<=2 alpha, the covariance with the public interval satisfies
+Cov(F,A)=alpha(1-E F)>=alpha(1-2 alpha). Here 1/16<=alpha<=1/4
+for N>=15, so this is at least 1/32. Centering removes the constant
+Fourier mode. The normalized interval coefficients at nonzero
+centered frequencies a have magnitude <=1/|a| by the geometric
+sum. By Parseval and Cauchy-Schwarz the correlation tail past K is
+<=sqrt(2/K). Fix e.g. K=32768, making the tail <1/64. For N<=2K+1
+use trial division. Otherwise some 0<|a|<=K has Fourier magnitude
+for F at least 1/(128(1+log K)), by the harmonic sum bound.
+Invariance gives the same magnitude at au. If gcd(a,N)>1, trial
+division through K splits N; otherwise gcd(au-a,N) is proper.
+The existing sampled Fourier list search followed by gcd checks
+for all small offsets therefore yields randomized polynomial-time
+splitting given a polynomial-time existence test.
+
+The fourth zero bit keeps the union probability bounded away from
+one without assumptions on the overlap of the two root pairs.
+A public polynomial-size kernel with positive nullity precisely
+on these nonempty fibers would suffice. The unresolved part is
+building such a kernel. Enumeration at all residues of the 45
+semiprimes formed from distinct odd primes through 31 verified
+the decision-function identity, including its nonunit extension.
