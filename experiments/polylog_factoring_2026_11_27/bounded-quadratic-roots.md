@@ -153,6 +153,40 @@ guarantees p^(2m). Any claimed improvement needs both this local
 accounting and the product bound across all embeddings. The standard
 ideal hypothesis above need not hold for such an asymmetric construction.
 
+### Testing CM coordinate vanishing before building a lattice
+
+For a public monic quadratic f=X²+bX+c and a Gaussian auxiliary
+H=U+iV, reduce U and V modulo f and N. Write U+ZV=A(Z)X+B(Z)
+in this quotient, where A,B are linear or constant in the indeterminate
+Z. Compute the gcd of N with the three coefficients of
+
+    R(Z) = B(Z)² − b A(Z) B(Z) + c A(Z)².
+
+This is the resultant of f and U+ZV. For every prime divisor r of N,
+r divides all three coefficients exactly when f,U,V share a root
+over the algebraic closure of the residue field. Indeed R factors as
+the product of U(t)+ZV(t) over both roots t of f, counted with
+multiplicity. A product is the zero polynomial over a field exactly
+when some factor is identically zero. The coefficients must be used
+jointly to test this equivalence. The calculation works on public
+residues and also on division-free circuits evaluated in the quadratic
+quotient, without finding t.
+
+At an inert Gaussian prime p, vanishing of H at a base-field root of
+f forces both coordinates to vanish there. If at a split prime q no
+root of f kills both coordinates, the gcd above splits N=pq even if
+one conjugate of H vanishes at a root modulo q. One-sided vanishing at
+a specified q-root alone does not exclude a simultaneous zero at the
+other q-root. The no-common-root condition matters.
+
+For example take N=91, f=X²−4, U=X−2+35 and V=X−2+7. Both vanish
+at 2 modulo 7; at 2 modulo 13 only the conjugate U−5V vanishes,
+with 5²=−1 modulo 13. Their difference 28 is nonzero modulo 13,
+excluding any simultaneous zero there. The resultant is
+(35+7Z)(31+3Z), whose coefficient gcd with 91 is 7. This example
+uses known primes to plant the asymmetry. It checks the decoder and
+does not construct an auxiliary for unfactored inputs.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
