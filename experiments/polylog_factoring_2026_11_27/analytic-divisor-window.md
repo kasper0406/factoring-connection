@@ -91,3 +91,30 @@ every off-center term only bound the difference between two unknowns
 (the total and the central term). This regrouping supplies no independent
 way to compute the total. Revisit it if a fast evaluation of the
 left-hand side becomes available.
+
+## Rank required by a shared linear expansion
+
+Take an integer B≥2 and the common candidate interval I=(B,2B].
+Consider any proposed expansion
+$F(N,x)=\sum_{t=1}^r a_t(N)b_t(x)$ with complex coefficients.
+The basis may depend on B. Suppose the sum over I of the absolute
+pointwise errors against the divisor indicator is strictly below one
+for each input. Then r≥B already for inputs of size Θ(B²).
+
+Choose a prime q in (2B,4B) by Bertrand's postulate. Use inputs N=iq
+for i in I. Since q is coprime to every x in I, divisibility by x is
+equivalent to x dividing i. Within I this forces x=i. Hence the true
+B by B sample matrix is the identity. The approximate matrix differs
+from it by a matrix of maximum absolute row sum less than one, so it
+is invertible (Neumann series). The expansion gives rank at most r.
+Restricting rows and columns to primes i,x in I gives the same argument
+on balanced squarefree semiprimes, with rank at least π(2B)−π(B),
+asymptotic to B/log B.
+
+This applies to approximating the powered kernel if its row leakage
+plus the row sum of absolute approximation errors is below one.
+It applies even when the coefficients a_t cost nothing to obtain.
+A guarantee on a signed interval total alone is weaker. For example,
+on this particular input family the full interval always contains one
+divisor despite the full rank of the pointwise matrix. Adaptive bases
+and nonlinear evaluators also fall outside the claim.
