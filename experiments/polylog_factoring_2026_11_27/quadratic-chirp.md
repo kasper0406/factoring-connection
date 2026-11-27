@@ -4114,3 +4114,27 @@ other exponents even. This follows from v₂(τ(n))=1. For example
 45 has the two divisors 3 and 5 in the initial interval, so its
 parity is even. The previous progression-filtered reduction still
 covers these cases.
+
+### A few low bits remove cancellation on all promised inputs
+
+Use the least-factor search's original promise j<p_min(n). Every
+divisor in (j,2j] is prime. If there are h of them, their product
+divides n and is at least (j+1)^h. Thus h≤H=floor(log_{j+1} n),
+computable by integer comparisons. Put b=ceil(log₂(H+1)).
+Two unfiltered sums of floor(m/x) on (j,2j], reduced mod 2^b
+at m=n and n−1, recover h *exactly* by modular subtraction.
+No modulus filters, power inputs, or squarefree assumption are
+needed. The j=0 case in an odd-cutoff test is trivial. The inputs
+to the evaluator must include m=n−1 even if that integer itself
+has a small prime factor; the promise is on n.
+
+For L=bitlength(N), each answer uses at most ceil(log₂(L+1))
+bits, and the preceding doubling-and-bisection reduction needs
+O(L) pairs of answers for a full factorization. For j≥n^α with
+fixed α>0 the required precision is constant. An arbitrary fixed
+precision cannot recover h by this direct subtraction on all scales:
+choose 2^b distinct primes in (j,2j] for sufficiently large j
+and take their product n (b≥2). This satisfies 2j≤sqrt n and
+has exactly 2^b hits, giving zero modulo 2^b. The prime number
+theorem guarantees enough primes for each fixed b. This only
+limits the single difference as a detection rule.
