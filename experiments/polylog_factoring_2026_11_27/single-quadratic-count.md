@@ -1197,3 +1197,28 @@ per interval element. Constructing its columns on demand is cheap,
 but the quarter matrix has floor(N/4) columns. A genuine advance
 here would compress the aggregate into polynomial dimension or
 give a polynomial-bit nullity algorithm for this specific operator.
+
+### Rank of the translated-window answers across square inputs
+
+Can all translations of a single window share a short binary feature
+vector for each unit square y? Suppose the answer at translation t
+is a binary dot product of that vector with a vector depending on
+t and N alone. For odd N>1 and 1<=w<N coprime to N, the required
+dimension is at least the number of distinct unit squares mod N.
+
+Indeed the root indicator columns v_y have disjoint nonempty
+supports and vanish at zero. Applying the cyclic window-sum map W
+to each gives the answer matrix. If Wv=0, adding consecutive window
+answers gives v(t)=v(t+w) for every t. Coprimality makes v constant.
+Thus W is injective on the column span, since that span vanishes at
+zero. The answer matrix has full column rank over F_2. A shared
+dot-product representation of dimension d factors it through F_2^d,
+so d bounds its rank. In particular w=(N-1)/2 qualifies, and for
+distinct odd primes N=pq the rank is (p-1)(q-1)/4. Binary elimination
+verified ranks 2,3,5,6,15,30,72 at N=15,21,33,35,77,143,323.
+
+This applies to full root counts varying both y and translation.
+A single fixed cutoff, the general splitting reduction at fixed
+scale, nonlinear readout, and a kernel built jointly from the query
+parameters are different models. In particular it gives no lower
+bound on their evaluation time.
