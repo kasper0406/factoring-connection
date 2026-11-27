@@ -883,3 +883,37 @@ negligible compared with 1/N², controlling its contribution to MSE.
 The identity was checked over all 240 unit inputs of m=35·11 with a
 deterministic injected error depending on c'. The MSE fell from
 0.263167 to 0.146204, the predicted factor 1/1.8.
+
+## Error compared with returning zero
+
+Write w=ω(n). On uniform unit scales the zero estimate has squared
+RMS error exactly
+$$
+\prod_{p^e\parallel n}
+\begin{cases}2-2/(p-1),&e=1,\\2,&e>1.\end{cases}
+$$
+Indeed the local second moment is 2+2 times the real part of the
+unit average of exp(4πix/p^e). This Ramanujan average is −1/(p−1)
+when e=1 and zero at higher powers. CRT makes the factors independent.
+Direct root-sum enumeration checked all 250 odd moduli from 3 through
+501; the maximum absolute second-moment discrepancy was below 3·10⁻¹⁵.
+In particular 2^(w/2) is a uniform RMS bound for returning zero, and
+is attained whenever all prime exponents are at least two.
+
+Use auxiliary prime **squares** r² in the preceding amplification
+instead of primes. CRT chooses a uniform unit coordinate j mod r²
+before size biasing. Now each known multiplier has second moment
+exactly 2, hence k auxiliary squares reduce RMS by exactly 2^(k/2).
+Local rejection sampling still takes two trials on average.
+
+For example, a uniform polynomial-time magnitude evaluator with RMS
+error at most poly(log m)·2^(ω(m)/2)·exp(−c·ω(m)^δ), for fixed
+c>0 and 0<δ≤1, would suffice for factoring arbitrary odd inputs.
+For n with w distinct primes the resulting error is at most
+poly(log m)·2^(w/2)·exp(−c(w+k)^δ). Choose
+k=ceil((log₂ n)^(2/δ)); then w≤log₂ n, log m is polynomial in log n,
+and the negative exponent dominates. The resulting error meets the
+constant-error reduction for sufficiently large inputs. This includes
+a bound poly(log m)·λ^ω(m) with any fixed 0<λ<√2. The zero estimator
+already meets the endpoint bound with λ=√2. This comparison does
+not classify smaller improvements such as a polynomial factor in w.
