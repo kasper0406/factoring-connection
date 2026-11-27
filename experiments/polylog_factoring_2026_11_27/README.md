@@ -37,6 +37,21 @@ A guide may instead flag uncertain children. If along a target path it flags at 
 | Construct the root by public exponentiation | For a private unit x and a=x³, testing a^e against x gives the same gcd as the existing powering test with exponent 3e−1. [Identity](https://github.com/kasper0406/factoring-connection/commit/b5023cf) |
 | Represent a multiple of N by an Eisenstein norm | For N=pq with q≡2 mod 3, q dividing a²−ab+b² forces q to divide both coordinates (the norm modulo q is a field norm). Thus any nonzero pair modulo N whose norm vanishes gives q=gcd(a,b,N). For example, (15,5) has norm 175 for N=35. [Earlier Eisenstein analysis](../../notes/periodfind_results.md) |
 
+**Complex Fourier sampling overlap.** For N=pq with distinct primes,
+the nonunit mask f(x)=1[gcd(x,N)>1] has unnormalized Fourier
+transform q·1[q divides k]+p·1[p divides k]−1 by inclusion-exclusion
+on the two additive subgroups. Sampling k with probability proportional
+to |f̂(k)|² gives a proper gcd with probability
+((p−1)(q−1)²+(q−1)(p−1)²)/(N(p+q−1)), tending to one as both
+primes grow. Numerical FFTs gave 0.623377, 0.823926 and 0.975656
+at N=35,187,10403. This uses a different sampling distribution from
+the Fourier transform of the unit mask. Computing the full FFT takes
+a length-N array. Rejection sampling the support of f already finds
+a factor at every accepted nonzero point and takes order √N draws
+on balanced semiprimes. A classical polylogarithmic sampler for the
+spectral distribution would suffice; the energy identity provides no
+such sampler. [Earlier Ramanujan spectrum and sampling analysis](../../notes/conn_ana.md)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |
