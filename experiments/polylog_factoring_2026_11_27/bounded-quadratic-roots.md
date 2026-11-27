@@ -349,6 +349,33 @@ gcd p. Thus these witnesses do include nontrivial preservation of
 addition beyond the checked comparisons. The replay identifies no
 public feature that predicts which input pairs give such a witness.
 
+**Primitive-root inputs and the existing AKS controls.** For prime
+ℓ coprime to odd N, let ζ be a primitive ℓ-th root and evaluate the
+gcd with N of Res(Φ_ℓ,F), where F=(X+1)^N−X^N−1. This detects
+vanishing at *any* primitive ℓ-th root modulo a hidden prime, unlike
+the earlier coefficient gcd tests. The scalar is exactly the field
+norm of u^N−σ_N(u), for u=1+ζ and σ_N(ζ)=ζ^N. For odd ℓ, u is
+a cyclotomic unit since Φ_ℓ(−1)=1. At ℓ=3 it is a sixth root of
+unity and the defect vanishes identically for N coprime to six.
+
+At ℓ=5 write 1+ζ=−ζ³φ for a suitable choice of golden ratio
+φ=(1+√5)/2 (choose ζ=exp(2πi/5)). For each prime divisor r of
+squarefree N coprime to 10 the local resultant vanishes exactly when
+φ^N=σ_N(φ) at some prime above r. The condition is invariant under
+φ↦−1/φ since N is odd. Hence it holds in the entire reduced quadratic
+algebra modulo r. For N≡±1 mod 5 this means φ^(N−1)=1; otherwise it
+means φ^(N+1)=−1. With the Fibonacci sequence F_k, compute φ^k as
+F_k φ+F_(k−1). A joint gcd of the two residual coefficients therefore
+reproduces the resultant gcd for squarefree N. This identifies the
+order-five calculation as a quadratic-unit powering test.
+
+On the same 200 unplanted 32- and 48-bit-prime inputs as the
+coefficient audit, we reused its cyclic_power(N,ℓ,1) defect. The
+primitive-resultant gcd was N on every order-three case and 1 on
+every order-five, seven, and eleven case. The order-five decoder
+also agreed with modular Fibonacci fast doubling on all 200 inputs.
+These checks cover shift one and these four orders only.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
