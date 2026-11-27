@@ -340,3 +340,28 @@ kernel (including a kernel on both sides):
 | 128 | 253 | 0 | 31 |
 | 512 | 2775 | 5 | 31 |
 | 2048 | 32385 | 29 | 379 |
+
+## The trace-one exception already has an operational CM splitter
+
+The [Cheng implementation](../../src/nonsmooth/cheng.py) and
+[earlier nonsmooth audit](../../notes/nonsmooth_results.md) already
+cover this exception. When 4p−1=Dv², a suitable CM twist of
+discriminant −D can have exactly p points at the hidden prime p.
+Multiplication by N then kills that component. The earlier audit
+reports 180/180 special inputs split and 0/180 random controls.
+As a replay, cheng_factor with seed 20261127 and d_list=(3,) returned
+19 from 437 in one try, 37 from 1517 in eight, and 61 from 4331 in
+three. Only N, the seed and public configuration entered the solver.
+
+One can bound coverage by the *number* of discriminants even when
+their sizes are unrestricted. At scale p in [B,2B], take a shared
+menu of H distinct positive integers D. For each D there are at most
+floor(√(8B/D)) positive v, each determining at most one p. Ordering
+the menu as D₁<⋯<D_H gives D_i≥i, so the total number of covered
+primes is O(√(BH)). Dividing by Θ(B/log B) primes, and allowing
+either hidden factor to be covered, gives fraction
+O(log B · √(H/B)) on balanced pairs at this scale. This bound even
+allows perfect selection from the menu after seeing N. It applies to
+the trace-one discriminant condition, independently of the cost of
+constructing the curves. A discriminant computed from N outside a
+small shared menu or a different trace mechanism is outside its scope.
