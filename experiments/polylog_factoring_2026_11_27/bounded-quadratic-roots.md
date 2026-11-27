@@ -651,6 +651,29 @@ This rules out a single fixed congruence table and any finite
 collection of fixed input congruences (take their lcm). It leaves
 algorithms using the whole input or input-dependent moduli open.
 
+**Fixed polynomial root counts also miss the digit.** Fix any finite
+list of univariate integer polynomials of positive degree and any
+congruence modulus M. Even exact counts of their distinct roots modulo
+N, together with N mod M, cannot determine Φ_(3N)(4) mod 27 on every
+mixed semiprime. Here is a simultaneous collision argument.
+
+Let D=lcm(M,9) and let K be the compositum of the splitting fields
+and the D-th cyclotomic field. Pick a unit u mod D equal to 2 mod 9
+and pick elements σ,τ of Gal(K/Q) restricting on the cyclotomic field
+to u and −1/u respectively. These lifts exist by normality.
+Chebotarev gives distinct good primes q,p with Frobenius conjugate to
+σ,τ, and q',p' with Frobenius conjugate to their respective inverses.
+Exclude primes dividing leading coefficients or discriminants of the
+squarefree parts, and primes ramified in K. Each polynomial has the
+same local root count at q and q', and at p and p'. A permutation and
+its inverse fix precisely the same roots. CRT multiplies the local
+counts. Both products N=pq and N'=p'q' are −1 mod D, but q and q'
+are 2 and 5 mod 9 respectively. The k=1 lift therefore forces different
+outputs. Chebotarev supplies infinitely many such pairs for each fixed
+list. This argument covers existence tests as well. Polynomials chosen
+from N, and algorithms using actual roots or other data, lie outside
+the claim.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
