@@ -2218,6 +2218,39 @@ the analysis. For general inputs an interval evaluator may return one
 verified witness or guide a split without listing all witnesses. A
 polynomial list bound remains meaningful under a semiprime promise.
 
+### Two odd inputs suffice to balance an arbitrary split
+
+Suppose an evaluator decides whether an interval contains the sum of
+two positive factors a≤b≤2a of a given odd integer. Remove factors
+2 and 3 and test primality first. For a remaining composite N, let
+3^k be the largest power of three at most N/3. Query the full balanced
+sum interval on N·3^k and N·3^(k−1). These are odd inputs below N².
+At least one query is occupied, and every balanced pair on either
+input exposes a proper divisor of N.
+
+For existence, take any nontrivial split N=uv with 5≤u≤v.
+Then v/u≤N/25<3^k. Some integer j in [0,k] has 3^j within a
+multiplicative factor √3 of v/u, by rounding the logarithm.
+Choose h from {k−1,k} with the parity of j. Then h≥j and the factors
+
+    u · 3^((h+j)/2)   and   v · 3^((h−j)/2)
+
+have product N·3^h and ratio (in either order) at most √3.
+For soundness, if either factor of a balanced pair were coprime to N,
+it would divide the padding 3^h≤N/3, and its companion would be at
+least N. Their ratio would be at least three. If one factor contained
+all of N, its companion would divide the padding, giving the same
+contradiction. Thus taking gcd with either factor splits N.
+
+On an occupied input M, bisect the integer interval from ceil(2√M)
+through floor(3√(M/2)), then recover the factors from the sum using
+its square discriminant. All endpoints can be computed with integer
+square roots. This costs O(log N) interval queries per split and
+recurses on proper divisors. The reduction requires a correct empty
+answer on unoccupied queries and supports repeated prime factors in
+the padded inputs. Exhaustive enumeration checked existence and both
+gcd conclusions for all 571 composites coprime to six through 3000.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
