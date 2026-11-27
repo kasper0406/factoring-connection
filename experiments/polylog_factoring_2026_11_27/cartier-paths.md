@@ -266,3 +266,33 @@ precision, and does not preclude arithmetic on the compact map.
 For N=91 and K=16, the scaled-log calculation for z=1,2,11,23
 verified A(w)=91A(z) mod 91^16 and w/91≡z modulo 91 in all four
 cases. Here w=[91](91z)/91.
+
+## Multiplication on actual points in degrees one and two
+
+For distinct odd primes N=pq with max(p,q)<2 min(p,q), multiplication
+by N on E: y²=x³−x is a bijection on E(F_ℓ) and E(F_(ℓ²)) for
+each ℓ dividing N. This applies in particular to the mixed ordinary
+and supersingular case above. It prevents a nonidentity component
+from becoming the identity under the final multiplication in either
+degree. Intermediate computations and higher extensions are separate.
+
+Write t for the Frobenius trace at ℓ. The degree-two group size is
+(ℓ+1−t)(ℓ+1+t). Both factors are multiples of four: the curve and
+its quadratic twist each have full rational two-torsion. Both are at
+most ℓ+1+2√ℓ by Hasse. For ℓ≥7 this is less than 2ℓ, hence less
+than four times either hidden prime by balance. For ℓ=3,5 the Hasse
+bound is already less than 12. A positive multiple of four in this
+range cannot be divisible by p or q. Thus the degree-two order is
+coprime to N; its degree-one subgroup inherits the conclusion.
+This argument also applies to any good elliptic curve with full
+rational two-torsion at both primes.
+
+Direct prime-field point counts and the trace formula checked all 781
+balanced odd prime pairs below 300. Degree three already behaves
+differently: at N=299=13·23 the trace at 23 is zero, giving
+#E(F_(23³))=12168, divisible by 13. At 13 the trace has absolute
+value six and the degree-three group size is coprime to 299
+(by the formula ℓ³+1−t³+3ℓt). This supplies an actual one-sided
+kernel in degree three, without a general method for finding its
+points efficiently. The torsion at 23 in this example has order 13;
+it is distinct from the characteristic-23 formal height phenomenon.
