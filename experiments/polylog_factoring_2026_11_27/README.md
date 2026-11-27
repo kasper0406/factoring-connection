@@ -1413,6 +1413,31 @@ polynomial-time factoring on this family are equivalent under deterministic
 Turing reductions. The decision predicate reformulates the earlier
 localization problem. A new algorithm would need a way to evaluate it.
 
+### What a coarse cover would have to supply
+
+Suppose a procedure supplies $k$ rational intervals in the half-angle
+parameter containing the hidden representative somewhere in their union.
+Write $W$ for their total length after merging and clip to the first octant.
+At the certified grid resolution $B$ above, at most $BW+2k$ grid cells
+meet this union (endpoints may touch two cells). With polynomial-bit
+endpoints, we can address these cells directly by multiplying endpoints by
+$B$ and rounding. The resulting recovery costs
+$O((1+k+BW)\operatorname{polylog}N)$ bit operations beyond generating the
+cover. Thus a polylogarithmic list of total width
+$N^{-1/4}\operatorname{polylog}N$ suffices. This is a sufficient bound for
+this implementation, with no claim of necessity for other algorithms.
+
+A single small-modulus test on height cannot supply such a cover by itself.
+For $N=a^2+1$, every integer height $y=1+jM$ passes the test that
+$N-y^2$ is a square modulo $M$, witnessed by $a$. Discarding the public
+height 1 leaves a progression across the first octant. There
+$y=2\sqrt N t/(1+t^2)$ has derivative bounded above and below by
+positive absolute constants times $\sqrt N$. Thus when
+$M=o(N^{1/4})$, every full interior grid cell at the chosen resolution
+has a surviving height for sufficiently large $N$. This applies also to
+simultaneous tests whose combined modulus satisfies that bound. It
+concerns pruning cells by modular squareness alone.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
