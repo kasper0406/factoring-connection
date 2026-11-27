@@ -686,6 +686,29 @@ and D_p modulo q by Frobenius and composition. That crossed degree
 identity alone gives no collision probability guarantee. The formula
 concerns fixed degrees independent of the sampled trace.
 
+**Local series at trace two.** For odd distinct primes p<q, set N=pq.
+As a formal polynomial modulo p, D_N(2+X)=D_q(2+X^p), by
+composition and D_p(Y)=Y^p in characteristic p. The linear coefficient
+of D_q(2+X) is q² (differentiate the trace recurrence at 2).
+Consequently D_N(2+X)−2 has order exactly p modulo p, and order q
+modulo q. Over the composite ring its first nonzero coefficient is
+therefore at degree p, with gcd q against N. For an explicit example
+N=77 first differs from 2 in degree seven: the coefficient is 2
+modulo 7 and zero modulo 11.
+
+For any N and 1≤k≤N the exact coefficient c_k satisfies
+k c_k=N binom(N+k−1,2k−1), by the Chebyshev recurrence
+(equivalently differentiate and expand the second-kind polynomial).
+Hence any individual nonconstant coefficient nonzero modulo N
+already has an index sharing a factor with N. At 1≤k<N this gives
+a proper gcd directly from k. The explicit binomial formula agreed
+with the predicted first term on 4,870 coefficient checks across
+all distinct odd prime pairs below 80. A succinct test of whether the
+series equals 2 modulo (N,X^(T+1)) would decide p>T on semiprimes
+and recover p by bisection. Dense truncation reaches order p; the
+binary degree of D_N makes ordinary evaluation cheap, but does not
+supply this high-order zero test.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
