@@ -72,3 +72,11 @@ In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−
 If gcd(Δ,N) is a proper factor, return it. If Δ=0 mod N and u is a unit, −v/u is a square root of y mod N. If u has a proper gcd with N, return that factor. In the remaining case u=0 mod N, we have v²=0 mod N, so nonzero v mod N yields a proper gcd. Thus every nonunit denominator whose base residue is nonzero supplies either a root or a proper factor. A denominator reducing to zero lies in J and is nilpotent; even an exactly divisible numerator cannot generally be divided by it using only this truncated residue. Such a gate needs a cancellation identity or additional precision.
 
 At N=175, y=4, m=4, the four denominators N+f+uX+v with (u,v)=(1,1),(1,3),(1,2),(0,0) respectively gave a verified lifted inverse, factor 5, root 173, and zero base residue. These are diagnostic inputs with chosen coefficients.
+
+### A public power denominator
+
+For N=pq with distinct odd primes, try D=(X+c)^(N−1)−1 in X²=y, with uniform c mod N and a fixed unit-square target. Repeated squaring takes O(log N) ring multiplications. For either prime ℓ=p,q take a root r of y modulo ℓ. The norm vanishes at ℓ exactly when c+r or c−r lies in the subgroup of (N−1)-st roots of unity in the multiplicative group. Its size is g=gcd(p−1,q−1) at both primes, since N−1 is congruent to q−1 modulo p−1 and conversely. Thus the hit probability at ℓ is the size of the union of two translates of that subgroup divided by ℓ, at most 2g/ℓ. The chance of any nonunit norm is at most 2g(1/p+1/q), uniformly in y.
+
+There are infinitely many consecutive prime pairs with gap O(log p): the prime number theorem gives order x/log x primes in [x,2x] and the internal gaps sum to at most x. Along such a sequence g divides q−p and both primes are comparable. Even counting every nonunit as a success, the per-trial rate is O(log N/√N). This excludes a uniform inverse-polylogarithmic guarantee for uniform independent shifts and this exponent.
+
+An exhaustive check over c with y=4 counted (unit norm, proper gcd, norm zero mod N) as (63,64,16) for N=11·13, (0,465,1426) for N=31·61, and (9603,784,16) for N=101·103. These counts concern the norm diagnostic; they do not use the known square root to split the modulus.
