@@ -750,3 +750,29 @@ For odd N, any translation by t preserving the roots must send
 both c and -c to roots. Subtracting the resulting congruences
 gives 4ct=0 mod N, forcing t=0. This rules out the translation
 step of this quartet argument on odd semiprimes.
+
+### Doubling an odd modulus preserves the quarter-parity problem
+
+Let Q(n,c) count roots of a²=c² mod n in [1,floor(n/4)].
+For odd m>1 and unit d mod m, let c be the unique odd lift of
+2d mod m to mod 2m. There is an exact count identity
+
+    Q(2m,c) + Q(m,d) = 2^(omega(m)-1).
+
+For each sign pair of roots at scale d modulo m, take its
+representative r in [1,m/2). Doubling induces a bijection on sign
+pairs onto those at scale c mod m. The new lower-half representative
+is 2r for r<m/4 and m-2r for r>m/4. Only the latter is odd.
+Oddness is precisely the extra condition for a root mod m to be
+a root mod 2m at this odd scale. The first quarter of 2m spans
+the lower half of m. Each original sign pair therefore contributes
+exactly once across the two counts. CRT gives the right-hand side.
+
+Modulo two the correction is one exactly for prime powers m,
+which is decidable in polynomial bit time. The scale conversion
+is invertible by halving modulo m. Consequently a polynomial-time
+unit-scale quarter-parity evaluator on either family gives one on
+the other with a single oracle call. When excluding the public
+pair on both sides the right-hand side decreases by one, by the
+same sign-pair correspondence. Verified the exact full-count
+identity for all 13,230 unit scales at odd moduli 3 through 255.
