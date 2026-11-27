@@ -5244,6 +5244,12 @@ For b the bit length of N, take prefix queries on the b−1 higher bits, fixing 
 
 The earlier mod-two loss concerns reducing a sum of signs. Here the inputs are selected before counting, so a root changes the count by one. The required evaluator now computes parity of the odd canonical roots within a binary prefix on the original modulus. This proof gives no fast implementation of that evaluator.
 
+#### Separate local sign counts lose prefix parity
+
+Take N=133=7·19 and the two aligned 16-element intervals [16,32) and [32,48), both in the lower half. Count separately the occurrences of residues +1 and −1 at each factor. Both intervals have the same four counts (2,2;1,1), in the order (+1 mod 7, −1 mod 7; +1 mod 19, −1 mod 19). In the first interval the two 19-candidates are 18 and 20, and only 20 also satisfies the modulus-7 test. In the second they are 37 and 39, and neither passes modulo 7. The prefix parities are therefore 1 and 0. Neither interval contains the trivial root 1.
+
+Thus even with the modulus, interval length and exact separate local sign counts, a rule using only these summaries cannot recover the joint parity for every aligned prefix. With known factors the missing alignment is easy to obtain for two primes: for each sign pair reconstruct its CRT representative and test interval membership. The example isolates the missing information in a count-only composition; it leaves open methods that use the actual prefix location or encode the joint alignment without factoring.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
