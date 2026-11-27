@@ -92,6 +92,35 @@ bound on clearing denominators and supplies no obstruction to a
 certificate valid only at one clipped representative. Neither a new
 size bound nor a public CM evaluator follows from interpolation.
 
+A concrete factorial-denominator control is
+H(X)=prod_{j=0}^{m−1}(f(X)−jN)/m!, assuming gcd(m!,N)=1.
+For integer X take z congruent to f(X)/N modulo m!: the numerator
+is congruent to N^m times the falling factorial of z, hence divisible
+by m!. At f(X)=Nt the value is N^m binom(t,m). Throughout the real
+range −1<t<m the absolute binomial is less than one. For −1<t<0
+bound each absolute factor by its counterpart in m!; on (j,j+1)
+for 0≤j<m bound the product by (j+1)!(m−1−j)! with strict inequality.
+The interior integer points are zeros. For f=X²−1 this certifies
+|X|<sqrt(mN+1). It is exactly a packaged search of the m public
+equations f=jN. Shifting the quotient range also leaves m such equations.
+The construction and strict-size checks agreed at 3,666 integer inputs
+over four moduli and admissible multiplicities up to eight.
+
+More generally take any integer-valued rational polynomial H of exact
+degree d≥1 with d!H in the standard ideal (N,f)^m for monic quadratic
+f. Repeated monic division gives its f-adic expansion with coefficients
+of degree below two, the i-th divisible by N^max(0,m−i). (Expand the
+standard generators in this basis.) Consequently d! times the leading
+coefficient of H is a nonzero multiple of C=N^max(0,m−floor(d/2)).
+On an integer interval of endpoint span L≥d, a d-th finite difference
+with step h=floor(L/d) has absolute value at least C h^d. A strict
+bound |H|<N^m throughout the grid forces C h^d<2^d N^m, hence
+h<2 sqrt(N) and L<d(2 sqrt(N)+1). Thus a polynomial-bit-degree
+candidate in this class cannot improve the exponent 1/2 by a fixed
+positive amount. This extends the existing integer-shift grid bound
+to factorial denominators; it does not assume a bound between integers
+or cover relations outside the standard ideal.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
