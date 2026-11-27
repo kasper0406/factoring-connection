@@ -238,6 +238,34 @@ order, enabling the earlier repeated-squaring decoder. These are tests
 of full coordinate equality on uniform units; they do not analyze
 other sampling laws, partial-coordinate gcds, or additive identities.
 
+**Additive Frobenius comparison.** For distinct odd primes p<q in
+[B,2B], test (z+1)^N=z^N+1 by a joint coordinate gcd. Use a uniform
+element of the full Gaussian algebra here, including nonunits. Write
+h_r for the corresponding local scalar pass probability in F_r. For
+r split the two coordinates are independent, giving h_r². For r inert
+the local probability is at most (s−1)/r², where s is the other prime:
+by injectivity of r-th powering the test in F_(r²) reduces to the zeros
+of (X+1)^s−X^s−1, a nonzero polynomial of degree s−1 since r≠s.
+
+A uniform scalar gcd already splits N with probability
+P=h_p(1−h_q)+h_q(1−h_p). In fact P≥max(h_p,h_q)/3. To see why, at
+the larger prime q the scalar polynomial has at most p−1 roots.
+Away from 0,−1 also use x^p=x^(−k) with k=q−1−p≥1. Clearing
+denominators gives x^k−(x+1)^k−x^k(x+1)^k=0, of degree 2k.
+Including the two endpoints gives at most 2(q−p) roots. The minimum
+of these two bounds is at most 2q/3. Thus h_q≤2/3; whichever local
+rate is larger, the other is at most 2/3. As a check, over all pairs
+in [B,2B) for B=50,200,800 the largest observed h_q values were
+16/97, 46/349, and 148/1279 respectively (6,757 pairs in total).
+
+The Gaussian split probability is at most the sum of its two local
+rates, hence at most 6P+4/B. Thus inverse-polynomial success of this
+Gaussian sampler on balanced semiprimes would already imply
+inverse-polynomial success of the scalar additive test on the same
+inputs for sufficiently large B. The bound gives no lower bound on P
+on arbitrary inputs, and does not treat chosen z or individual-coordinate
+gcds.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
