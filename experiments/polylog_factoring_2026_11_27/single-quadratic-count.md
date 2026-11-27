@@ -1101,3 +1101,12 @@ global sign. A gcd gives a factor. All choices can use rational
 arithmetic with O(log N) bits for fixed-precision oracle answers.
 This reduces the precision requirement to a constant but still
 requires input-specific estimates, not just a marginal average.
+
+The reference implementation in check_disagreement_decoder.py takes
+only N and a rate callback. It makes 2(bit_length(N)+1) calls.
+A separate known-factor oracle tested 46 semiprimes, including
+(2^61-1)(2^127-1), under four error profiles: rounding to the
+nearest 1/50, fixed errors of either sign at 1/100, and seeded
+mixed signs at that limit. All 184 runs recovered a verified
+proper factor. The rounded mode exposes only 51 possible answers
+per call. The implementation uses exact rational phase arithmetic.
