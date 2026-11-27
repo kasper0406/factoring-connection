@@ -4693,3 +4693,29 @@ in log n, inverse-polynomial success of the former implies the same
 for the latter on the same inputs. The bound assumes σ and the algebra
 are fixed before sampling z; norm-normalized or deliberately
 structured samples need a different argument.
+
+### An infinite separation from uniform sampling in the Gaussian algebra
+
+Take any prime p=3 mod 4. Require a prime q to satisfy q=1 mod
+4(p+1) and q=−1 mod (p−1). The moduli have gcd 2, so CRT gives
+a reduced class; Linnik gives such a q of size p^O(1). Also
+q≥4(p+1)+1. Thus n=pq gives an infinite family with p≥n^c
+for some absolute c>0, and gcd(p−1,q−1)=2.
+
+In the same rank-two algebra (Z/nZ)[i], i²=−1, use the same
+automorphism (conjugation) and the same scalar output
+gcd(n,Norm(z^n−conj(z))). With z a uniform unit, the preceding
+scalar-rescaling bound gives success at most
+2(2/(p−1)+2/(q−1))=O(1/p). Instead take a uniform unit w and
+feed z=w/conj(w) into that test. Its local components are independent
+uniform norm-one elements, of cyclic orders p+1 at the inert prime
+and q−1 at the split prime. Now the test matches locally exactly
+when z^(n+1)=1. At the split prime a hit in one component is a hit
+in both, since the two coordinates are mutual inverses. Because
+q−1 is a multiple of p+1, gcd(n+1,p+1)=p+1 and
+gcd(n+1,q−1)=p+1. Thus conditional on a sampled unit, the exact
+probability that the output is p is 1−(p+1)/(q−1)≥3/4.
+Nonunit sampling is handled by the norm gcd as above. All steps
+use the fixed Gaussian algebra and n alone, with no smoothness
+bound or sign search. This is the mixed-sign mechanism specialized
+to give a matched comparison between two input distributions.
