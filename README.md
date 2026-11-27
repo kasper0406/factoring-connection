@@ -24,22 +24,24 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
 
 **Classical polynomial-time factoring remains open.** The November 27 checkpoint
 collects the latest proofs, reference evaluators, and reproducible experiments.
-[Research checkpoint](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/README.md)
+[Research checkpoint](experiments/polylog_factoring_2026_11_27/README.md)
+
+The November 27 audit verified the general reduction's correctness and polynomial query ledger, while locating its unresolved work in a clipped modular-hyperbola gap evaluator. A separate hardness proof rules out a generic exact evaluator for arbitrary affine root windows unless standard counting-complexity classes collapse. The special unscaled window and the relaxed gap remain open. [Audit and current priorities](experiments/polylog_factoring_2026_11_27/README.md)
 
 - **General factoring.** A randomized reduction uses one gap comparison per sampled
   digit. Each comparison counts integer points in a bounded 10-dimensional
   polytope with one rank-two quadratic equation. It handles repeated prime
   factors. A polynomial-bit-time evaluator for the comparisons remains open.
-  [Single quadratic count](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/single-quadratic-count.md)
+  [Single quadratic count](experiments/polylog_factoring_2026_11_27/single-quadratic-count.md)
 - **Deterministic reduction.** For each odd modulus, signed disk counts modulo 4
   at one common discriminant and cutoff suffice to split inputs with at least
   two distinct prime factors. The query forms lie in one public cyclic class
-  subgroup. [Fixed-discriminant reduction](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/fixed-discriminant-split.md) ·
-  [Cyclic class encoding](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/cyclic-class-queries.md)
+  subgroup. [Fixed-discriminant reduction](experiments/polylog_factoring_2026_11_27/fixed-discriminant-split.md) ·
+  [Cyclic class encoding](experiments/polylog_factoring_2026_11_27/cyclic-class-queries.md)
 - **Balanced semiprime reference evaluator.** Tangent batching inside public
   discriminant progressions computes the fixed-cap moment in expected
   $N^{2/5+o(1)}$ bit operations. It reproduced the published 36-bit trace and
-  divisor. [Analysis and evaluator](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/tangent-progressions.md)
+  divisor. [Analysis and evaluator](experiments/polylog_factoring_2026_11_27/tangent-progressions.md)
 
 ## Prior research frontier (2026-11-26)
 
