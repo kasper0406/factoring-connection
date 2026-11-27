@@ -2020,6 +2020,25 @@ without scanning the interval. For large composite m the acceptable
 classes are implicit; the small-prime wheel cannot list them in
 polynomial space just from the short description.
 
+### Contiguous blocks rejected by a single small modulus
+
+For odd N, index the even candidate sums by s=2t. For every odd
+modulus m>1, the class t=(N+1)/2 modulo m always passes the
+square-discriminant test, since (N+1)²−4N=(N−1)². It also passes
+the Jacobi filter, which accepts zero. Thus every m consecutive
+indices include a survivor of that particular test. A certificate
+that covers W consecutive indices by contiguous blocks, each rejected
+throughout by one odd modulus at most L, needs at least
+ceil(W/(L−1)) blocks, even with overlaps and adaptive modulus choices.
+For a balanced search of width proportional to √N, taking L polynomial
+in log N leaves exponentially many blocks in the input bit length.
+This bound concerns that certificate format. A joint congruence
+argument, interleaved residue classes, or larger moduli require
+separate analysis.
+
+For the benchmark, 112716²−4·2989601243=27322², giving the verified
+split 42697·70019=2989601243.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
