@@ -4719,3 +4719,30 @@ Nonunit sampling is handled by the norm gcd as above. All steps
 use the fixed Gaussian algebra and n alone, with no smoothness
 bound or sign search. This is the mixed-sign mechanism specialized
 to give a matched comparison between two input distributions.
+
+### Structured samplers with nonzero scalar weight
+
+Let n=pq with distinct odd primes. In the preceding automorphism
+test suppose the input unit w has a distribution invariant under
+scalar units (uniform suffices) and the map producing z satisfies
+F(cw)=c^t F(w) for scalar units c and a known nonzero integer t.
+Assume F outputs units and the algebra, F and automorphism are fixed
+before w is sampled. Put E=|t|(n−1). For r=p,q set
+x_r=gcd(E,r−1)/(r−1). A local component hit after rescaling requires
+c^(t(n−1)) to attain one fixed nonzero residue-field value. The
+same orbit argument bounds the probability of an algebra norm split
+by d(x_p+x_q) for rank d.
+
+A scalar trial with exponent E and its repeated-squaring chain
+splits with probability at least max(x_p,x_q)/2. Indeed if either
+fraction is below one then the smaller is at most 1/2, so the final
+gcd alone works with at least the stated probability. If both equal
+one, the unequal local 2-order valuations suffice as before. Thus
+the rank-d test gains at most a factor 4d over this scalar trial,
+even if |t| itself is large. Efficient comparison requires E to
+have polynomial bit length and be available to the algorithm.
+This applies in particular to w^a conj(w)^b of nonzero weight a+b.
+At weight zero that monomial is a power of w/conj(w); scalar
+rescaling fixes it, so the hypothesis yielding a useful exponent
+disappears. The infinite Gaussian separation above is precisely
+of this latter form.
