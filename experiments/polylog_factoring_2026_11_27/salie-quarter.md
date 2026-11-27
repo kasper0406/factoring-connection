@@ -459,3 +459,31 @@ was 52.2353% at 101*103 and 50.3811% at 1009*1013. To enumerate,
 tabulate signed counts by the four local Legendre symbols at each
 prime, then multiply counts while multiplying the symbols
 coordinatewise. The computed labels use the factors.
+
+## Public labels for square-only learning and held-out scoring
+
+Sample a uniform unit h, give the predictor only (N,h² mod N),
+and label the example with the readily computed sign of cos(2 pi h/N)
+by an integer quarter comparison. For any fixed square-only predictor
+its accuracy on these public labels is EXACTLY its accuracy on the
+hidden quarter labels sign(cos(2 pi uh/N)): substitute h -> uh,
+which permutes units and leaves the square fixed. This concerns
+population accuracy; individual labels may differ. Hence even an
+inverse-polynomial held-out population advantage on this public task
+suffices by the quarter Fourier reduction. Neither training examples
+nor validation examples require factoring. Fix the trained model
+before testing and use independent draws to avoid selection bias.
+The label task is distinct from predicting the full Salié sign.
+
+There is also a graded label: the conditional mean of cos(2 pi h/N)
+given the square is T(h)/4 by averaging the four roots. Its
+correlation with any bounded square-only predictor equals correlation
+with the hidden cosine, giving a directly estimable Fourier statistic.
+
+check_square_only_score.py tests a simple 32-bin majority model with
+100000 training draws and 100000 separate scoring draws per modulus.
+The fixed-seed diagnostics returned 52.862% for 10403 and 49.920%
+for 1022117. For independent random validation draws the two-sided
+99% Hoeffding radius at this sample size is 0.515 percentage points
+per model. Fixed seeds are for reproducibility. These results do
+not establish sustained advantage as bit length grows.
