@@ -1110,3 +1110,24 @@ nearest 1/50, fixed errors of either sign at 1/100, and seeded
 mixed signs at that limit. All 184 runs recovered a verified
 proper factor. The rounded mode exposes only 51 possible answers
 per call. The implementation uses exact rational phase arithmetic.
+
+### Feeding public Salié sums to the coarse decoder
+
+The existing salie-quarter.md identity gives a second input path
+for check_disagreement_decoder.py. At a unit shift h subtract
+2 cos(2 pi h/N) from the real normalized Salié value and divide
+by two. Clipping produces a cosine estimate z. The rate is
+arccos(z)/pi. At nonunit h the extended rate is simply 2|h|_N/N.
+
+An absolute error of 0.0001 in the normalized sum yields at most
+0.00005 cosine error and 0.005 rate error. Indeed two angles in
+[0,pi] separated by v differ in cosine by at least
+2 sin²(v/2) >= 2(v/pi)². Rounding the rate to the nearest 0.01
+still meets the 0.01 decoder tolerance (with additional precision
+or slack when implementing the elementary functions numerically).
+
+Run python check_salie_disagreement.py. Direct summation with
+public inputs recovered a proper factor on each of seven moduli
+from 15 to 10403, using floating point for this small diagnostic.
+This is an end-to-end functional baseline with linear-scale
+enumeration per query, not a polylogarithmic sum evaluator.
