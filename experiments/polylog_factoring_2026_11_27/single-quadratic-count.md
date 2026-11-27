@@ -2162,6 +2162,33 @@ The result concerns a single such majorant summed over the interval.
 It leaves open other deductions using arithmetic facts about which
 bit patterns occur, as well as efficient evaluation at growing order.
 
+### A least-nonresidue problem inside uniform small-prime separation
+
+Take a prime r≥17 congruent to 1 modulo 8. Set
+N=(4r−1)(4r−9), t=4r−3, and s=2t. The two displayed odd factors
+have ratio less than two. The true sum of these factors is 8r−10.
+The candidate s=8r−6 is four larger, and lies in the balanced
+interval since t²−N=16r and 128r≤N. It is false for every factor
+pair because its discriminant is 64r, a nonsquare. Also gcd(t,N)=1
+since gcd(t,16r)=1.
+
+An odd prime p rejects this s in the square-discriminant sieve
+exactly when the Legendre symbol (r/p) is −1. At p=r it is zero.
+Quadratic reciprocity gives (r/p)=(p/r) for distinct odd primes,
+and 2 is a quadratic residue modulo r. Thus the first rejecting
+prime is precisely the least positive quadratic nonresidue modulo r
+(the least nonresidue must be prime by multiplicativity).
+As log N is of order log r, a uniform polylogarithmic prime cutoff
+separating every false sum on every balanced odd composite would
+give a polylogarithmic least-nonresidue bound for every such r.
+
+This is an implication for complete pointwise separation by the
+odd-prime discriminant filters. The constructed factors need not
+be prime. The implication does not require a factoring algorithm
+to reject this candidate, and a direct integer square test rejects
+it immediately. For r=1009, N=16248945 and s=8066, the first
+rejecting prime is 11.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
