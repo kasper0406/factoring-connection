@@ -1499,3 +1499,39 @@ queries. Thus the prefix length is logarithmic in bit length when
 s=O(log log N). The reduction gives no efficient existence evaluator.
 Checks of the orbit mask, unit existence bit and covariance bound
 covered five moduli from 45 through 15015, including repeated powers.
+
+### Recovering a root by changing the query modulus
+
+The exponential dependence on the number of prime factors in the
+same-modulus existence reduction disappears if a uniform oracle
+can be queried on auxiliary odd moduli with variable prefix length.
+Remove factors 2 and 3 first. For a unit square y modulo the remaining
+N>1, set B=2^bit_length(N). Seek a root x<B with 3 not dividing x.
+One exists since the opposite representatives r,N-r are both below
+B and cannot both be multiples of 3.
+
+Maintain a unit a modulo d=3^j such that an eligible x is congruent
+to ±a modulo d. Start at d=3,a=1. The three classes up to sign
+above it are represented by b=a+td, 0<=t<3. For each candidate
+form M=3dN and, by CRT, the unit square Y congruent to y modulo N
+and b² modulo 3d. Query for a root of Y below the *same absolute*
+B by requiring bit_length(M)-bit_length(N) leading zeros. Since
+an odd prime power has only ±b as roots of b² for unit b, a yes
+answer is exactly feasibility of this digit. Take the first yes
+and update a=b,d=3d. Once d>2B, exactly one representative from
+±a can lie in [0,B); min(a,d-a) is that root. Verify its square.
+This takes at most three exact decisions per ternary digit, hence
+O(log N) calls on moduli below 12N², plus polynomial bit work.
+
+This deterministic root selection uses only N,y. When y=h² for a
+uniform unit h, comparison with the selected root x splits N by
+gcd(h-x,N) with probability 1-2/2^omega(N), at least one half
+when N has two or more distinct prime factors. For each prime
+power the sign either matches or differs, independently. Primality
+and perfect-power tests and recursion handle all integer inputs.
+This is an all-input randomized polynomial-time reduction conditional
+on the existence evaluator. It does not justify replacing that oracle
+by the fixed four-bit oracle, or by a splitter which simply returns
+the known factor 3 of an auxiliary modulus. The executable
+check_prefix_root_recovery.py verified all 181 unit squares across
+six moduli using a direct, exhaustive prefix-existence oracle.
