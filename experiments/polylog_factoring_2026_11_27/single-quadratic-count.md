@@ -452,6 +452,29 @@ absolute value. In particular a row scan using just these corner
 exclusions still has Θ(N) interior rows to handle. The test prunes
 rectangles but supplies no asymptotic improvement for the wide query.
 
+### Coverage of rational-center root exclusions
+
+Write H=⌊√(N−1)⌋. For a reduced fraction a/b in [0,1], with
+b≤H coprime to N, consider |bx−aN|≤H. At a root of unity x
+the integer (bx−aN)²−b² is divisible by N and has magnitude <N.
+It vanishes, so x≡±1 modulo N. This excludes mixed roots throughout
+the strip. The public roots are checked separately.
+
+Even adaptively chosen distinct centers have limited explicit coverage.
+For M≥1 centers let B=⌈√M⌉. For each b≤B there are at most b+1
+choices of a, each covering at most 2H/b+1 integers. Summing gives
+O(HB+B²). Each selected center with b>B adds at most 2H/B+1
+positions. Hence total coverage is O(√(NM)+M). Covering a fixed
+positive fraction of the second quarter by these individual strips
+requires Ω(N) centers. This argument does not address implicit
+summation over many centers or a stronger exclusion predicate.
+
+As a check, using every reduced center with b≤bitlength(N), the
+numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
+for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
+1,258,233 / 3,625,283,755 for N=14,501,135,021. Direct squaring
+verified the exclusion on every covered integer.
+
 ## Deterministic starting interval with scale one
 
 Fix c=1. For odd N having k>=2 distinct prime factors, CRT and
