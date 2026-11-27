@@ -1347,3 +1347,34 @@ obtain it directly from the square would be needed for factoring.
 A seeded root-list diagnostic on N=101*103 with 2048 buckets per
 position had 27 errors in 2000 random interval queries (union bound
 112/2048 per query). This tests decoding only.
+
+### A single public binary prefix suffices on distinct odd semiprimes
+
+This specializes the existing interval Fourier reduction to remove
+the arbitrary endpoint from the evaluator. Let n=bit_length(N),
+B=2^(n-3), N=pq for distinct odd primes. Ask for the parity of
+roots of h² with ordinary n-bit representative starting in 000,
+i.e. 0<=x<B. For unit h, remove the publicly testable contribution
+of ±h. The remaining bit is [|uh|_N<B] for a mixed root u.
+For nonunit h this last bit is publicly computable because uh=±h.
+Thus exact single-prefix evaluations supply the full sign function
+2[|uh|_N<B]-1 on the cyclic group.
+
+At frequency u the magnitude of its normalized Fourier coefficient
+is 2 sin(pi (2B-1)/N)/(N sin(pi/N)) by a geometric sum. This is
+uniformly bounded below: N>=15 and 1/4-1/N <= (2B-1)/N < 1/2,
+so the magnitude exceeds 0.3. The existing sampled heavy-frequency
+search lists u and gcd(u-1,N) splits the modulus. This also tolerates
+a predictor with sufficiently small constant error at uniform unit
+shifts: an error rate rho changes the coefficient by at most 2 rho.
+An arbitrary tiny advantage over chance is insufficient for this
+argument because the shorter interval can give biased labels.
+
+Hence the outstanding evaluator may focus on a deterministic
+codimension-three binary subspace intersected with the modular
+root condition; there are no prefix hashes or variable thresholds
+in this semiprime sufficiency statement. This remains a reduction,
+not a fast method to compute that intersection parity. Exhaustive
+unit-shift checks on 45 products of distinct odd primes through
+31 verified removal of the public pair; the smallest fundamental
+coefficient magnitude there was 0.376945.
