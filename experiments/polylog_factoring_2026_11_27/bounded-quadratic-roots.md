@@ -80,3 +80,9 @@ For N=pq with distinct odd primes, try D=(X+c)^(N−1)−1 in X²=y, with unifor
 There are infinitely many consecutive prime pairs with gap O(log p): the prime number theorem gives order x/log x primes in [x,2x] and the internal gaps sum to at most x. Along such a sequence g divides q−p and both primes are comparable. Even counting every nonunit as a success, the per-trial rate is O(log N/√N). This excludes a uniform inverse-polylogarithmic guarantee for uniform independent shifts and this exponent.
 
 An exhaustive check over c with y=4 counted (unit norm, proper gcd, norm zero mod N) as (63,64,16) for N=11·13, (0,465,1426) for N=31·61, and (9603,784,16) for N=101·103. These counts concern the norm diagnostic; they do not use the known square root to split the modulus.
+
+### Average coverage for separated balanced primes
+
+Choose primes p in [x,2x] and q in [3x,4x] independently and uniformly. Averaging over these ranges, E[gcd(p−1,q−1)] is O(log³ x). Indeed gcd(a,b)≤Σ_{d|a,d|b} d. For each d≤2x there are at most x/d+1 integers in each interval congruent to 1 modulo d. Summing d(x/d+1)² gives O(x² log x), and the prime number theorem gives Θ(x²/log² x) prime pairs. Hence the mean hit probability of the power denominator is O(log³ N/√N) on this distribution, uniformly in the unit square chosen for each N. A union bound retains negligible mean coverage for any polynomial-in-bit-length number of uniform shifts.
+
+There is also a bound for predetermined shifts at fixed N. Under a uniform unit-square target y, one may write y=r² with r uniform among units. For fixed c, each of c±r at ℓ=p,q hits the subgroup with probability at most g/(ℓ−1). Thus a list of L shifts chosen using N alone has success at most 2Lg(1/(p−1)+1/(q−1)), even when the most promising shift on that list is selected after inspecting y. This concerns the norm test; dependence on y that computes shifts outside such a list remains open.
