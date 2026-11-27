@@ -518,3 +518,22 @@ proper divisor. This uses a fixed outer box with an additional
 polynomial-bit predicate inside it. The unfiltered arbitrary-prefix
 reduction remains simpler for adaptive queries. No efficient oracle
 for these hash-filtered counts is implied by efficient hash evaluation.
+
+## Continued fractions can stop the quarter decoder early
+
+For a recovered prefix of l binary digits of u/N, let x be the
+midpoint of its dyadic cell. For odd N and a nonpublic square root
+u of one, gcd(u-1,N) and gcd(u+1,N) are complementary coprime
+factors. The reduced denominators of (u-1)/N and (u+1)/N are
+therefore these same two factors in opposite order. Call the
+smaller denominator D. Compute the continued fractions of both
+public rationals x ± 1/N and inspect every convergent denominator
+for a proper gcd with N. At 2^l>D² the midpoint error is strictly
+less than 1/(2D²), so the corresponding reduced fraction is a
+convergent by Legendre's criterion. A divisor is found at or before
+that precision, without knowing D. The l digits use l-1 quarter
+queries because the first binary digit is given. Checking after
+each prefix allows early stopping while keeping a predetermined
+sequence of query scales. This argument also applies to any one
+root pair isolated by the hash variant. It changes query count,
+not the computational cost of a quarter-parity evaluation.
