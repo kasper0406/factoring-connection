@@ -2,6 +2,7 @@
 
 AI-assisted research on the asymptotic complexity of integer factorization. Claude agents wrote the
 code, proofs and notes; GPT-6.1-sol (Codex CLI) did literature sweeps and adversarial reviews.
+Codex also authored the November 27 checkpoint, including its proofs and reference implementations.
 
 > **Status:** the earlier main theorems are internal claims audited by AI referees, not human-refereed.
 > The subexponential results share one chain of internal lemmas. The newer research-frontier notes
@@ -19,7 +20,28 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
   does not give rigorous factoring.
 - **Deterministic record:** N^{1/5} (Harvey 2021; Harvey–Hittmeir 2022).
 
-## Current research frontier (2026-11-26)
+## Current research frontier (2026-11-27)
+
+**Classical polynomial-time factoring remains open.** The November 27 checkpoint
+collects the latest proofs, reference evaluators, and reproducible experiments.
+[Research checkpoint](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/README.md)
+
+- **General factoring.** A randomized reduction uses one gap comparison per sampled
+  digit. Each comparison counts integer points in a bounded 10-dimensional
+  polytope with one rank-two quadratic equation. It handles repeated prime
+  factors. A polynomial-bit-time evaluator for the comparisons remains open.
+  [Single quadratic count](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/single-quadratic-count.md)
+- **Deterministic reduction.** For each odd modulus, signed disk counts modulo 4
+  at one common discriminant and cutoff suffice to split inputs with at least
+  two distinct prime factors. The query forms lie in one public cyclic class
+  subgroup. [Fixed-discriminant reduction](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/fixed-discriminant-split.md) ·
+  [Cyclic class encoding](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/cyclic-class-queries.md)
+- **Balanced semiprime reference evaluator.** Tangent batching inside public
+  discriminant progressions computes the fixed-cap moment in expected
+  $N^{2/5+o(1)}$ bit operations. It reproduced the published 36-bit trace and
+  divisor. [Analysis and evaluator](https://github.com/kasper0406/factoring-connection/blob/f5dbcdc76826a33ba975ac5e46948c61f3ffa39b/experiments/polylog_factoring_2026_11_27/tangent-progressions.md)
+
+## Prior research frontier (2026-11-26)
 
 **Classical polynomial-time factoring remains open.** On a balanced semiprime,
 one weighted residue from one public disk now suffices for a verified divisor,
