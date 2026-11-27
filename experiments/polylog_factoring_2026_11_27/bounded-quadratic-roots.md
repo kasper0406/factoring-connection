@@ -853,6 +853,35 @@ present reduction. The guarantee requires one prediction per prime
 with enough correct log-weight on the same N. A local list alone
 does not meet it. [Previous CRT decoding analysis](../../notes/crtdecode_results.md).
 
+**Correct weight from separate local predictions.** Draw distinct
+primes p,q uniformly in [X,2X]. Fix one proposed sum residue
+f_ℓ(N mod ℓ) for each prime ℓ≤Y=(log X)^A, for fixed A>0.
+Let G be the product of the primes on which the proposed sum is
+correct. Uniformly over these tables, E[log G]=O(log Y).
+Indeed for each product class u there are at most two ordered
+residue pairs giving both u and f_ℓ(u), by the quadratic formula
+(or the degree bound in characteristic two). Brun–Titchmarsh and
+the prime number theorem give probability O(1/(ℓ−1)) for each
+individual prime residue uniformly in this range. Independent draws
+give O(1/(ℓ−1)²) per ordered pair; conditioning on distinctness costs
+a bounded factor. Summing over ℓ−1 products gives correctness
+probability O(1/(ℓ−1)). Summing with weights log ℓ proves the claim
+by the standard prime harmonic sum. No independence across moduli
+is required.
+
+Even discarding arbitrary predictions after these tables propose
+them cannot increase G. The continued-fraction guarantee requires
+G>2HB≥2H, with H≥2X. Markov's inequality bounds the fraction of
+inputs meeting that guarantee by O(log log X/log X). This is a
+bound on the guarantee for one table per prime, not on cross-prime
+predictors using the full input or success outside the guarantee.
+
+For all 533,028 distinct prime pairs in [10000,20000], taking the
+most frequent sum for each product class separately at primes through
+31 gave mean log₂ G=8.081. This maximizes mean correct weight over
+all such tables on the sample. The necessary log₂(2H) is at least
+15.288 bits up to rounding on this interval.
+
 ### Evaluation at multiples of three
 
 For n>1 and 3 dividing b, the cyclotomic divisor product reduces modulo
