@@ -99,3 +99,26 @@ using multiplicative orders, not timings or all-moduli lower bounds.
 They exclude every smaller-degree squarefree polynomial for this
 full-matrix rank test on the corresponding cohort. Entries, selected
 minors, and other matrix constructions have different conditions.
+
+## Do cheap coefficient valuations predict the path type?
+
+At degree five, restrict to balanced p<q<2p with N≡1 mod 5.
+The possibilities modulo five are (1,1), (4,4), and the mixed pair
+{2,3}. Only the mixed pair has opposite single arrows. Equivalently
+this is a fixed quadratic-residuosity question: by quadratic
+reciprocity, 5 is a nonsquare at both hidden primes precisely in
+the mixed class. It has Jacobi symbol +1 in all three cases.
+
+The two diagonal entries are binomial((N−1)/2, i(N−1)/5) for i=1,2.
+Their valuations at any *public* small prime cost O(log N) floor
+divisions via Legendre's formula. A [held-out check](check_cartier_valuations.py)
+used the twelve valuations from the primes 2,3,5,7,11,13. Fit one
+centered least-squares linear score on 2,048 generated semiprimes,
+then froze it for a separately seeded test set with 2,048 mixed and
+2,048 other inputs. Both sets used disjoint prime-size ranges for p
+and q to keep the factor sizes comparable and the larger prime below
+twice the smaller. The score classified 994 mixed and 1,061 other
+inputs correctly: 2,055/4,096 (50.17%; balanced guessing gives 50%).
+This measures one predictor on one distribution. It provides no
+evidence of useful predictive gain and gives no impossibility
+result for nonlinear statistics or other arithmetic observables.
