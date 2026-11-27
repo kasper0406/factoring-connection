@@ -1201,3 +1201,39 @@ at least 0.209,0.213,0.171,0.194 respectively up to rounding.
 The diagnostic used factored extensions to inspect the spectrum;
 the result is an oracle reduction. The repo supplies no general
 polynomial-time ordering procedure.
+
+## One fixed magnitude threshold on augmented inputs
+
+Assume a polynomial-time decision procedure for |T_m(d)|≥1 on
+every odd m and requested unit d. It suffices for randomized
+polynomial-time factoring. Here thresholds are set using known CRT
+coordinates, so no numerical reference magnitude is needed.
+
+For N choose k=ceil(200 log N) distinct primes r>10000 coprime to N,
+put M=∏r and m=NM. For each r choose two unit grid points j^- and
+j^+ for which log|2cos(2πj/r)| lies in [−0.012,−0.006] and
+[0.006,0.012] respectively. Rounding the positive-angle solutions
+for log amplitudes ±0.009 works: near these angles the log cosine
+has derivative of magnitude below 2 with respect to angle, and the
+angular rounding error is at most π/r. Alternatively scan the
+polynomially bounded primes' grids with interval arithmetic. A
+proper gcd encountered while selecting the primes already splits N.
+
+Start with all low settings and switch them to high in order. The
+known log products form an increasing grid from below −log N to
+above log N with gaps at most 0.024. For each requested c set
+d≡Mc modulo N and d≡(m/r)j_r modulo r. By the cosine product,
+the answer is one exactly when the grid height is at least
+−log|T_N(c)|. The latter lies within the grid because the unit-scale
+magnitude is between 1/N and N. Binary search takes O(log log N)
+threshold calls on the same m. Negating the midpoint of the final
+bracket estimates log|T_N(c)| to error at most 0.012 before rounding.
+Computing each log amplitude to error O(0.001/k) leaves room below
+the 1/32 factoring threshold. The modulus has polynomial bit length.
+
+At N=77 a control made the prescribed grid using 869 auxiliary
+primes. Comparing its heights to the direct root-sum log magnitudes
+at all 60 unit scales gave maximum midpoint error below 0.00850.
+This tests calibration with ideal answers, not the threshold oracle.
+The reduction requires correctness on the selected CRT inputs; an
+average error guarantee on random units alone does not imply it.
