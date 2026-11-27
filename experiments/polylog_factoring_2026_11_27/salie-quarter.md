@@ -842,3 +842,44 @@ to the evaluator at requested scales with the stated RMS guarantee.
 FFTs of the proof extension on the same 676 moduli gave a smallest
 target coefficient of 0.13633 to five decimal places truncated.
 The observed minimum is not used as a uniform tolerance.
+
+## Amplifying magnitude with known prime factors
+
+Suppose a polynomial-time evaluator on all odd moduli m has additive
+RMS error at most C(1+log m)^d for |T_m| over uniform unit scales,
+for fixed C,d. This already suffices for randomized polynomial-time
+factoring. The guarantee must cover moduli augmented with known
+primes; a semiprime-only oracle does not give these queries.
+
+Choose k distinct auxiliary primes r≥5 coprime to N, put M=∏r and
+m=NM. For a requested unit c mod N choose c' by CRT with c'≡Mc
+mod N and c'≡(m/r)j_r mod r. The cosine product gives exactly
+|T_m(c')|=A|T_N(c)|, where A=∏_r a_r and a_r=|2 cos(2πj_r/r)|.
+With each j_r uniform on units and c independently uniform on units,
+c' is uniform on units modulo m. Each E a_r²=2−2/(r−1)≥3/2.
+
+Instead sample j_r independently with probabilities proportional to
+a_r², and divide the padded estimate by A. Relative to uniform
+auxiliary coordinates this changes the probability density by
+A²/E A². Consequently the new mean squared error, averaged over
+uniform c, auxiliary draws and oracle randomness, equals the old
+uniform mean squared error divided by E A². The identity holds for
+input-dependent errors. Each local draw uses rejection from uniform
+units with acceptance probability a_r²/4, hence constant expected
+trials. Taking k=ceil(log₂ N) makes the RMS improvement exponential
+in k and dominates every fixed polynomial in log m. The first k
+eligible primes have polynomial size in log N (a prime dividing
+the input already gives a gcd split), so log m=O(log N log log N).
+Finite small exceptions for the fixed error polynomial can be handled
+by direct factoring. The preceding constant-error reduction now applies.
+
+For bit complexity the local probabilities can be computed to any
+B bits in polynomial time and the final estimate clipped to [0,N].
+Each a_r≥1/r, so 1/A≤M. After clipping the padded estimate to [0,m],
+division requires polynomially many precision bits in log m to keep
+absolute rounding error small. Taking B sufficiently large of order
+log m also makes the total variation error of the joint sampler
+negligible compared with 1/N², controlling its contribution to MSE.
+The identity was checked over all 240 unit inputs of m=35·11 with a
+deterministic injected error depending on c'. The MSE fell from
+0.263167 to 0.146204, the predicted factor 1/1.8.

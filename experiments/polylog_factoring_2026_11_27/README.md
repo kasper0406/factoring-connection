@@ -88,6 +88,12 @@ unboundedly many prime powers. A sufficiently small absolute constant
 RMS additive error on the magnitude over unit scales suffices.
 [Regularized magnitude reduction](salie-quarter.md#constant-additive-accuracy-for-the-magnitude)
 
+A magnitude evaluator uniform over odd moduli may even have RMS
+additive error polynomial in the input bit length. Known prime
+factors amplify the signal, and sampling each auxiliary coordinate
+in proportion to its squared local magnitude cancels the effect
+of division on mean-square error. [Proof and control](salie-quarter.md#amplifying-magnitude-with-known-prime-factors)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |
