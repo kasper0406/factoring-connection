@@ -688,6 +688,33 @@ The same realization justifies the sharpness assertion on the all-positive
 Jacobi pattern by taking the two local functionals equal. These bounds
 concern field selection, not the cost of producing norm witnesses.
 
+### Extending field selection beyond two prime factors
+
+Let $k\ge2$ bound the number of distinct primes in an odd nonsquare $N$.
+Use the first $k+1$ primes as independent squareclasses, first taking gcds
+with $N$. In the public Jacobi kernel choose any $k$-dimensional subspace.
+On it the hidden Legendre functionals have rank at most $k-1$: the sum of
+the rows for odd prime exponents vanishes there and the sum involves at
+least one row. Hence some nonzero class among these $2^k-1$ entries splits
+at every prime. Its square roots lift to all prime powers by Hensel's lemma.
+This covers repeated factors as well. Perfect powers can be detected separately.
+
+Write $P$ for the product of the first $k+1$ primes. Every radicand $d$ is
+at most $P$. For each CRT root $u$ the preceding planar lattice gives a
+witness $t^2-dy^2=jN$ with $0<|j|\le2\sqrt{P/3}$ and
+$t^2+dy^2\le2\sqrt{P/3}\,N$. If $\gcd(y,N)>1$ it already splits $N$,
+unless $N$ divides both coordinates; that is impossible for $N>2\sqrt{P/3}$.
+Otherwise $t/y$ returns $u$. Two CRT roots differing at just one prime
+give a proper factor when $N$ has at least two distinct primes.
+For $k\log(k+2)=O(\log\log N)$ the primorial bound gives
+$P=(\log N)^{O(1)}$. The complete list of equations is then polynomial
+in the input bit length and may be generated given the bound $k$, without
+knowing the individual primes or exponents. Finding witnesses is still open.
+
+The original seven fields can all fail on a product of three primes:
+for $N=7\cdot11\cdot13$, none of their radicands is a square at all three.
+This is a coverage limitation distinct from the cost of solving a selected conic.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
