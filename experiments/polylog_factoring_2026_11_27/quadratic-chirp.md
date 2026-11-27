@@ -5176,6 +5176,12 @@ For a b-bit modulus M and canonical target Y, introduce unsigned x and k, with b
 
 Schoolbook multiplication, constant multiplication, binary addition and equality use O(b²) bounded-fan-in Boolean gates. Replace each gate by its zero-one truth-table tensor, fix the output to one, and sum over all wire values with equality tensors at fanout. All internal values are uniquely determined by the input wires. Consequently the integer contraction equals the exact number of qualifying roots, an integer at most 2^b. Comparing it with zero gives existence. This construction uses only M, Y and the prescribed prefix. A public encoding of polynomial size is therefore available. The unresolved requirement for transfer is a polynomial-bit-time contraction of this particular network or an equivalent encoding, including the work at the boundary. The IACR version archive also returned HTTP 403 on the follow-up check.
 
+#### Width of dense elimination for the schoolbook square
+
+Suppose the prefix leaves u input bits free. In the wire-variable primal graph, two variables are adjacent whenever a gate tensor contains both. For each free bit, its input and the copies routed to partial-product gates form a connected branch set through its equality tensors. These u branch sets are disjoint. For every pair of distinct free bits there is a partial product x_i x_j, even in the symmetric squaring implementation that forms this product just once and shifts its weight. Its AND tensor joins the two corresponding branch sets. Contract each set to one vertex to exhibit a complete graph on u vertices as a minor. With shared variables instead of explicit copies it is already a clique.
+
+Hence this primal graph has treewidth at least u−1 after substituting the fixed prefix. Every ordering of ordinary dense variable elimination on this gate factorization has a step with at least u−1 remaining neighbors, where its dense Boolean message needs at least 2^(u−1) entries. Early binary-decoder queries leave Θ(log N) bits free. This rules out obtaining a polynomial bound for them by choosing an elimination order alone. Exploiting zeros, deterministic gates or algebraic structure to replace or compress the factors changes the calculation; the clique minor gives no corresponding size lower bound for such compressed representations.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
