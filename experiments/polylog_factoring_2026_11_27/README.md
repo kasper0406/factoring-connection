@@ -741,6 +741,27 @@ $(2^k-1)/O(k^2\log(k+2))$ entries by pigeonholing these inputs.
 This lower bound does not constrain use of other information in $N$ or
 radicands outside the specified span.
 
+### One input-dependent conic for every odd non-prime-power input
+
+After square and gcd checks, set $a=\lfloor\sqrt N\rfloor$,
+$D=N-a^2>0$, with $\gcd(a,N)=1$. The public conic
+$T^2+DY^2=NZ^2$ has the point $(a,1,1)$. Here $-D$ is a known unit
+square modulo $N$ regardless of the number of distinct prime divisors.
+For any full prime power $h=p^e\parallel N$, $h<N$, there is a primitive
+point of polynomial bit length with $\gcd(T-aY,N)=h$.
+For existence take $m=a+h$, $Z=m^2+D$, $Y=h^2-N$, $T=mY-hZ$ and
+divide the triple by its common gcd. Direct substitution gives the equation.
+Before division $v_p(Y)=e$, $h\mid Z$, and $h^2\mid T-mY$, so
+after division $T=aY\bmod h$ and $Y$ is a unit there.
+At every other prime power dividing $N$, $Y=h^2\bmod q^f$ is a unit and
+$T=-aY\bmod q^f$ by substitution. These congruences give the stated gcd.
+The raw coordinates have magnitude $O(N^3)$. Conversely any primitive point
+whose difference $T-aY$ has a proper gcd with $N$ gives a factor immediately.
+Thus a single positive definite binary form with a variable square on the
+right removes the field-selection cost. Producing a point with the required
+gcd remains the factoring search itself. Example: $N=77$, $D=13$,
+$(T,Y,Z)=(-149,-2,17)$ gives gcd 7.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
