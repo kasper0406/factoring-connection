@@ -1685,3 +1685,33 @@ divided by each m is then odd. This exponent uses the factorization.
 For N=15 the requirements already conflict modulo 2 and 4. Thus
 even an exponent chosen separately for each N cannot implement the
 normalized sign on every modulus and every unit.
+
+### The exponents of a sparse sign polynomial suffice to factor
+
+Suppose N is odd and F(X)=∑ c_i X^{d_i} realizes the normalized sign
+S on every unit modulo N. For each prime p dividing N, every nonzero
+residue modulo p lifts to a unit modulo N. Thus F agrees on F_p^×
+with X^((p−1)/2). Reduce the exponents modulo p−1 and collect
+coefficients. Both resulting polynomials have degree at most p−2
+and agree on p−1 points, so their coefficients agree. In particular
+some positive d_i equals (p−1)/2 modulo p−1.
+
+Hence M=N·lcm{2d_i : d_i>0} is a multiple of every φ(p^e) for
+p^e exactly dividing N. Its bit length is bounded by the input bit
+length plus the sum of the listed exponent bit lengths (up to one bit
+per exponent). Even a superset of the support works. The coefficients
+are unnecessary.
+
+To split an odd divisor D of N with at least two distinct prime factors,
+write M=2^s t with t odd. For a uniform random unit a modulo D, take
+gcd(D,a^(2^j t)−1) for j=0 through s, using repeated squaring.
+The local orders of a^t are independent powers of two. On each odd
+prime-power component every individual order has probability at most
+1/2 by cyclicity of the unit group. With probability at least 1/2 two
+chosen components have different orders, and some gcd separates them.
+A sampled nonunit can already give a factor. Recurse with the same M,
+handling primes and prime powers by primality and exact root tests.
+Thus a polynomial-bit explicit exponent list covering a correct sign
+polynomial is itself sufficient for expected polynomial-time factoring.
+This argument requires an explicit list and gives no bound for circuits
+whose expanded support is large.
