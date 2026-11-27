@@ -538,3 +538,31 @@ bit length would therefore suffice. The public single-root labels
 from the training experiment do not certify recognition accuracy:
 on tied fibers they cannot reveal which of the two classes applies
 from the observed label alone.
+
+## Coverage of searching integer square lifts
+
+For a uniform unit square y represented in [0,N), test whether
+y+kN is an integer square at L distinct nonnegative levels chosen
+from N alone. For consecutive levels starting at zero, the covered
+squares are exactly the distinct unit residues x² mod N for
+1<=x<=isqrt(LN-1). For any fixed choice of levels the count of
+covered residues is at most sqrt(LN)+L: each interval
+[kN,(k+1)N) has at most sqrt(N)(sqrt(k+1)-sqrt(k))+1 integer
+square roots. The widths decrease with k, so their sum is at most
+the sum for the first L levels. Repeated residues can only reduce
+coverage. Divide by phi(N)/4 to get the hit probability. Since
+phi(N)/N>=8/15 for distinct odd primes, polylog L gives negligible
+coverage in the bit length, even if the chosen levels are large.
+
+On a hit, return a root x selected solely from y and independent
+coins. The sampled h conditioned on y is uniform among the four
+roots, so gcd(h-x,N) splits N with probability exactly one half:
+the two roots outside ±x each agree with x at precisely one prime.
+Thus root witnesses would bypass label prediction if they covered
+an inverse-polynomial fraction. This level bound is specific to
+levels chosen independently of y.
+
+Exact covered-residue counts for L=1,16,64 respectively were
+100,388,744 out of 2550 at N=101*103, and 1009,4024,8016 out
+of 255024 at N=1009*1013, by enumerating and deduplicating the
+unit square residues up to the stated root cutoff.
