@@ -928,6 +928,36 @@ The list suffices for angular evaluation, or directly for the gcd split on
 the preceding two-representation family. This improves the coordinate-scan
 bound for this evaluator. It remains exponential in input bit length.
 
+### Complexity baseline for circle enumeration and angular evaluation
+
+For $N=a^2+1=pq$ with distinct odd primes, finding the other orbit and
+factoring are deterministically equivalent up to polynomial-in-bit-length
+postprocessing. Given $p,q$, use CRT for $u=a\bmod p$, $u=-a\bmod q$.
+Gauss-reduce the basis $(N,0),(u,1)$. Its shortest nonzero vector $(t,y)$
+has squared norm at most $2N/\sqrt3<2N$, and the norm is divisible by $N$,
+so it equals $N$. Squarefreeness gives $\gcd(y,N)=1$. Hence the original
+gcd decoder recovers $p$. The other direction already follows from any
+representative of the second orbit. With both orbits known the normalized
+binary-degree angular sums to fixed precision take polynomial bit time by
+repeated squaring. In particular the deterministic exponent-one-fifth
+factoring algorithm gives an $N^{1/5+o(1)}$ upper bound for this evaluator.
+The direct arc algorithm improves on coordinate scanning but is asymptotically
+slower than this existing factoring-first route.
+[Harvey, Theorem 1.1](https://arxiv.org/abs/2010.05450)
+
+On unrestricted $N$, listing all circle points cannot take polynomial time
+in the bit length of $N$ because of output size. For the product of the
+first $k$ primes equal to 1 modulo 4 there are $2^{k-1}$ symmetry orbits
+by Gaussian factorization, while $\log N=O(k\log k)$ by the prime number
+theorem in progressions. This obstruction concerns enumeration only.
+For example, on this squarefree family, given a Gaussian prime
+$\pi_j$ above each rational factor $p_j$, the signed and ordered angular
+sum divided by four equals $\prod_j 2\operatorname{Re}
+((\pi_j/\sqrt{p_j})^{4m})$ by independent conjugate choices. It can be
+evaluated to fixed absolute precision with polynomially many bit operations
+using guard bits for the at-most-$2^k$ product amplification, without listing
+the exponentially many orbits.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
