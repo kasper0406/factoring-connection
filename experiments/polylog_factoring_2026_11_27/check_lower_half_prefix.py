@@ -1,6 +1,8 @@
 """Split an odd modulus using parity counts on ordinary binary prefixes."""
 
-from math import gcd
+from math import gcd, isqrt
+
+from bounded_quadratic_roots import quadratic_roots
 
 
 def split(n, prefix_parity):
@@ -11,7 +13,8 @@ def split(n, prefix_parity):
     stop = (n + 1) // 2
     start = 0
     size = 1 << (stop - 1).bit_length()
-    while size > 1:
+    cutoff = isqrt(n)
+    while min(size, stop-start) > cutoff:
         size //= 2
         middle = start + size
         if middle >= stop:
@@ -19,10 +22,16 @@ def split(n, prefix_parity):
         parity = prefix_parity(start, size) ^ int(start <= 1 < middle)
         if not parity:
             start = middle
-    divisor = gcd(start - 1, n)
-    if not (1 < divisor < n and start**2 % n == 1):
-        raise ValueError("Decoded candidate failed verification")
-    return divisor
+    end = min(start + size, stop)
+    block = max(1, cutoff // 8) + 1
+    for origin in range(start, end, block):
+        span = min(block, end-origin) - 1
+        for offset in quadratic_roots(n, 2*origin, origin**2-1, span):
+            root = origin + offset
+            divisor = gcd(root - 1, n)
+            if 1 < divisor < n and root**2 % n == 1:
+                return divisor
+    raise ValueError("No verified mixed root in terminal interval")
 
 
 if __name__ == "__main__":
