@@ -284,3 +284,28 @@ in magnitude by 2|sin(pi s/N)| under the same difference. That
 factor can be small, so the remainder estimate alone does not give
 a uniform decoder. Nor does sparsity per block locate the active
 digits in polynomial bit time.
+
+## Dyadic lags and small stationary roots
+
+Suppose N=pq with distinct odd primes p<q<2p. Take an isolated
+nonpublic stationary digit with slope s=2c/a modulo N and let
+m=min(s mod N, -s mod N). Then m²=4 modulo N and m is not 2.
+For fixed integer B>=1, if m<=B sqrt(N), testing 4+kN for squares
+for 1<=k<=B² recovers a nontrivial root and a factor via gcd(m-2,N)
+at the matching k. All these tests use public input only.
+
+Otherwise consider the first power of two h with hm>=N/4.
+It satisfies N/4<=hm<=N/2, including when h=1. The linear
+difference at lag h multiplies the magnitude of the stationary
+fundamental by 2|sin(pi hs/N)|>=sqrt(2). Telescoping the one-step
+bound gives mean absolute normalized nonstationary error at most
+8h(1/p+1/q)<=4(p+q)/m<12/B, since p+q<3 sqrt(N).
+Thus for any fixed desired error level one may choose a constant B,
+run the small-square tests and try O(log N) public dyadic lags.
+At least one lag has both guarantees if the square tests did not
+already split N. For B=1024 the mean error is below 0.012.
+
+These are guarantees for the linear difference and an isolated
+stationary signal. The absolute value or threshold of a difference
+has a different spectrum. Computing the signed difference from
+unfactored input in polynomial bit time is still open.
