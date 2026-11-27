@@ -434,6 +434,32 @@ Dirichlet's theorem supplies distinct primes in either pair of classes.
 At the smaller probe $r=5$, $N\equiv\pm2$ forces one factor to be $\pm1$,
 so all four magnitudes are then exactly one from public data.
 
+### How much do all the unit-magnitude flags reveal?
+
+Choose two distinct primes uniformly without replacement from $[X,2X]$.
+Let $B$ record the preceding yes/no test for every prime $7\le r\le y$,
+where $y=(\log X)^A$ for fixed $A>0$. Then its Shannon entropy in bits is
+$H(B)=O(\log y)=O_A(\log\log X)$. Indeed Brun–Titchmarsh bounds the
+number of primes in either class $\pm1\bmod r$ in the interval by
+$O(X/(r\log X))$ uniformly in this range. The prime number theorem and a
+union bound give $\Pr(B_r=1)=O(1/r)$. Binary entropy is therefore
+$O((\log r)/r)$, including small primes by enlarging the constant.
+Entropy subadditivity and $\sum_{r\le y,\ r\text{ prime}}(\log r)/r
+=O(\log y)$ finish the proof without any independence assumption.
+
+Algorithmic consequence on this distribution: suppose an algorithm factors
+each input in polynomial time given its true flag vector. Sample another
+independent pair of primes in the same interval, compute its flags, run the
+algorithm with these guessed flags using the polynomial time cutoff, and verify
+by division. Uniform prime samples take expected polynomial time by rejection
+sampling with a primality test. For at least a $1-\epsilon$ fraction of inputs,
+the probability mass of their true vector is at least $2^{-H(B)/\epsilon}$,
+by Markov applied to the surprisal. For fixed $\epsilon>0$, polynomially
+many independent guesses therefore suffice for constant success on each
+of those inputs. This removes the flags at polynomial overhead for a typical
+balanced input in this model. It gives no worst-case simulation, and it does
+not cover the full magnitudes or predicates with variable target residues.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
