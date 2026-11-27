@@ -395,6 +395,25 @@ At these probes $|\Phi_N(z)|\ge4/r^2$ by the chord bound, so ordinary
 polynomial-bit arithmetic suffices for the decoder. The outstanding evaluation
 problem is to obtain those real magnitudes from $N$ alone.
 
+### Uniform sampling of the nonprimitive-root correction
+
+The product over all nonidentity $N$th roots has public magnitude
+$B=|(z^N-1)/(z-1)|$. To obtain $\log|\Phi_N(z)|$, subtract from $\log B$
+the sum of $\log|z-e^{2\pi i j/N}|$ over $1\le j<N$ with $\gcd(j,N)>1$.
+For distinct primes $N=pq$, a uniform index hits this correction with exact
+probability $h=(p+q-2)/(N-1)$. Independent uniform sampling of the weighted
+indicator gives zero correction on the event of no hit, of probability $(1-h)^m$
+after $m$ draws. The first hit itself factors $N$.
+
+This causes actual magnitude error on an infinite family. At $z=e^{2\pi i/5}$
+take distinct primes $p,q\equiv2\pmod5$. Then $B=1$, whereas the
+four-chord formula gives $|\Phi_N(z)|=(\sin(\pi/5)/\sin(2\pi/5))^2
+=(3-\sqrt5)/2$. For comparable such primes (available in dyadic intervals
+by the prime number theorem in arithmetic progressions), achieving 1% relative
+accuracy with probability at least $2/3$ requires at least
+$\log(3)/[-\log(1-h)]=\Theta(\sqrt N)$ draws for this estimator.
+This only addresses the estimator that samples the correction term by term.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
