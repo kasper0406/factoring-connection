@@ -113,6 +113,11 @@ The square-bin sign correction has MSE gain at most O(B log N/√N)
 on balanced semiprimes, uniformly over B interval bins and their
 bounded weights. [Proof and best-fit controls](salie-quarter.md#factoring-from-any-inverse-polynomial-mse-gain-over-the-public-cosine)
 
+On unfactored odd inputs the mean log magnitude over L successive
+doublings is within log(N)/L of zero. Two neighboring window lengths
+at accuracy 1/(64L) per length suffice to recover the single-scale
+log magnitude. [Exact telescoping identity](salie-quarter.md#averaging-log-magnitudes-along-doubling-scales)
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |

@@ -1081,3 +1081,28 @@ As an independent finite control, optimize each weight using the
 true residual over *all* units: in a bin set w=clip(∑HR/∑H²,−1,1).
 The maximum gains for 32 equal bins were 0.00974008 at 10403 and
 0.00012266 at 1022117. These are oracle fits specific to each N.
+
+## Averaging log magnitudes along doubling scales
+
+For odd N>1 and a unit c let F(c)=log|T_N(c)| and let A_L(c)
+be the mean of F(2^j c) for 0≤j<L. With the CRT notation above
+set P(c)=∑_r log|sin(2πcv_r/r)|. No sine vanishes at a unit.
+The double-angle identity gives F(c)=P(2c)−P(c), hence exactly
+
+    L A_L(c) = P(2^L c) − P(c).
+
+On an odd grid the sine magnitude at a unit is between 1/r and 1,
+so −log N≤P≤0. Returning zero therefore estimates A_L uniformly
+to log(N)/L without any prime factors, and gives the exact average
+on a complete doubling orbit. This is a guarantee for the average.
+It need not hold at a single scale.
+
+The precision needed to undo the smoothing is explicit. The identity
+F(c)=(L+1)A_(L+1)(c)−L A_L(2c) extracts one scale without accessing
+the factors. A public evaluator with pointwise error at most 1/(64j)
+at both lengths j=L,L+1 would estimate F to error 1/32 and meet
+the log-magnitude factoring reduction. This is a sufficient precision
+threshold, not a lower bound for all decoders. Direct complex sums over
+square roots verified the telescoping identity at all units for odd
+moduli 3 through 201 and lengths 1 through 16 (132,512 comparisons;
+largest absolute discrepancy below 6.1·10^−14).
