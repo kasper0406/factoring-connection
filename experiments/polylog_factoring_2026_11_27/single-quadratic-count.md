@@ -1715,3 +1715,15 @@ Thus a polynomial-bit explicit exponent list covering a correct sign
 polynomial is itself sufficient for expected polynomial-time factoring.
 This argument requires an explicit list and gives no bound for circuits
 whose expanded support is large.
+
+The exponent test also covers a sparse rational expression A/B for S
+when B is invertible on all units. More generally, assume A(u)=S(u)B(u)
+on all units and that B is not identically zero as a function on
+F_p^× for any prime p dividing N. Modulo X^(p−1)−1 over F_p, the
+reduced numerator equals the reduced denominator shifted cyclically by
+(p−1)/2. Choose any nonzero reduced denominator coefficient. Its shifted
+numerator coefficient is nonzero as well, so some original numerator
+exponent a and denominator exponent b satisfy a−b ≡ (p−1)/2 mod p−1.
+Thus the list of nonzero absolute differences |a−b| passes the preceding
+exponent test. Its length is at most the product of the support sizes,
+and it uses neither the coefficients nor an expansion of 1/B.
