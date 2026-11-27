@@ -1,7 +1,7 @@
 """Check ordered Frobenius products for the cubic T^3-T-1."""
 
 from math import gcd
-from sympy import Matrix
+from sympy import Matrix, n_order
 from check_lehman_window_baseline import cohorts
 
 
@@ -37,4 +37,5 @@ if __name__ == '__main__':
             a,b = power_matrix(p,n),power_matrix(q,n)
             assert all(v%p==0 for v in c-a*b)
             assert all(v%q==0 for v in c-b*a)
-        print(size,len(cases),hits)
+        threshold = min(min(n_order(p,q), n_order(q,p)) for p,q in cases)
+        print(size,len(cases),hits,threshold)

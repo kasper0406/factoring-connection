@@ -63,3 +63,39 @@ grows with N. On the 200 larger unplanted controls, the [check](check_power_subs
 proper factors from gcds of the entries or determinant of C_N.
 Thus fast computation and the order identity alone do not give a
 one-sided zero. No speedup follows from the finite-state analogy.
+
+## Minimum degree for a local rank drop in power substitution
+
+For any monic squarefree f of degree d over F_p, let C_N have columns
+1,T^N,...,T^((d−1)N) in the power basis modulo f. Over a splitting
+field, evaluation at the roots α of f converts this into a Vandermonde
+matrix with nodes α^N. Its rank is precisely the number of distinct
+nodes. Raising to p is injective in the splitting field, so for N=pq a
+collision requires distinct nonzero α,β with α/β of order q. Since
+the order of the ratio divides the lcm of the two element orders,
+at least one element has order divisible by q. That element lies in
+an extension of degree e≤d. Hence q divides p^e−1 and ord_q(p)≤d.
+
+The least degree allowing any such f is exactly max(2,ord_q(p)).
+For order t>1, take the minimal polynomial of a primitive q-th root
+of unity over F_p: its t distinct conjugates all map to 1. For t=1
+take two distinct q-th roots in F_p as the roots of a quadratic.
+This sharpness argument uses the hidden primes; it is not a public
+construction. Interchange p,q for the other local field.
+
+Repeated factors do not automatically help. For d≤min(p,q), in the
+local algebra over a splitting field T=α+ε on each repeated-root
+block with ε^d=0. Thus T^N=α^N on that block. Below both order
+thresholds the rank simply counts distinct roots, namely
+d−deg gcd(f,f′) in these characteristics. A difference of those
+degrees is already detectable in polynomial Euclidean division over
+Z/N: a nonunit leading coefficient yields a factor, and otherwise
+both field computations have the same degree sequence.
+
+The smallest of the two local orders over all 100 unplanted 32-bit
+prime controls was 5,987,065, and over all 100 unplanted 48-bit prime
+controls it was 133,632,043,168. These are factor-assisted diagnostics
+using multiplicative orders, not timings or all-moduli lower bounds.
+They exclude every smaller-degree squarefree polynomial for this
+full-matrix rank test on the corresponding cohort. Entries, selected
+minors, and other matrix constructions have different conditions.
