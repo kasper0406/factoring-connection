@@ -1399,6 +1399,20 @@ point, with cost polynomial in the input bits even for empty arcs. This is a dir
 bound; it does not supersede the earlier factoring-first baseline on the
 semiprime family or establish optimality of quarter-power arc lengths.
 
+### Coarse arc decisions recover the same hidden orbit
+
+On the two-orbit family $N=a^2+1=pq$ above, normalize to $0\le y\le x$.
+Define a prefix query to ask whether the orbit other than $(a,1)$ has
+$y\le k$. These are genuine arc prefixes because height is monotone in
+the first octant. Binary search on $0\le k\le\lfloor\sqrt{N/2}\rfloor$
+recovers the exact height in $O(\log N)$ queries. An integer square root
+then gives $x$, and the existing gcd decoder splits $N$. Conversely the
+factoring-to-orbit construction above answers every prefix query by one
+height comparison. Thus polynomial-time exact arc-prefix decisions and
+polynomial-time factoring on this family are equivalent under deterministic
+Turing reductions. The decision predicate reformulates the earlier
+localization problem. A new algorithm would need a way to evaluate it.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
