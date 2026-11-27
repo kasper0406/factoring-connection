@@ -5210,6 +5210,14 @@ On D=2^b binary strings let H be the indicator of the two distinct mixed roots u
 
 For the scale-independent residual criterion, any nonzero sum of K Walsh characters has squared mass share at most K/D at every single string by Cauchy–Schwarz and Parseval. Both bounds concern explicit spectral sparsity. A product of b one-bit tests can have full Walsh support while having tensor-train width one, so structured representations of many characters remain open.
 
+#### Reading a mixed root with weight-two Walsh queries
+
+Although a short expansion has poor squared-error approximation, selected coefficients can encode a root directly. With the preceding notation let W(S) be the unnormalized signed sum of the character indexed by S over the two mixed roots. A full-root evaluator suffices by subtracting the known contributions of 1 and N−1. The two mixed roots sum to odd N, so exactly one, u, has low bit one. For each higher bit j,
+(W({j})−W({0,j}))/2 = (−1)^(bit_j(u)).
+Indeed the difference masks out the even root and doubles the odd root's contribution. The 2(b−1) masks are nonadaptive and independent of N except through b. Absolute errors strictly below one in each unnormalized sum preserve the sign of the difference. With the orthonormal convention this tolerance is 2^(−b/2), which matters when assessing an approximation algorithm. Recover u, verify it, and take gcd(u−1,N).
+
+As a check, exhaustive full root lists gave the predicted bits and proper splits on all 210 products of two distinct odd primes below 80. An efficient public evaluator for these signed sums remains open. The formula is a readout identity, not an algorithm for computing the sums from N.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
