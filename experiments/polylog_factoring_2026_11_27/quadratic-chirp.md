@@ -4231,3 +4231,37 @@ This bound concerns a single linear Fourier approximation, with
 frequencies and coefficients fixed across the full interval of m.
 It leaves open grouped or nonlinear evaluations, frequencies outside
 the dictionary, and approximations on the promised rough inputs alone.
+
+### Fourier size on the rough-input CRT family
+
+For fixed j consider one linear Fourier sum, frequencies of reduced
+denominator at most 2j, required to approximate A_j(m) within 1/2
+(strictly) on all composite m with p_min(m)>j and 4j²≤m. Its minimum
+number of frequencies is Θ(j²/log j). The upper bound expands only
+the indicators for primes j<p≤2j, since no other divisor can occur.
+
+For the lower bound, in lcm(1,...,2j) fix the residue 1 at every
+prime-power component belonging to a prime ≤j. Leave each band
+prime p free. CRT realizes the full product of these coordinates.
+Impose divisibility by one further prime in (2j,4j) and take a
+representative exceeding both that prime and 4j². This gives
+promised composite inputs with O(j) bits by the usual Chebyshev
+bound on the logarithm of the lcm.
+
+On this family every dictionary frequency is constant or depends
+on exactly one free coordinate (a denominator containing p must
+equal p). Take the real part, at most doubling the support. Write
+the error as a constant plus local real errors e_p, each relative
+to the point indicator of residue zero. Uniform error <1/2 implies
+sum_p osc(e_p)<1: independent coordinates realize all local maxima
+simultaneously and likewise all minima. If k_p nonconstant modes
+are present at p, Parseval gives variance at least
+(p−1−k_p)/p², since every missing nonconstant coefficient of the
+indicator is 1/p. The oscillation is at least the standard deviation.
+Thus a prime with fewer than (p−1)/2 modes consumes Ω(1/sqrt(j))
+of the total oscillation. Only O(sqrt(j)) primes can do so.
+The prime number theorem gives Θ(j/log j) band primes, and the
+others each need Ω(j) terms. This proves the bound.
+
+The CRT witnesses can have Θ(j) bits. The proof leaves open rough
+inputs of O(log j) bits, grouped evaluations and decision-only tests.
