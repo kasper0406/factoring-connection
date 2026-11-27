@@ -2682,6 +2682,36 @@ absolute interval deviations 1315/17952, 967/8976, and 39/1496 for
 projections x, x+z, and 3x+5z respectively, taking the range of the
 centered cumulative counts.
 
+### The square-class bit of a sampled norm-one point
+
+Keep the sampler's unit α=v+w√a with norm d=v²−aw², and write
+g=α/conjugate(α)=x+z√a. Since x+1=2v²/d and x−1=2aw²/d,
+for unit v,w the Jacobi symbols of 2(x+1) and 2(x−1) are respectively
+(d/N) and (a/N)(d/N). They are opposite here. The label (d/N)
+also works when a coordinate vanishes, and changing the sampler
+preimage multiplies d by a scalar square.
+
+Over each local ring at r or u, g is a square in the norm-one group
+exactly when d is a scalar square. In fact this gives an explicit
+bijection over the composite too: for each scalar t with t²=d,
+the group element α/t has norm one and square g. Conversely if h
+has norm one and h²=g, then α/h equals its conjugate and hence is
+a scalar (2 is invertible); its square is d. Thus extracting halves
+of a sampled point with its preimage in hand amounts to extracting
+ordinary modular square roots of its norm.
+
+On a uniform point the two local square-class signs are independent
+fair bits: CRT makes the local components independent and each local
+cyclic group has even order. Their product is the public Jacobi label.
+Restricting to either label by rejection sampling takes two trials
+on average and leaves the two compatible local sign pairs equiprobable.
+Conditioning on the label alone can increase the probability of any
+event by at most two. The complete point can contain other information.
+
+On N=187 and a=−1, direct group squaring and enumeration of sampler
+preimages gave 48 distinct points in each of the four local sign
+pairs and agreed with both local norm characters for every preimage.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
