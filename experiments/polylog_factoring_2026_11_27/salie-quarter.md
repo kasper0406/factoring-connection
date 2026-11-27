@@ -123,3 +123,27 @@ optimal RMS error tending to 2 for balanced growing primes. The
 decoder uses h separately when subtracting A from an estimate of
 T. These calculations distinguish that procedure from fitting g
 on square arguments alone.
+
+## A public gcd test for exceptional Gram entries
+
+For an explicit list of M different quadratic coefficients modulo
+N=pq, check gcd(a-b,N) on each pair. Any nonunit difference gives
+a proper factor immediately. Otherwise every off-diagonal Gram
+entry has modulus at most B_p B_q rather than max(B_p,B_q), since
+both prime Gauss bounds apply at once. With beta=B_p B_q the full
+target projection bound therefore improves to
+
+    16 M beta² / (1-(M-1)beta), whenever (M-1)beta<1.
+
+In particular for balanced primes tending to infinity,
+beta=(1+o(1))/sqrt(N). For any fixed epsilon>0 and
+M<=(1-epsilon)sqrt(N), a list passing the gcd test captures only
+O_epsilon(1/sqrt(N)) of the target's squared norm. Its optimal
+root-mean-square error still tends to 2 on uniform unit shifts.
+An explicit list in that size range giving error <=0.2 on all
+units must therefore contain a pair revealing a factor for all
+sufficiently large balanced inputs. Checking all pairs is
+polynomial in the bit length only for polynomial-size lists
+(or under an independently established faster bound); this result
+does not construct such lists. Repeated coefficients modulo N
+must first be merged so that gcd=N cannot mask a proper collision.
