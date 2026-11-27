@@ -77,6 +77,7 @@ def decode_residues(modulus, oracle):
         work['accepted_primes'] += 1
         work['largest_answer_prime'] = prime
         work['largest_selector_bits'] = max(work['largest_selector_bits'], size - 1)
+        work['largest_query_dimension'] = 4 * work['largest_selector_bits'] + 4
         local = interpolate(points, values, prime)
 
         if degree is None:
@@ -107,7 +108,6 @@ def decode_residues(modulus, oracle):
         integer = integer * radix + coefficient
     integer = integer * radix + modulus
     work['crt_modulus_bits'] = combined_modulus.bit_length()
-    work['largest_query_dimension'] = 4 * work['largest_selector_bits'] + 4
     return decode_radix(modulus, integer), work
 
 

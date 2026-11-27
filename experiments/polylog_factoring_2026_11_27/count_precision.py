@@ -95,6 +95,20 @@ def check():
                 power_checks += 1
             largest_power_noise = max(largest_power_noise, noise.bit_length())
 
+    for components in ((101, 1000000007), (101**2, 1000000007)):
+        n = prod(components)
+        exponent = 5 * n.bit_length()
+        modulus = n**exponent
+        count = prod(q**exponent + 1 for q in components)
+        assert decode_power_count(n, exponent, count + isqrt(modulus)) == components
+
+    close_pair = (1000000007, 1000000009)
+    n = prod(close_pair)
+    for exponent in (1, 2, 8, 32, 128):
+        modulus = n**exponent
+        public_estimate = modulus + 1 + isqrt(4 * modulus)
+        assert abs(prod(q**exponent + 1 for q in close_pair) - public_estimate) <= isqrt(modulus)
+
     fixtures = (*pairs, (9, 25, 7), (3**25, 5**7, 7**8, 11**14, 13**5, 17**4, 19, 23))
     for components in fixtures:
         n = prod(components)
@@ -119,6 +133,7 @@ def check():
             max_divisions = max(max_divisions, divisions)
 
     print(f'{power_checks} power-lift checks, maximum noise {largest_power_noise} bits')
+    print('Two imbalanced and five near-balanced square-root-error controls passed')
     print(f'{padding_checks} padding checks, maximum noise {largest_padding_noise} bits')
     print(f'{interval_checks} certified relative intervals, maximum {max_divisions} trial divisors')
 
