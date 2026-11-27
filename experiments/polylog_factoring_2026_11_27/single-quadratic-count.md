@@ -2097,6 +2097,45 @@ degree saving over exact inclusion–exclusion. A general algorithm
 would need a choice of small primes that separates the target and a
 uniformly sufficient, efficiently computable moment order.
 
+### A degree lower bound for small-prime interval certificates
+
+Let X_i(t) be the rejection bit of a filter modulo a distinct prime
+p_i≤L. Discard constant-pass filters and assume each remaining filter
+both passes and rejects some residue. This holds for the nonconstant
+factor-sum tests since s=N+1 always passes locally. Write T for the
+number of filters. Consider any real polynomial F of degree at most k
+in their bits, nonnegative on the Boolean cube and satisfying F(0)≥1.
+Its sum over W consecutive t upper-bounds the survivor count. With
+D equal to the sum of binom(T,j) for 0≤j≤min(k,T), this upper bound
+is itself at least
+
+$$
+\max\{0,(W-D L^{2k})/(D L^k)\}.
+$$
+
+To see this, take expectation μ over a full CRT period. The bits are
+independent Bernoulli variables with means α_i in [1/L,1−1/L].
+Their centered, variance-one versions have absolute value at most √L.
+Products φ_S of these centered variables form an orthonormal basis.
+Multilinearizing F leaves only |S|≤k. Each coefficient
+c_S=E[F φ_S] satisfies |c_S|≤μ(F)L^(k/2) by nonnegativity.
+Evaluating at zero gives 1≤F(0)≤D μ(F)L^k.
+Each nonconstant basis function has mean zero over its own period
+of length at most L^k. Its sum on the interval therefore has magnitude
+at most L^(3k/2), by discarding whole periods and bounding the tail.
+Consequently the interval sum of F is at least (W−D L^(2k))μ(F),
+giving the displayed inequality whenever its numerator is positive.
+
+In particular, a certificate strictly below one needs
+W < D(L^(2k)+L^k). For T,L polynomial in b=log N and
+W=N^δ with fixed δ>0, D≤(T+1)^k for k≥1, hence k=Ω(b/log b).
+This covers squared-polynomial moment bounds and even arbitrary
+nonnegative low-degree polynomials using the labeled bits separately.
+It allows the filters and coefficients to depend on the interval.
+The result concerns a single such majorant summed over the interval.
+It leaves open other deductions using arithmetic facts about which
+bit patterns occur, as well as efficient evaluation at growing order.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
