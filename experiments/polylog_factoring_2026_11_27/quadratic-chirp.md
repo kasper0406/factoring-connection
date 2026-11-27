@@ -4265,3 +4265,33 @@ others each need Ω(j) terms. This proves the bound.
 
 The CRT witnesses can have Θ(j) bits. The proof leaves open rough
 inputs of O(log j) bits, grouped evaluations and decision-only tests.
+
+### A single Fourier threshold for the yes/no query
+
+On the preceding rough CRT family, the same Θ(j²/log j) bound
+holds for a real linear Fourier score followed by one threshold
+deciding whether *any* band prime divides m. Allow arbitrary real
+weights and arbitrarily small separation margins. On the finite
+product domain a correct threshold strictly separates the maximum
+no-hit score from the minimum hit score, adjusting the threshold
+between them if necessary.
+
+Write the score as a constant plus sum_p f_p(m mod p). Subtract
+from each f_p its minimum on the nonzero residues, absorbing the
+offset in the constant. Let b_p be its resulting maximum on nonzero
+residues, D_p=f_p(0), and B=sum_p b_p. The largest all-miss score
+uses the maxima simultaneously. A single hit at p with all other
+coordinates minimizing has score D_p plus the same constant.
+Thus D_p>B for every p. Replace each local score by f_p/D_p.
+It now gives exactly 1 on a hit and a value in [0,b_p/D_p] on
+a miss, using the same nonconstant frequencies. The total excess
+over the true count is in [0,E] where E=sum_p b_p/D_p<1 (also
+when B=0). Subtracting E/2 gives uniform error <1/2. The preceding
+Parseval bound on this CRT family therefore applies. Conversely,
+thresholding the exact prime-indicator sum gives the upper bound.
+
+The rescaling proves existence for the counting lower-bound argument;
+it need not be computed by the evaluator. The restriction is one
+fixed additive score and one threshold. Nonlinear combinations
+of separate prime tests, input-dependent scores and the polynomial-
+in-j input range are separate cases.
