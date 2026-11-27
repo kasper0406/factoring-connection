@@ -823,3 +823,29 @@ formula requires the largest square divisor of D, for which the
 identity supplies no polynomial-time algorithm. The unit case D=1
 is unchanged. Verified the witness bijection for every residue c
 at each N from 2 through 179, including zero scales.
+
+### Jacobi symbol at uniform unit scales
+
+For distinct odd primes N=pq, fix a nonpublic square root u of 1.
+The nonpublic quarter bit H(c) is 1 iff the least absolute residue
+of cu has magnitude <=N/4. Take c uniform among units. When N=3
+mod 4, H is exactly balanced and independent of the Jacobi symbol
+chi(c). Indeed H(c)=H(-c) while chi(-c)=-chi(c). Multiplication
+by u permutes the units. The number of units in [1,N/4] is
+floor(N/4)-floor(p/4)-floor(q/4)=phi(N)/4 in this case, by the
+opposite residues of p and q modulo 4. Reflection doubles this
+number for the folded interval. Hence each joint cell has phi(N)/4
+members. Enumeration checked this identity among all applicable
+pairs of distinct odd primes below 48.
+
+For N=1 mod 4 the reflection doubles the Jacobi sum on [1,N/4].
+In general E[(2H-1)chi(c)] equals
+2 chi(u)(1+chi(-1)) sum_{1<=a<=N/4} chi(a) / phi(N).
+The character is primitive modulo the odd squarefree N, so the
+Pólya–Vinogradov inequality bounds this by O(log(N)/sqrt(N))
+in absolute value. The constant predictor also has only O(1/N)
+advantage by the same floor count. Every deterministic predictor
+on a single sign is constant or plus/minus that sign, so this
+bounds the best advantage from this symbol alone. This statement
+is about uniform unit scales; it leaves adaptive scales and joint
+features of c open.
