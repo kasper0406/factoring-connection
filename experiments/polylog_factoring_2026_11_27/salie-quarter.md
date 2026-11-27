@@ -358,3 +358,37 @@ Verified against full unit enumeration for all 45 pairs of distinct
 odd primes through 31 and for 1009*1013. On the latter benchmark
 the public rule gets 764568 correct, exactly 16 fewer than the
 best in-sample shift/inverse bin table.
+
+## A square-only sign predictor needs any nonnegligible advantage
+
+Suppose a predictor gets N and y=h² mod N (equivalently y/4),
+where h is a uniform unit, and predicts the sign of the full
+normalized sum with probability at least 1/2+epsilon. This sign
+is well defined on y. Then N=pq for distinct odd primes can be
+split in randomized time polynomial in log N, 1/epsilon and the
+predictor cost. In particular the 75% benchmark for an algorithm
+given h does not apply to this square-only model.
+
+Define f(h) as the expected answer on h² and set it to zero on
+nonunits. Since u²=1, f(uh)=f(h) exactly. Its Fourier coefficients
+at k and uk therefore agree, including for randomized prediction.
+The unit correlation with the target is at least 2epsilon.
+Trial-divide as in the quantitative proof above, so both primes
+are large compared with K=C/epsilon² and the loss on the full grid
+and the truncated-product L1 error together cost less than epsilon/2.
+The (0,0) term is negligible: each local sign mean on the full
+odd prime grid is ±1/r, giving coefficient magnitude 1/N.
+Consequently some nonconstant truncated frequency with residues
+(a,b), |a|,|b|<=K, has predictor Fourier magnitude at least
+Omega(epsilon/log²(2K)) by the same coefficient l1 bound.
+
+If a differs from b the gcd search already succeeds. If a=b
+is nonzero, multiplying the frequency by u gives residues (a,-a)
+with exactly the same predictor magnitude. These differ because
+both primes exceed 2K. The bounded-error heavy-frequency list
+therefore contains a splitting frequency in either case; no
+knowledge of u is needed to find it. Run the list search with
+fresh predictor calls on squared sample inputs and test all small
+offsets by gcd. A square-only algorithm with inverse-polylog
+advantage is sufficient. A predictor given a particular square
+root can break the required symmetry, as the public baseline does.
