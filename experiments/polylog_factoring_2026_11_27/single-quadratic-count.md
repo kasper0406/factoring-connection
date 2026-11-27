@@ -635,6 +635,33 @@ and 6,625/533,028 at B=10,000 for which at least one q-side group
 image had size at most eight. These are group-size checks with known
 factors, not measured factoring success rates.
 
+**Larger degree menus.** The same obstruction extends to a shared
+polylogarithmic-size menu of dense nonzero integer polynomials whose
+degrees and coefficient bit lengths are polynomial in log B. Choose
+a fixed A≥1 such that every nonzero M=|mF(±p)| in the preceding
+argument satisfies log(2M)=O((log B)^A), uniformly at p in [B,2B]
+and for the allowed polylogarithmic m. Such an A exists by direct
+evaluation. Although the full divisor count can now be large, only
+divisors at most 3B matter.
+
+For any fixed 0<s<1, their number is at most
+(3B)^s times the product of (1−r^(−s))^(−1) over distinct primes
+r dividing M. This follows by summing (3B/d)^s over divisors.
+There are O((log B)^A) such primes. Bounding the i-th smallest
+by i+1, the logarithm of the product is O_s((log B)^(A(1−s))).
+Take s=1−1/(2A). The exponential correction is B^o(1).
+Summing over signs, menu entries, and m costs only B^o(1).
+Exceptional primes p with some F(±p)=0 number at most the sum of
+twice the polynomial degrees. Relative to all distinct prime pairs,
+the fraction covered is therefore at most B^(−1/(2A)+o(1)).
+This uses the same Rankin weighting principle as the earlier
+input-independent exponent analysis in quadratic-chirp.md. Here
+one freezes p and counts the possible partners after polynomial
+specialization. In particular multiplying a menu entry by a shared
+polynomial-bit smoothness exponent still falls under this bound.
+Constructing an arbitrary polynomial separately from the digits of
+each N need not yield a shared menu of this size.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
