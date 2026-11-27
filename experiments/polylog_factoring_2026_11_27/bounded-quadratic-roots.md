@@ -831,6 +831,28 @@ are 0,0,0,2 at primes 2,3,5,7, giving t=30. This is a change of
 query parameters for the existing reciprocity reduction. Computing
 the digit from n alone remains the missing operation.
 
+**Wrong digits can be corrected on a semiprime.** Convert each
+predicted t=φ(N)/2 mod ℓ into a predicted S=N+1−2t mod ℓ for
+S=p+q. Combine these residues to r in [0,M), with M the product of
+distinct queried primes. Let B be the product of the primes where
+the resulting sum digit is wrong. Given S≤H, a sufficient recovery
+condition is 2HB²<M. For comparable factors q≤2p one may use
+H=3⌈√N⌉, and H=N works without balance.
+
+Indeed M/B divides r−S, so (r−S)/M=k/B. Under the bound, its
+distance from r/M is S/M<1/(2B²). Also r−S cannot be negative:
+it is a multiple of M/B and S<M/B. The reduced fraction therefore
+occurs among the continued-fraction convergents of r/M. For each
+convergent a/b with b dividing M, test s=r−Ma/b by solving the
+quadratic with sum s and product N and verifying the integer factors.
+This uses polynomial time without knowing B or the error positions.
+For N=1009·1013 and the nine odd primes through 29, all 68 tested
+subsets of at most three shifted sum digits satisfying the bound
+recovered S. This is a standard noisy-CRT decoder applied to the
+present reduction. The guarantee requires one prediction per prime
+with enough correct log-weight on the same N. A local list alone
+does not meet it. [Previous CRT decoding analysis](../../notes/crtdecode_results.md).
+
 ### Evaluation at multiples of three
 
 For n>1 and 3 dividing b, the cyclotomic divisor product reduces modulo
