@@ -1480,3 +1480,44 @@ Direct enumeration on 10403 found 72 of 10,200 unit scales within
 0.01 of one and 12 within 0.001. On 1022117 the counts were 5,792
 and 628 out of 1,020,096, respectively. These two widths illustrate
 the ambiguity rate and are not claimed as certified universal choices.
+
+### A five-percent promise gap for semiprimes
+
+For N=pq with distinct odd primes, a queryable classifier may return
+either bit throughout [0.95,1.05] and must be correct outside. This
+explicit gap suffices on the original modulus. Trial-divide through
+10000 first; the following estimates apply to larger factors.
+
+Use the all-residue CRT extension. In the continuous two-angle
+limit put a=2|cos θ|, b=2|cos ψ| and z=cos(2θ). Conditional on b,
+the exact bit ab≥1 is an upper threshold on z, with zero or positive
+z-coefficient (mean of z is zero). When 1≤b≤2 its cutoff is
+t=1/(2b²)−1 in [−7/8,−1/2]. Its z-coefficient is
+√(1−t²)/π≥√15/(8π). Since b≥1 on two thirds of the circle, the
+full coefficient is at least √15/(12π)>0.10273.
+
+A loss of at most the entire near-threshold mass covers arbitrary
+answers inside the band. On that band at least one local amplitude
+is ≤s=√1.05. Suppose it is a. Then b≥0.95/s, and for fixed b the
+allowed a interval has length ≤0.10s/0.95. The density of a on
+[0,s] is at most 2/(π√(4−s²)). Doubling for the symmetric case
+gives band mass <0.07997.
+
+For the finite grids the exact coefficient is at least
+(2/3−8/q)√15/(8π)−12/p. Indeed the grid mean of z remains zero,
+so monotonicity gives a nonnegative conditional contribution even
+outside 1≤b≤2. The normalized quadrature error for z times its
+threshold indicator is ≤12/p by bounded variation (variation of
+cos(2θ) is 8 and there are at most four jumps). For an amplitude
+interval the preimage consists of at most four circular arcs, so
+a conservative counting error is 8 per grid. The preceding bound
+on band mass therefore increases by at most 8/p+8/q. Subtracting
+the two bounds leaves a real factor-revealing coefficient >0.019
+for p,q>10000. Proper nonunit queries split the input and the
+all-residue extension at zero is known. Sampled Fourier recovery
+then applies with an absolute threshold.
+
+On the CRT grids for 101·103 and 1009·1013, assigning every ambiguous
+bit adversarially against the displayed coefficient left coefficients
+0.16576 and 0.16604, respectively. These diagnostic values use the
+factorization; the tolerance proof uses the bounds above.

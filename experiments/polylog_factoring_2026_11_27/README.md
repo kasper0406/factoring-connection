@@ -68,7 +68,7 @@ at most 1/2 over unit scales. That approximation is the open operation.
 
 ### Salié evaluator research ledger
 
-**Open target.** For an unfactored odd semiprime N and a requested unit c, predict whether the normalized Salié magnitude is at least one. An inverse-polynomial accuracy gain over always answering yes on that same N suffices for a randomized polynomial-time split. Always-yes accuracy tends to 61.6625% as both factors grow. [Threshold reduction](salie-quarter.md#beating-the-always-yes-threshold-classifier-on-a-semiprime) · [Permitted ambiguity near one](salie-quarter.md#threshold-decisions-with-a-gap-around-one)
+**Open target.** For an unfactored odd semiprime N and a requested unit c, predict whether the normalized Salié magnitude is at least one. An inverse-polynomial accuracy gain over always answering yes on that same N suffices for a randomized polynomial-time split. Always-yes accuracy tends to 61.6625% as both factors grow. [Threshold reduction](salie-quarter.md#beating-the-always-yes-threshold-classifier-on-a-semiprime) · [Explicit semiprime tolerance, 0.95 to 1.05](salie-quarter.md#a-five-percent-promise-gap-for-semiprimes)
 
 | Approach tried | Result and scope |
 | --- | --- |
