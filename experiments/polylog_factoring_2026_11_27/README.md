@@ -537,6 +537,27 @@ the gcd of their difference with $N$ splits it. For $N=341$ the roots are
 $O(\sqrt N)$ square tests. Unit reduction bounds the search but supplies no
 polynomial-bit-time method for finding its two witnesses.
 
+### Cost of a full-period modular sieve for the norm witnesses
+
+Put $Y=\lfloor\sqrt{N/5}\rfloor$. For any prime $r\nmid10N$, let $A_r$
+count the residues $y$ for which $4N+5y^2$ is a square modulo $r$, including
+zero. With $\chi$ the Legendre symbol modulo $r$,
+$$2A_r=r-\chi(5)+1+\chi(-20N).$$
+Indeed $\sum_y\chi(4N+5y^2)=-\chi(5)$: for nonzero $c$, counting
+$(u-y)(u+y)=c$ gives $\sum_y\chi(y^2+c)=-1$. The polynomial has
+$1+\chi(-20N)$ zeros, which require the extra unit weight in $2A_r$.
+In particular $A_r/r\ge1/3$.
+
+For any squarefree $M\le Y$ coprime to $10N$, the interval contains
+$\lfloor Y/M\rfloor$ full periods. CRT gives at least
+$(Y/2)3^{-\omega(M)}$ survivors. Since the product of $k$ distinct primes
+is at least $k!$, uniformly $\omega(M)=O(\log Y/\log\log Y)$.
+Thus even choosing the primes using $N$ leaves $Y^{1-o(1)}$ candidates for
+explicit enumeration as long as the combined period fits the search interval.
+For larger combined periods the full-period argument gives no bound.
+Checked the exact local count for every nonzero input residue at every eligible
+odd prime below 100.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
