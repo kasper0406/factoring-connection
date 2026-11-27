@@ -61,3 +61,33 @@ Run from the repository root.
 The central prefix at $N=11009$ has parity 0 using 344 blocks of length at most 16. Independent checks verify 2,079 signed diagonal disk differences, 2,463 native prefixes, and every block on four larger moduli (10,440 blocks). A polynomial gcd check verifies the binary spectral ranks for the 255 odd moduli from 3 through 511.
 
 The independent signed disk oracle also exercises the complete single-form split on these same 255 odd inputs, extracting a proper divisor on all 159 composites and recognizing all 96 primes in 2,921 total queries. Each query checks the squared-minima bound and that its coefficients equal the fixed pair for that input.
+
+## A larger exact block via the standard univariate Coppersmith construction
+
+For the adjacent-offset quadratic floor difference, only the roots in the
+block matter. A monic small-root lattice gives a direct public evaluator
+on blocks of length proportional to $\sqrt N$. Here are explicit
+parameters to avoid a fixed epsilon loss in that exponent. Use
+$m=\lceil\log_2 N\rceil$, $H=\lfloor\sqrt N/16\rfloor$, and scan
+directly when $H=0$. At a block starting at $a$ set $f(X)=(a+X)^2-1$.
+Use coefficient rows of the following polynomials after substituting
+$X=HZ$, with $0\le j<m$ and $i=0,1$:
+$$N^{m-j}X^i f(X)^j.$$
+At any desired offset every row polynomial before scaling is divisible
+by $N^m$ in value. Ordered by degree the scaled matrix is triangular,
+with determinant $N^{m(m+1)}H^{m(2m-1)}$. Standard LLL gives an
+integer combination whose unscaled polynomial $g$ satisfies, for
+$|x|\le H$,
+$$|g(x)|\le\sqrt{2m}\,2^{(2m-1)/4}N^{(m+1)/2}H^{(2m-1)/2}<N^m.$$
+For the strict inequality, divide by $N^m$, insert the upper bound on
+$H$, use $N^{1/4}\le2^{m/4}$ and $\sqrt{2m}\le2^m$. The basis has
+full rank, so $g$ is nonzero. Every desired offset is an integer root of
+$g$ and can be found by rational polynomial factorization and checked
+in the block. Dimension, degree and coefficient bit lengths are
+polynomial in the input bit length for $0\le a<N$.
+
+Summing disjoint blocks evaluates an interval of length $T$ in
+$O((1+T/\sqrt N)\operatorname{polylog}N)$ bit operations. This improves
+the direct tangent-block bound above at long cutoffs using a classical
+small-root theorem. A central query still uses order $\sqrt N$ blocks.
+This is a proof-level comparison with the existing implementation.
