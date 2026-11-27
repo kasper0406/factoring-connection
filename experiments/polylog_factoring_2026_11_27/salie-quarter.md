@@ -177,3 +177,47 @@ since 4/pi²>0.4. The sampled heavy-frequency algorithm described
 above can list the hidden frequency; a proper gcd verifies the
 split. This trades numerical approximation for a single binary
 classification target. No efficient predictor is supplied.
+
+## Beating the public sign baseline
+
+For every fixed epsilon>0, a predictor of the full sign with unit
+accuracy >=3/4+epsilon on sufficiently large balanced semiprimes
+suffices for randomized polynomial-time splitting on those inputs.
+The public baseline sign(cos(2 pi h/N)) has accuracy tending to
+3/4. Exhaustive unit-scale enumeration gave 0.745098 for 101*103
+and 0.749506 for 1009*1013.
+
+Here is a Fourier proof. Put s(x)=sign(cos(2 pi x)) on the circle.
+The target in CRT coordinates x=i/p,y=j/q is s(x)s(y), and
+h/N=x+y mod one. In the continuous limit the mean target at fixed
+x+y=z is the convolution L(z)=1-4||z||, by intersecting two half
+circles. Its sign is s(z), and its absolute integral is 1/2.
+The CRT grid averages converge by Riemann integrability, including
+for the public baseline's product with the target. Discarding
+nonunits costs o(1). This proves the baseline accuracy.
+
+Extend the predictor by zero on nonunits, using its expected output
+if randomized. Its correlation on the full grid is >=1/2+2epsilon-o(1).
+Take the symmetric partial Fourier sum P_K of s through orders ±K.
+Its L2 error tends to zero by Parseval, so P_K(x)P_K(y)
+approximates the target in L1 on the torus by Cauchy-Schwarz.
+For fixed K this error passes to the growing CRT grids by Riemann
+integrability. Choose K depending only on epsilon to make the error
+less than epsilon/4 for sufficiently large inputs.
+
+In this finite expansion each mode (a,b) is the additive frequency
+k mod N with k=a mod p and k=b mod q. The diagonal a=b contributes
+a function of z alone with coefficients s_hat(a)^2. This diagonal
+polynomial converges uniformly to L since the squares of the real
+Fourier coefficients are absolutely summable. For large enough K
+its absolute grid mean is <=1/2+epsilon/4. Its correlation with
+any bounded predictor obeys the same bound. Hence the off-diagonal
+modes carry correlation >=epsilon for large inputs. By the triangle
+inequality some such k has predictor Fourier magnitude at least
+epsilon divided by the finite sum of absolute product coefficients
+(an epsilon-dependent constant). Sampled heavy-frequency recovery
+lists k in polynomial time at fixed epsilon. Test gcd(k-a,N) for
+every listed k and |a|<=K. When p,q>2K and a differs from b,
+the matching gcd equals p. This reduction requires no knowledge
+of either prime to perform the search. It assumes access to the
+predictor on random unit shifts and supplies no predictor itself.
