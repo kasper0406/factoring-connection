@@ -5236,6 +5236,14 @@ Let x₀ be the low bit and x′ the remaining bits of a canonical root. For a m
 
 This changes the permitted query family from linear Walsh phases to low-bit-gated phases of degree at most two. The ability to specify such a phase with a small Boolean circuit establishes no efficient way to sum it over the modular roots. The zero test is over the integers; reducing the sum modulo two erases the signal, whereas modulo four preserves it.
 
+#### Odd-root prefix parity on general odd moduli
+
+Let N have k≥2 distinct odd prime factors, with arbitrary positive multiplicities and no even factor. There are 2^k canonical roots of 1 by CRT, including ±1. Pairing x with N−x gives exactly one odd representative per pair. Remove the known odd root 1. There are then 2^(k−1)−1 odd mixed roots, an odd number regardless of the unknown k.
+
+For b the bit length of N, take prefix queries on the b−1 higher bits, fixing the low bit to one and restricting to 0≤x<N and x²=1 mod N. The oracle returns only the count modulo two. Correct it by toggling the answer exactly when the prefix contains 1. Start with the empty prefix of corrected parity one. Test the left child; follow it if odd, otherwise follow the right child, whose parity must then be odd. After b−1 tests the resulting singleton is an odd mixed root, and gcd(x−1,N) splits N. This is deterministic and requires no estimate of k or isolation trials. Primes and prime powers can be handled separately by standard primality and perfect-power tests. Exhaustive oracle counts verified the descent on all 676 odd moduli below 2000 with at least two distinct prime factors.
+
+The earlier mod-two loss concerns reducing a sum of signs. Here the inputs are selected before counting, so a root changes the count by one. The required evaluator now computes parity of the odd canonical roots within a binary prefix on the original modulus. This proof gives no fast implementation of that evaluator.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
