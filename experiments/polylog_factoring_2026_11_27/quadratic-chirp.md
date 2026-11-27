@@ -4166,3 +4166,39 @@ divisor summatory function by successive approximation:
 https://arxiv.org/abs/1206.3369 . The full sum modulo two equals
 floor(sqrt m) modulo two by pairing (x,y) with (y,x); truncation
 to j<x≤2j prevents that cancellation in general.
+
+### Adaptive straight-line blocks still need cube-root many pieces
+
+Take j=floor(sqrt(m)/4) and consider covers of (j,2j] by consecutive
+integer blocks. On each block allow an arbitrary integer a and positive
+integer q, requiring the oscillation of f(x)=ax+qm/x at its integer
+points to be at most a fixed constant C. This models the preceding
+bounded correction-level method. Even adaptive covers require Ω_C(m^(1/3))
+blocks for sufficiently large m.
+
+Write H for the endpoint distance of a long block. Here f''(x) is
+bounded above and below by positive absolute constants times q/sqrt(m).
+The centered second difference at equally spaced integer points,
+with spacing floor(H/2), is at most 2C and at least a constant
+times qH²/sqrt(m). Hence q=O_C(sqrt(m)/H²). The endpoint secant
+slope has magnitude at most C/H. By the mean value theorem and the
+upper curvature bound, every x in the block therefore satisfies
+|m/x²−a/q|=O_C(1/(qH)).
+
+Set H₀=K m^(1/6), with fixed K sufficiently large in terms of C.
+Every point of every block of length at least H₀ (endpoint distance)
+has slope m/x² near one of the fractions just described with
+q≤Q=O_C(sqrt(m)/H₀²). In the bounded slope range there are O(q)
+possible numerators per q. The total length of the resulting slope
+intervals is O_C(Q/H₀)=O_C(K^(−3)). The inverse slope map has
+derivative O(sqrt(m)), so these intervals cover at most
+O_C(sqrt(m)/K³)+O(Q²) integer x, allowing one rounding error per
+interval. Here Q²=O_C(m^(1/3)), negligible compared with j.
+Choose K so that long blocks cover at most half the integers.
+Covering the rest in blocks of at most H₀+1 points takes
+Ω_C(sqrt(m)/H₀)=Ω_C(m^(1/3)) pieces, matching the upper bound.
+
+This bound concerns enumeration of constant-oscillation affine blocks.
+It does not cover algorithms combining corrections across blocks,
+allowing many correction levels with implicit evaluation, or computing
+only the modular difference of the two sums.
