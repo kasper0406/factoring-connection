@@ -1118,6 +1118,31 @@ at requested 60-bit absolute accuracy. This computes a full infinite-series
 sample; the finite-polynomial grid evaluator above uses different samples.
 Recovering a single coefficient from few such fast samples is still open.
 
+### Radial digit extraction with an adjustable grid
+
+Let $F(z)=\sum_{j\ge1}C(j)z^j$. Choose any $1\le Q\le N$,
+$w=3\operatorname{bitlength}(N)+10$, $B=2^w$, and $\rho=B^{-1/Q}$.
+Average $F(\rho\zeta)\zeta^{-N}$ over all $Q$th roots of unity and
+multiply by $\rho^{-N}$. Lower alias indices $N-kQ$ contribute integer
+multiples of $B$. The upper aliases have total absolute contribution
+at most $2N^3\sum_{k\ge1}(8/B)^k<1/8$: use $|C(j)|\le2j^3$ from direct
+point counting and $(1+k)^3\le8^k$. Thus rounding and taking the signed
+residue modulo $B$ recovers $C(N)$, since $|C(N)|<B/2$.
+
+The scaling factor is $2^{wN/Q}$. Absolute sample errors below
+$2^{-\lceil wN/Q\rceil-3}$ suffice even if they align after demodulation.
+Hence the uniform precision budget of this construction is
+$\Theta((N/Q)\log(2N))$ bits per sample; the product with the sample
+count remains $\Theta(N\log(2N))$. This is a tradeoff for the stated
+digit-extraction rule, not a bound on algorithms exploiting other identities.
+
+Checked 26 index/grid pairs against exact circle counts with harmonic weights,
+using mpmath theta derivatives to evaluate
+$F=(\theta_3\theta_3^{(4)}-3(\theta_3'')^2)/32$ at argument zero
+and nome $\rho\zeta$. At $N=221$ grids of 1, 14, and 221 samples all gave
+$C(N)=-76636$; the binary scaling exponents rounded up were 7514, 537,
+and 34, respectively.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
