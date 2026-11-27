@@ -178,3 +178,29 @@ polynomial-time oracle equivalence for the Boolean detector on arbitrary
 public windows. It does not assert the same encoding inside a promised
 distribution of isolated signed comparisons: the factor-or-zero
 detector can succeed where the actual signed contrast vanishes.
+
+## Reflection cancels the half interval except at a boundary digit
+
+For a unit lower digit a let C_j(a) be its unsigned clipped lift
+count. Keep the notation b,g,z_j,H from the projection calculation.
+Define e=H when b is nonzero and e=0 otherwise. Then
+
+    C_j(a)+C_j(-a) = N + g [z_j = e modulo g].
+
+Indeed negating x negates the phase t=x+(c+Nj)^2/x modulo N^2.
+If the low phase digit b is nonzero, its upper digit z becomes
+N-1-z. The two half-interval indicators sum to one except at H,
+where both are one. If b=0 the reflected digit is -z modulo N
+and the extra unit is at zero instead. The projected image supplies
+exactly g preimages of the boundary digit when it occurs.
+
+After reference subtraction an equally weighted reflected pair
+therefore contributes just the difference of two boundary counts.
+At a stationary digit g=N, the shift slope 2c/a is a unit, so the
+boundary is reached at exactly one j modulo N. After dividing by N,
+the reflected contrast is a point indicator minus a constant;
+every nonzero normalized Fourier coefficient has magnitude 1/N.
+Thus enforcing equal reflection weights on an isolated stationary
+pair loses the constant-size Fourier signal used by the existing
+decoder. This calculation does not cover opposite weights or an
+unpaired digit in the actual isolation window.
