@@ -469,6 +469,25 @@ positive fraction of the second quarter by these individual strips
 requires Ω(N) centers. This argument does not address implicit
 summation over many centers or a stronger exclusion predicate.
 
+There is also an exact coverage statement when all denominators are
+allowed. Put $h=\lfloor\sqrt N\rfloor$. For every candidate $x$,
+place the $h+1$ residues $jx$ for $0\le j\le h$ on the circle modulo
+$N$. Two consecutive residues have cyclic gap at most $N/(h+1)<\sqrt N$
+(duplicates give gap zero). Subtract their indices, reversing sign if
+needed. This supplies $1\le b\le h$ and an integer $a$ with
+$|bx-aN|<\sqrt N$. For a mixed root, every such denominator shares a
+proper factor with $N$: writing $v=bx-aN$ gives $N\mid v^2-b^2$.
+Its magnitude is less than $N$, except possibly when $b^2=N$ and
+$v=0$. That exception cannot occur for a root since $x$ is a unit
+and $0<b<N$. Thus $v=\pm b$, and an invertible $b$ would imply
+$x=\pm1$. The unconstrained strips cover every candidate. Finding
+which intervals escape the coprime-denominator strips still requires
+handling the denominators that share a hidden factor. The converse
+that every escaping candidate is a mixed root is not asserted.
+Exhaustive checks found a covering denominator at all 22,800 residues
+of odd moduli 3 through 301 and verified the nonunit conclusion at
+every mixed root (even allowing the closed integer radius there).
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
