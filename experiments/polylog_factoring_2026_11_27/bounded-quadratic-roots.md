@@ -690,6 +690,18 @@ verified. Exhaustive enumeration on the 100 mixed pairs from primes
 full root. This identifies an already factoring-hard witness task on
 this promise. It supplies no method to construct that witness.
 
+**Overlap with public powering.** For q≡2 mod 3 the inverse of cubing
+modulo q uses exponent (2q−1)/3. Substituting N for q gives an integer
+e=(2N−1)/3 on the mixed promise. With a=x³ and x a uniform unit,
+gcd(a^e−x,N)=gcd(x^(2(N−1))−1,N) exactly. Write
+A=gcd(2(q−1),p−1)/(p−1) and B=gcd(2(p−1),q−1)/(q−1).
+Cyclicity and CRT give proper split probability A+B−2AB. Exhausting
+the units for all 100 mixed pairs with prime factors from 5 through
+79 verified this formula. More generally any public positive integer
+exponent e gives the same gcd as the direct powering test at 3e−1.
+The cube substitution therefore contributes no additional splitting
+power to this implementation. See [earlier exponent coverage](#fixed-polynomial-exponents-on-separated-balanced-primes).
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
