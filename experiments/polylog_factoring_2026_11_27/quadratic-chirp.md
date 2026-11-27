@@ -5182,6 +5182,14 @@ Suppose the prefix leaves u input bits free. In the wire-variable primal graph, 
 
 Hence this primal graph has treewidth at least u−1 after substituting the fixed prefix. Every ordering of ordinary dense variable elimination on this gate factorization has a step with at least u−1 remaining neighbors, where its dense Boolean message needs at least 2^(u−1) entries. Early binary-decoder queries leave Θ(log N) bits free. This rules out obtaining a polynomial bound for them by choosing an elimination order alone. Exploiting zeros, deterministic gates or algebraic structure to replace or compress the factors changes the calculation; the clique minor gives no corresponding size lower bound for such compressed representations.
 
+#### Constructing the compressed root indicator on semiprimes
+
+For N=pq with distinct odd primes, take the single public target Y=1. After summing all internal wires, the canonical-root indicator on the b input bits is exactly a sum of four products of one-bit indicators, one product per CRT root. Its matrix rank across every bit partition is at most four. Given p,q these four strings and integer tensor-train cores of width four are constructible deterministically in polynomial bit time. This specializes the [earlier semiprime representation observation](binary-prefix-rank.md).
+
+Conversely, suppose a public deterministic constructor produces from N an exact tensor train for this indicator in ordinary binary digit order, with polynomial width and polynomial-bit rational entries in polynomial time. Contract a prefix by fixing its bits and replacing each remaining core by the sum of its two bit slices. The result is its integer root count, even if the cores have signed entries. Exact arithmetic has polynomial bit cost: clear denominators separately in each core using their product, and restore the product of those scale factors after contraction. Intermediate integer entries have polynomial bit length by bounding each matrix product by the product of the maximum entries and widths.
+
+Starting at the empty prefix, evaluate both children of each occupied prefix and keep those with positive count. At most four prefixes survive per depth, so at most 8b child counts list all four roots. Any root outside ±1 gives a proper factor by gcd(r−1,N). Thus on this semiprime promise the proposed deterministic constructor is equivalent to deterministic polynomial-bit-time splitting, already at Y=1. It is unnecessary to predict unrelated random targets. The dense network width and the final predicate rank concern different objects; constructing the compressed representation is the substantive step.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
