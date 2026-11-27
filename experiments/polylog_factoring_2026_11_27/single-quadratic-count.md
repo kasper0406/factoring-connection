@@ -358,3 +358,28 @@ uniform in the window location and the fixed weights of magnitude
 at most one (with stationary weight ±1). This removes the need for
 the small-square preprocessing on this semiprime argument. The
 actual comparison still needs a polynomial-time evaluator.
+
+## One-sided lag comparisons on general good isolation trials
+
+The [general isolation argument](count-comparison.md) gives, after
+its stated preprocessing, a constant-probability singleton trial
+with normalized mean square E_j |R(j)|² <= 1/512. For every lag h
+on this same trial, translation invariance and (x-y)²<=2x²+2y² give
+
+    E_j |R(j+h)-R(j)|² <= 1/128.
+
+Hence at most 1/8 of shifts have difference error larger than 1/4.
+For the nonpublic stationary unit frequency s, choose the first
+dyadic h with h min(s mod N,-s mod N)>=N/4. As before its clean
+positive pulse occupies one interval in phase and its normalized
+coefficient at s is at least 1/(sqrt(2) pi). The one-sided gap bit
+therefore has coefficient magnitude at least 1/(sqrt(2) pi)-1/8
+> 0.10. No semiprime assumption enters this deduction. The
+mean-square guarantee holds on the same trial for every candidate
+lag; no independence between lag selection and the window is needed.
+
+This is a corollary of the existing general reduction for the
+variant comparing two public shifts. It retains that reduction's
+assumptions and preprocessing, including separate primality and
+perfect-power handling. The remaining computational problem is
+evaluating the packed one-sided comparison on unfactored inputs.
