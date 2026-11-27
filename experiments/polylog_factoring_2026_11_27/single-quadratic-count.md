@@ -2637,6 +2637,51 @@ independent draws is at most m(m−1)/(2C), negligible at polylogarithmic
 m for balanced inputs. This addresses collision-based size estimation
 only. The earlier norm-one audit already treats public exponentiation.
 
+### Interval bias of sampled norm-one coordinates
+
+Take a uniform point (x,z) on the norm-one conic over N=ru above.
+For any public h,k with gcd(h,k,N)=1 and any interval I of canonical
+residues, the probability that hx+kz modulo N lies in I differs
+from |I|/N by O(log N / √N), uniformly in the interval and projection.
+
+Here is the Fourier estimate. At an odd prime ℓ dividing N, write
+e(v)=exp(2πiv/ℓ). For a nonzero frequency pair (H,K), insert additive
+orthogonality for x²−az²=1. The zero multiplier contributes zero.
+Completing the two quadratic Gauss sums leaves, up to a factor of
+absolute value one, the sum over nonzero v of
+
+    e(−v − (H²−K²/a)/(4v)).
+
+The classical Weil bound for a prime-field Kloosterman sum bounds its
+magnitude by 2√ℓ. If the reciprocal coefficient vanishes the sum is
+−1 directly. At zero frequency the local count is ℓ±1. CRT factors
+the global Fourier coefficients with invertible local rescalings.
+
+In the one-dimensional interval Fourier expansion the zero frequency
+gives C|I|/N, where C is the conic size. For frequencies coprime to N
+the conic coefficient has magnitude at most 4√N, since the projection
+is primitive at both primes. The sum of interval coefficient magnitudes
+is O(N log N), by the geometric series bound. After the inversion
+factor 1/N this gives O(√N log N) count error. For frequencies rj,
+1≤j<u, the conic coefficients are O(r√u), and the interval coefficient
+is O(u/min(j,u−j)), independently of the number of full periods in I.
+These terms contribute O(√u log u) after inversion. Interchanging r,u
+handles the remaining frequencies. Divide by C=(r−1)(u+1)=Θ(N).
+
+Consequently an observation giving one of H interval bins of one such
+projection has total variation distance O(H log N / √N) from the bin
+of a uniform residue. For m independent draws with the next projection
+and bins chosen from the preceding bin labels, coupling bounds the
+transcript distance by O(mH log N / √N). Thus polylogarithmically
+many such observations can be simulated with independent uniform
+residues up to negligible error. This does not cover multiple
+correlated projections of the same point or tests on exact coordinates.
+
+For N=187,a=−1, direct enumeration over the 192 points gave maximum
+absolute interval deviations 1315/17952, 967/8976, and 39/1496 for
+projections x, x+z, and 3x+5z respectively, taking the range of the
+centered cumulative counts.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
