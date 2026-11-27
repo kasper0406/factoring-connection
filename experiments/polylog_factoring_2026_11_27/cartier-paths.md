@@ -499,3 +499,31 @@ $2552X^2+260749X-22605016$, with integer root 56, yielding 19 and 37.
 This illustrative instance passes the direct norm check with a smaller
 modulus than the conservative theorem bound. It uses planted lists.
 No public weak predictor is supplied.
+
+## Optimal predictor using only the public product residue
+
+Fix a probe prime $\ell$ and nonzero $n=N\bmod\ell$. Under the uniform
+model $a\in\mathbb F_\ell^\times$, $b=n/a$, with a uniform shift $c$,
+the best possible predictor from $(n,c)$ takes the majority sign separately
+at every shift. If $V_c$ is the signed vote over $a$ (zero assigned positive),
+its exact accuracy is $1/2+\sum_c|V_c|/[2\ell(\ell-1)]$.
+The optimum is unchanged when $n$ is multiplied by a nonzero square:
+scale $a,b,c$ by the same unit.
+
+For $c\ne0$ and $c^2\ne n$, the underlying character sum over $a$
+is the cubic sum for $a(a-c)(n-ca)$, since the two arguments differ
+by the square $a^2$ on units. The cubic has distinct roots, giving
+absolute value at most $2\sqrt\ell$ by Hasse's bound. Including zero as
+positive adds two votes. At the at most three exceptional shifts the
+trivial bound suffices. Thus the advantage is at most
+$(\sqrt\ell+1)/(\ell-1)+3/(2\ell)$, strictly less than $\delta$
+on the preceding decoder's range $\ell\ge100\delta^{-4}$.
+In particular at each such probe some compatible local factor pair fails
+the required accuracy. Every pair of unit residues is realizable by
+distinct primes by Dirichlet's theorem. This fixed-probe statement does
+not bound predictors using the full integer $N$.
+
+Exact enumeration of the optimal mean accuracy for square/nonsquare
+product residues gave respectively $1372/2525,1392/2525$ at 101 and
+$32638/63567,10888/21189$ at 1009. These are uniform local averages,
+not success rates measured on a finite population of semiprimes.
