@@ -784,6 +784,26 @@ totient reduction, this gives randomized polynomial-time equivalence
 between general factoring and this near-one modular evaluation problem
 (at polynomial precision). Strip powers of 3 before totient recovery.
 
+### Evaluation at multiples of three
+
+For n>1 and 3 dividing b, the cyclotomic divisor product reduces modulo
+3^h to the product of (1−b^d)^μ(n/d) over divisors d<h. Every term
+is a unit, and all omitted terms equal one. Scan integers d<h for
+divisibility. This costs polynomial bit time with a Möbius oracle.
+Conversely Φ_n(3)≡1−3μ(n) modulo 9, distinguishing all three Möbius
+values. Thus on unrestricted indices this evaluation problem and
+computing μ are polynomial-time Turing equivalent. The claim concerns
+this class of bases.
+
+On the distinct-semiprime promise the oracle can be removed. For each
+observed divisor d the exponent is +1 if d=1 or n, and −1 otherwise.
+At b=3, with p the smaller prime, the answer equals 1−3 through
+precision h=p. At h=p+1 the inverse of 1−3^p introduces the first
+change, of exact ternary valuation p. Hence on balanced semiprimes
+the precision required to see a factor-dependent digit grows on the
+order of √n. The [runnable check](check_nilpotent_base.py) verifies
+both the truncation and the two sides of this precision threshold.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
