@@ -5198,6 +5198,12 @@ For each binary prefix compute its energy, the sum of G(x)² on its completions.
 
 An arbitrarily small strict improvement has an elementary explanation: assign one to the two public roots and the constant 2/(2^b−2) everywhere else. This has constant tensor-train width and squared error 2−4/(2^b−2), using no hidden root information. Thus the inverse-polynomial margin is material to the stated decoding guarantee. The error here is a sum over strings; divide by four to express it relative to the squared norm of F.
 
+#### Prefix search after subtracting the public roots
+
+Let B be the indicator of the two known roots, H=F−B the indicator of the two mixed roots, and R=G−B. Subtraction adds at most two to the tensor-train width by a direct sum of cores. Write S=‖R‖². The promise ‖F−G‖²≤2−δ implies 2⟨H,R⟩≥S+δ, so S>0. Some mixed root has R-value at least (S+δ)/4. Its squared share of the total residual energy is therefore at least (S+δ)²/(16S)≥δ/4.
+
+Compute S by the doubled-core contraction and retain prefixes with residual energy at least δS/4. The indicated leaf survives, while disjointness bounds the number of retained prefixes per depth by 4/δ. For b-bit inputs this takes O(b/δ) prefix evaluations. More generally, an inverse-polynomial *share* of squared residual energy on either hidden leaf suffices however small the overall residual amplitude is. Doubling the width budget (halving the fractional threshold) removes the need to supply a lower bound in advance when such a share is promised. The flat public baseline correction in the preceding paragraph attains exactly δ/4 at each hidden leaf, showing sharpness of the single-leaf share inequality.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
