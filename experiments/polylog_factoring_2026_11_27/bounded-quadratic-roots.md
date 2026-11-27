@@ -674,6 +674,34 @@ list. This argument covers existence tests as well. Polynomials chosen
 from N, and algorithms using actual roots or other data, lie outside
 the claim.
 
+**Sharp conditional success rate.** Fix the polynomial list and M,
+put D=lcm(M,9), and sample p,q uniformly and independently among
+primes in [X,2X] in their respective mixed classes modulo 3. Condition
+on pq≡−1 mod D. From the specified counts and N mod M, the best
+possible limiting success probability for the digit is 2/3 when the
+list may include one suitably chosen cubic.
+
+Indeed, in the same compositum K, Chebotarev assigns each conjugacy
+class weight equal to its size divided by the group order, also in
+dyadic intervals as X grows. The independent pair has product weights.
+Inverting both group elements preserves those weights and the
+conditioning. The conditional q classes 2,5,8 mod 9 have equal mass
+because each admissible unit u mod D pairs with exactly −1/u.
+Inversion exchanges the first two while preserving every observable.
+They require distinct digit outputs, so even a randomized rule can
+succeed on at most half their combined mass. The third class gives
+the upper bound 2/3 overall on this conditioned family.
+
+For attainment, X³−3X+1 has roots ζ+ζ⁻¹ for primitive ninth roots ζ,
+with inverse pairs yielding the same root. Away from 3 the polynomial
+has three roots at primes congruent to ±1 mod 9 and zero otherwise.
+On the conditioned family its root count modulo N is nine exactly
+when q≡8 mod 9. Recognize that class and always guess 2 on the other
+two. Direct local root enumeration at all 166 primes from 5 through
+997 confirmed the rule on 2,294 mixed pairs with N≡−1 mod 9.
+This comparison assumes access to the root count. Its sharp rate
+concerns the fixed-test model and the specified conditional distribution.
+
 **Extracting a root on the mixed promise.** The standard
 root-extraction reduction applies even to an algorithm that, given N
 and a random unit cube a, only returns an integer y satisfying
