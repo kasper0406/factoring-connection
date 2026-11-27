@@ -1062,3 +1062,42 @@ information in the previous identity. Reflection alone supplies no
 new way to compute the surviving fixed-point value. Checked all
 15,364 choices of odd modulus 3 through 17, symmetric Boolean
 predicate and shift parameter in that range.
+
+### Constant additive accuracy suffices for disagreement rates
+
+For an odd semiprime suppose queries at arbitrary h approximate
+D(h)/N to additive error 1/100. Halving gives estimates R(h) of
+||hu/N||, distance to the nearest integer, within delta=1/200.
+Clip the estimates to [0,1/2]. The following deterministic reduction
+takes O(log N) queries and polynomial bit time.
+
+Find a dyadic t with R(t) in [0.1,0.4]. Some true dyadic distance
+enters [1/8,3/8] within O(log N) steps: above 3/8 the next distance
+is below 1/4, and below 1/8 it doubles from at least 1/N.
+Choose the global sign of u so that a=tu/N modulo one is positive
+in the centered interval. Then |a-R(t)|<=delta and a is at least
+0.095 from both endpoints 0,1/2.
+
+For each h=2^j, j=0 through ceil(log2 N), choose the sign of R(h)
+minimizing the discrepancy between ||R(t) +/- R(h)|| and R(t+h).
+The signed estimate is within 7 delta on the circle of hu/N.
+Indeed the correct sign has residual at most 3 delta. If the wrong
+sign wins, the two true predictions differ by at most 6 delta
+(each estimated prediction differs from its true value by at most
+2 delta, and each residual is at most 3 delta; more directly the
+wrong true prediction differs from the true observation by at most
+2 delta + 3 delta + delta). Writing r=||hu/N||, the separation is
+2 min(a,1/2-a,r,1/2-r), by folding a+r and a-r. Thus r lies within
+3 delta of 0 or 1/2, and even the wrong signed estimate is within
+7 delta of the correct phase. Use 7 delta as the uniform bound.
+
+Starting from the last signed estimate, repeatedly take the half
+(on the circle, two choices) nearest to the preceding signed
+estimate. The two candidates are half a turn apart, and the true
+branch is within (7 delta)/2 + 7 delta < 1/4 of the preceding
+estimate. Each step halves the error. At j=0 the error is below
+1/(2N); rounding after multiplication by N gives the root up to
+global sign. A gcd gives a factor. All choices can use rational
+arithmetic with O(log N) bits for fixed-precision oracle answers.
+This reduces the precision requirement to a constant but still
+requires input-specific estimates, not just a marginal average.
