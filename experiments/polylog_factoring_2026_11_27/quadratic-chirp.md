@@ -5127,3 +5127,27 @@ this same obstruction to an explicit bounded-degree denominator
 normalized to constant coefficient one in Y. It applies to tracking
 the whole selected series. A compact resultant encoding or a method
 targeting just the final scalar could have different cost.
+
+### Arbitrary radix and the semiprime tradeoff
+
+For stride d>=1 in characteristic r prime, write d=h e where h
+is the largest r-power dividing d. Decompose a=hA+a0 and c=hC+c0
+with 0<=a,c<d and 0<=a0,c0<h. Lucas' theorem gives, termwise,
+
+    binom(dn+a,dj+c) = binom(a0,c0) binom(en+A,ej+C) modulo r.
+
+Thus the entire selected series is zero when the first factor
+vanishes. Otherwise its reduced row-denominator degree is exactly
+e: the preceding roots-of-unity argument applies to any stride
+invertible in the field. This includes h=1 and r=2.
+
+For N=pq with distinct primes, if both selected series survive,
+the product of their two degrees is at least d, since the p-part
+and q-part of d are coprime divisors of d. At least one component
+therefore has degree >=sqrt(d). In particular take d=N, a=N-1,
+and any 0<=c<N. At p the low factor is binom(p-1,c mod p),
+which equals (-1)^(c mod p) modulo p and always survives;
+likewise at q. The exact degrees are q modulo p and p modulo q.
+So even aligning the radix with N leaves a large denominator for
+the very row used by the signed cutoff test. This is a constraint
+on explicit representations of the full selected series only.
