@@ -4746,3 +4746,35 @@ At weight zero that monomial is a power of w/conj(w); scalar
 rescaling fixes it, so the hypothesis yielding a useful exponent
 disappears. The infinite Gaussian separation above is precisely
 of this latter form.
+
+### Bounded-degree reparameterizations after norm normalization
+
+Fix the quadratic algebra, a unit discriminant at both odd primes,
+and the tested positive exponent E. A uniform norm-one input at
+r=p,q belongs to a cyclic group of size m_r=r−(D|r). Its local
+identity probability after powering is x_r=gcd(E,m_r)/m_r.
+Now pass the input through a rational self-map of the norm-one
+torus, defined on its sampled points, whose local reduction at each
+prime is nonconstant and has degree at most δ on the projective
+completion. Over an algebraic closure this completion is a projective
+line. Each target point has at most δ distinct preimages, by the
+degree bound on the numerator of the fiber equation (or by using
+homogeneous coordinates at infinity). Thus the new local probability
+is at most δ x_r. This counts the final identity test per original
+uniform draw; exceptional denominator gcds are separate tests.
+
+For the terminal proper-factor event, the unmodified probability is
+P=x_p(1−x_q)+x_q(1−x_p) by CRT. If both x_r=1, neither method
+can split at the terminal test. Otherwise min(x_p,x_q)≤1/2 and
+P≥max(x_p,x_q)/2. The reparameterized success probability is
+therefore at most 4δP by the union bound. In particular a map of
+polylogarithmic degree cannot promote negligible terminal success
+to inverse-polynomial success. This is a comparison after passing
+to norm-one inputs; the initial normalization from all algebra units
+is not a self-map of this one-dimensional group.
+
+The local degree qualifier matters for succinct constructions. The
+map u↦u^k gives exactly gcd(kE,m_r)/m_r, so this particular
+high-degree map is already captured by substituting kE for E.
+Compact high-degree nonmonomial maps and maps degenerating to a
+constant at just one prime are outside the stated comparison.
