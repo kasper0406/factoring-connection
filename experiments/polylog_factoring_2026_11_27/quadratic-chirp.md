@@ -4832,3 +4832,24 @@ not implement the projection.
 
 For N=35 the coefficients in degrees 1 through 5 are 35, 595,
 6545, 52360, and 324632. Their common gcd with 35 is 7.
+
+### Exact prefix gcd for arbitrary N
+
+For 1<=b<=N, write L_b=lcm(1,...,b). The gcd of N and the
+coefficients binom(N,j) for 1<=j<=b equals N/gcd(N,L_b).
+Indeed, fix p^a exactly dividing N and take t=min(a,floor(log_p b)).
+The identity j binom(N,j)=N binom(N-1,j-1) forces every coefficient
+to be divisible by p^(a-t). Equality of valuations occurs at j=p^t.
+In the product formula for binom(N-1,j-1), each numerator N-i
+has the same p-adic valuation as its denominator i for 1<=i<j.
+This proves the formula prime by prime.
+
+In particular the predicate that the prefix vanishes modulo N is
+exactly the predicate that the least prime divisor of N exceeds b.
+This covers repeated factors. At a fixed square-root cutoff the gcd
+can be trivial (N=30, b=5 gives 1). Binary search with variable b
+avoids that failure. An exact polylog-time Boolean oracle would
+therefore give deterministic polylog-time complete factorization
+by primality testing and recursive division. Conversely a factorization
+immediately decides the predicate. The lcm expression alone offers
+no efficient way to evaluate it at binary-encoded b.
