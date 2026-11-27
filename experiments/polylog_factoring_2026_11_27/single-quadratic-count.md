@@ -1863,3 +1863,19 @@ coefficients, for example by bounding its coefficient norm by
 (M/rad(M))∏(p+1) ≤ M·2^L. This identifies the cost as counting
 points exactly even for a public predicate; it gives no shortcut
 for computing a Schemmel totient without the factors.
+
+For odd N>1 let p be its least prime divisor. The parity at even
+lengths is precisely C(2t) mod 2 = [2t < p]. Each valid start x
+pairs with 1−2t−x (negate the run and reverse its order). The unique
+fixed start satisfies 2x=1−2t modulo N. Doubling its entries gives
+the odd numbers from 1−2t through 2t−1, all units exactly when
+2t−1<p. Since p is odd this is equivalent to 2t<p. For odd lengths
+the fixed run contains zero and the parity always vanishes.
+Consequently the first even length with even count is p+1. Binary
+search on even lengths recovers p with O(log N) parity queries,
+including for repeated prime factors. Below the first prime all even
+lengths give the same bit, so restricting lengths to polynomial in
+the bit length loses the threshold for balanced semiprimes.
+The fixed-point predicate is exactly coprimality of N with the odd
+double factorial (2t−1)!!, or equivalently with (2t)! for odd N.
+This brings the symmetry approach back to the factorial gcd test.
