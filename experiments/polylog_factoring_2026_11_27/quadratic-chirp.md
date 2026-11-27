@@ -5271,3 +5271,27 @@ t=2. Equivalently 3N+1=(3p-1)^2, so one integer square root
 recovers p=(sqrt(3N+1)+1)/3. This is an application of classical
 difference-of-squares factoring to the identified family. Dyadic
 failure alone does not imply the proximity bound.
+
+### Bit cost of packing the central coefficient into one integer
+
+For odd N set n=N-1, b=n/2 and B=2^n. In (1+B)^n the base-B
+digits are exactly the binomial coefficients, since each is less
+than their sum 2^n. Hence floor((1+B)^n/B^b) modulo N is the
+desired central residue if B is a multiple of N; otherwise higher
+digits must first be discarded. In either case one can calculate
+(1+B)^n modulo N B^b and divide its least residue by B^b to obtain
+the wanted quotient modulo N. For this latter shortcut choose B
+divisible by N, for example B=N 2^n. Then B^b already has
+Theta(N^2) bits. Even the smallest base permitting a carry-free
+encoding needs log_2 B >= n-log_2(n+1), by averaging row n.
+This explains the bit cost of the direct digit-packing method;
+succinct algorithms for the particular residue remain open.
+
+Related prior work: ePrint 2024/1002 gives arithmetic-term formulas
+for semiprime factors using exponentiation and floor division.
+The authors explicitly describe their formulas as computationally
+impractical. Bostan, Gaudry and Schost study polynomial-coefficient
+recurrences and give a fast block-product factoring baseline.
+
+[Arithmetic-term formulas](https://eprint.iacr.org/2024/1002.pdf) ·
+[Linear recurrences and integer factorization](https://specfun.inria.fr/bostan/publications/BoGaSc07.pdf)
