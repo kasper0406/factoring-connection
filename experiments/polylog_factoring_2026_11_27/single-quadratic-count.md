@@ -1879,3 +1879,34 @@ the bit length loses the threshold for balanced semiprimes.
 The fixed-point predicate is exactly coprimality of N with the odd
 double factorial (2t−1)!!, or equivalently with (2t)! for odd N.
 This brings the symmetry approach back to the factorial gcd test.
+
+### Wide intervals via an extracted prime power
+
+For the target y=1 on odd N, trial-divide by the primes up to bitlength(N)
+and select the largest exact power s of one of these primes dividing N.
+Write m=N/s. Each root is in one of the two disjoint progressions ±1 mod s.
+In a half-open interval let f be the first point of such a progression.
+For x=f+sk the remaining condition modulo m is the monic quadratic
+(k+f/s)²−1/s²=0, with division by s performed modulo m. When m=1
+only the progression length is needed. This calculation handles an
+unfactored composite m and counts all matches, including when the two
+prime factors of m select opposite signs.
+
+Apply this to the same constant number of intervals selected by
+reflection. If their total length is at most s⌊√m⌋, each progression
+has at most ⌊√m⌋ entries per interval. A constant number of translated
+short-root calls suffices, with degrees and lattice ranks polynomial in
+the bit length under the existing solver bound. Trial division through
+the bit length is likewise polynomial. The old cutoff was ⌊√N⌋.
+When s and m are comparable the new threshold is Θ(N^(3/4)).
+The improvement relies on a publicly extractable divisor and does not
+apply to balanced semiprimes with two large factors.
+
+At N=3^8·101·103=68,254,083, intervals of width 524,288 starting at
+0, 524,288, and 6,291,456 gave parities 1, 0, and 1 respectively.
+All three exceeded the old reflection cutoff. At width 32,768 the new
+path resolved all 2,082 previously unresolved grid starts j·32,768<N,
+including seven odd answers. The same width resolved 1,050 such starts
+at N=5^5·101·109, also with seven odd answers. Reference values used
+all roots computed independently by SymPy, while the evaluator used
+only N, the interval, the target one and the existing half-parity bit.

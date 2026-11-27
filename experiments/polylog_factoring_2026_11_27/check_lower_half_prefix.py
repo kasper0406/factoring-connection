@@ -2,14 +2,45 @@
 
 from math import gcd, isqrt
 
+from sympy import primerange
+
 from bounded_quadratic_roots import quadratic_roots
+
+
+def progression_parity(n, intervals, length):
+    """Count roots of one using the largest easily extracted prime power."""
+    stride = 1
+    for prime in primerange(3, n.bit_length() + 1):
+        rest = n
+        while rest % prime == 0:
+            rest //= prime
+        stride = max(stride, n // rest)
+    modulus = n // stride
+    if stride == 1 or length > stride * isqrt(modulus):
+        return None
+    inverse = pow(stride, -1, modulus) if modulus > 1 else 0
+    block = max(1, isqrt(modulus) // 8) + 1
+    parity = 0
+    for left, right in intervals:
+        for sign in (-1, 1):
+            first = left + (sign - left) % stride
+            count = max(0, (right - first + stride - 1) // stride)
+            if modulus == 1:
+                parity ^= count % 2
+                continue
+            for offset in range(0, count, block):
+                base = (first * inverse + offset) % modulus
+                span = min(block, count - offset) - 1
+                roots = quadratic_roots(modulus, 2*base, base**2-inverse**2, span)
+                parity ^= len(roots) % 2
+    return parity
 
 
 def reflected_parity(n, y, start, width, half_parity):
     """For a unit square on odd n, return cyclic-window parity or None.
 
     half_parity is one for a prime power, zero for multiple prime factors.
-    Use the short-root solver on at most floor(sqrt(n)) exceptional positions.
+    Use reflection and short-root lattices, optionally on prime-power progressions.
     """
     if n <= 1 or n % 2 == 0 or not 0 <= width <= n or half_parity not in (0, 1):
         raise ValueError("Expected an odd modulus, valid width and parity bit")
@@ -30,7 +61,10 @@ def reflected_parity(n, y, start, width, half_parity):
     side = int(lengths[1] <= lengths[0])
     cutoff = isqrt(n)
     if lengths[side] > cutoff:
-        return None
+        if y % n != 1:
+            return None
+        bit = progression_parity(n, groups[side], lengths[side])
+        return None if bit is None else bit ^ (0 if side else half_parity)
     parity = 0 if side else half_parity
     block = max(1, cutoff//8) + 1
     for left, right in groups[side]:
