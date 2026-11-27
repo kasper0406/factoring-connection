@@ -573,6 +573,31 @@ interface has exactly the totient content even away from semiprimes;
 constructing its residue in polynomial time from the index alone
 remains open.
 
+**Precision for the existing balanced lattice decoder.** The query
+identity works unchanged with L=3^k smaller than n: it yields φ(n)
+modulo L, hence s=p+q modulo L for n=pq. Solve (2q−s)²=s²−4n
+modulo L. If the discriminant is zero, q lies in one class of stride
+3^ceil(k/2). Otherwise its true valuation 2v<k is even, and the
+unit square root lifts to two classes of stride 3^(k−v), since two
+is invertible. This is the ternary version of the earlier supplied-sum
+decoder. It makes explicit the precision loss when p and q are close
+3-adically.
+
+On the existing 100 unplanted 48-bit-prime controls, the first k
+passing a uniform sufficient rank-nine lattice radius test ranged from
+16 to 20 (median 17). Use the full larger-factor range from
+floor(sqrt(n))+1 to floor(sqrt(2n)), its endpoint difference W, and
+the conservative centered radius max(1, floor((floor(W/stride)+1)/2)).
+Test the repository determinant inequality with dimension 9 and
+multiplicity 4. Reference residues were computed with known p,q using
+Φ_pq(t)=S_q(t^p)/S_q(t), S_q=1+...+t^(q−1), at the two ternary
+Taylor arguments; both denominators are units modulo L². The decoded
+sum was checked at every precision. This benchmark checked the
+sufficient lattice certificate rather than rerunning LLL. The reference
+computation uses the factors. At the median the oracle supplies 17
+ternary digits of the totient (about 27 bits), while its raw residue
+is taken modulo 3^34.
+
 ### Division gates and the quadratic norm
 
 In the truncated ring R above, put J=(N,f)R and X=T+A. Since N^m=f^m=0, J^(2m−1)=0. Reduce a proposed denominator D modulo J to uX+v, with X²=y. Its norm is Δ=v²−yu². If gcd(Δ,N)=1, the base inverse is (v−uX)/Δ modulo J. Lift it in R by z←z(2−Dz). The error 1−Dz squares each time, so at most ceil(log₂(2m−1)) steps suffice. This extends the compact circuit evaluator to divisions by units at polynomial multiplicity.
