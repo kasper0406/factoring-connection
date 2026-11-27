@@ -1170,6 +1170,31 @@ input bit length. A fast evaluator for the single high-order derivative
 has not been obtained. Numerical checks summed explicit shell coefficients
 below $2N$ at $N=5,17,65,257$; the infinite tail is controlled analytically.
 
+### A fixed-order complex pole and an exact sum over one coordinate
+
+[circle_pole_sum.py](circle_pole_sum.py) uses $\eta=1/(8N)$ and weights
+shell $j$ by $(i\eta/(j-N+i\eta))^4$. Keep $|x|\le\sqrt N$ and all integer
+$y$, with weight $\Re((x+iy)^4)/4$. All target points remain, with filter
+weight one. Absolute off-target leakage is below $1/4$:
+the absolute weight sum per shell before filtering is at most $2j^{5/2}$
+by counting at most two ordinates for each abscissa. Up to $2N$ the
+leakage is bounded by $2(2N)^{5/2}\eta^4\,2\zeta(4)$; beyond $2N$
+it is at most $32\eta^4\sum_{j>2N}j^{-3/2}$. These bounds suffice even
+at $N=1$. Rounding the real part gives $C(N)$.
+
+At fixed $x$ put $s=x^2-N+i\eta$. The identity
+$\sum_y(y^2+s)^{-1}=\pi\coth(\pi\sqrt{s})/\sqrt{s}$ and its first three
+derivatives sum the entire row: replace $y^2$ by $(y^2+s)-s$ in the
+quartic numerator. The distance to every pole in $s$ is at least $\eta$,
+and all inverse powers through order four are polynomially bounded in $N$.
+This leaves $1+\lfloor\sqrt N\rfloor$ rows by symmetry. A fixed number of
+standard elementary-function operations per row with $O(\log(2N))$ guard
+bits suffices (equivalently differentiate the closed form symbolically).
+The implementation uses mpmath Taylor coefficients without interval
+certification. It improves the derivative order, but its row count is
+larger than the arc evaluator's block count. Checked against exact shell
+enumeration for 1 through 99 and 221, 341, 703, 10001.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
