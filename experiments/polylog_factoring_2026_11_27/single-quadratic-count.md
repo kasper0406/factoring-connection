@@ -2514,6 +2514,35 @@ exactly. Efficiently testing that composite modulus remains open here.
 This calculation concerns existence; counting or constructing points
 requires separate analysis.
 
+### Counting the affine conic with opposite local signs
+
+For N the product of two distinct odd primes, choose a public unit a
+whose Jacobi symbol modulo N is −1. Sampling units finds one in two
+trials on average. For N≡3 mod 4 the fixed choice a=−1 works.
+Write r for the prime factor where a is a square, and u for the other
+prime. In the chart y=1 of the norm conic, reduction modulo N gives
+x²=a z². Count all ordered pairs of residues (x,z), including zero.
+
+Modulo r the equation consists of two distinct lines through the
+origin, giving 2r−1 points. Modulo u it has only the origin. Thus the
+CRT count C modulo the composite (i.e. the integer number of points
+over Z/NZ) is exactly 2r−1. Moreover, every nonzero pair has z=0
+modulo u and z nonzero modulo r, so gcd(z,N)=u. The zero pair is
+always available. A routine returning any other point already factors
+the input. An exact count gives r=(C+1)/2. Knowing C modulo 2^(k+1)
+gives r modulo 2^k. On balanced inputs k>(1/4+ε)log₂N suffices for
+the affine divisor lattice at fixed ε>0, using smaller slack to absorb
+the constant in r≥√(N/2).
+
+For N=187 and a=−1 there are 33 pairs, with all 32 nonzero pairs
+revealing 11 by gcd. Exhaustive enumeration checked the formula and
+every nonzero witness on 58 combinations of semiprime and test unit,
+using primes p<20, p<q<25 and a in {−1,2,−2,3} with Jacobi −1.
+Drawing z uniformly hits a nonzero eligible z with probability
+(r−1)/N, which is exponentially small in the bit length on balanced
+inputs. An independent evaluation of the count or a way to find such
+a z remains necessary.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
