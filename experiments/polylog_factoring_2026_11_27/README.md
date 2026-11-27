@@ -18,6 +18,15 @@ A guide may instead flag uncertain children. If along a target path it flags at 
 
 **Single-query cyclotomic benchmark.** After stripping 2 and 3, one residue of Φ_(Ln)(4) modulo L², with L the first power of three above n, gives the full totient. The [end-to-end control](check_cyclotomic_reduction.py) split all 305 test inputs using at most one query each and the same decoded exponent throughout recursion. It computed reference answers by exact integer divisor-product recursion, which uses divisor enumeration and integers exponentially large in the input bit length. The [reduction](bounded-quadratic-roots.md#one-residue-of-the-input-indexed-cyclotomic-polynomial) is verified; efficient residue generation is still the open step.
 
+**Ternary evaluator ledger.** On N=pq with p≡1 and q≡2 modulo 3, the first unresolved computational test is to produce Φ_(3N)(4) modulo 27 from N alone. A uniform evaluator modulo 3^(h+1) would recover q in polynomial time for h of order log N. The reference computation uses the factors.
+
+| Approach tried | What we learned |
+| --- | --- |
+| Decode at fixed index 3N | Each additional ternary digit of the supplied residue gives one more digit of q. [Lift and checks](https://github.com/kasper0406/factoring-connection/commit/e4d999c) |
+| Predict the residue modulo 27 from fixed tests | Even combining N modulo a fixed M with exact root counts for any finite list of fixed integer polynomials admits collisions. [Proof](https://github.com/kasper0406/factoring-connection/commit/f443a4e) |
+| Extract a cube root at the hidden prime | An extractor correct on random cubes with inverse-polynomial probability already gives randomized polynomial-time factoring on this promise, assuming polynomial extraction time. [Reduction](https://github.com/kasper0406/factoring-connection/commit/b23aa9b) |
+| Construct the root by public exponentiation | For a private unit x and a=x³, testing a^e against x gives the same gcd as the existing powering test with exponent 3e−1. [Identity](https://github.com/kasper0406/factoring-connection/commit/b5023cf) |
+
 **Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
 
 | Approach | What we know | What would advance it |
