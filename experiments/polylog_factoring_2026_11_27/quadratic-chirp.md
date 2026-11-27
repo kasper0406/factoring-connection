@@ -5218,6 +5218,12 @@ Indeed the difference masks out the even root and doubles the odd root's contrib
 
 As a check, exhaustive full root lists gave the predicted bits and proper splits on all 210 products of two distinct odd primes below 80. An efficient public evaluator for these signed sums remains open. The formula is a readout identity, not an algorithm for computing the sums from N.
 
+#### A weak random-mask predictor suffices
+
+For the same odd mixed root u, the paired moment (W(S)−W(S XOR {0}))/2 equals the character χ_u(S) for every mask S, including masks containing the low bit. Suppose a public callable sign predictor is correct with probability at least 1/2+ε over uniform S and fresh predictor coins, at the given modulus. Its mean response g(S) has normalized Boolean Fourier coefficient at u at least 2ε. Goldreich–Levin list decoding recovers u among polynomially many candidates in randomized time polynomial in b and 1/ε. Check every candidate by modular squaring and gcd. This asks for an advantage over masks for each promised modulus; an average across moduli does not give that guarantee.
+
+For an explicit query model, split the mask into (v,w) and write α for a frequency prefix on the v coordinates. By orthogonality the sum of squared normalized Fourier coefficients extending α equals E[g(v,w)g(v′,w)χ_α(v XOR v′)], with v,v′,w independent and uniform (the two calls share w). Fresh coins in each call give bounded unbiased samples. Estimate each queried energy to additive ε² by repetition, retain estimates at least 2ε², and cap the retained list at 1/ε² per depth, restarting on overflow. With simultaneous accurate estimates, every prefix of u survives and every retained prefix has true energy at least ε². Parseval bounds their number. Hoeffding's bound with a union bound over O(b/ε²) adaptive queries makes this event have constant probability using polynomially many calls. This argument needs chosen, correlated mask queries to the predictor; independent labeled samples alone do not implement the energy estimator.
+
 ### Exact success probability for a uniformly sampled column
 
 For N=pq with primes p<q, sample b uniformly from 0 through N-1
