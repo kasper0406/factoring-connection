@@ -1689,6 +1689,38 @@ equality matters: comparison of canonical integer representatives reads
 the lower-half bit immediately on a supplied root. This argument does
 not classify algorithms that evaluate an aggregate directly.
 
+### Parity of a modular equality test summed over root tuples
+
+Consider the XOR of a Boolean leaf over all ordered tuples of m roots
+of one, using the same arithmetic and branching model as above. Write
+k for the number of distinct prime factors of odd N. Each prime-power
+component chooses a sign pattern in {+1,−1}^m for the whole tuple.
+Group the tuples by the set S of patterns used across components.
+
+Simulate a group by running one formal substitution per member of S
+along a common path. At each equality branch compute the gcd of every
+substituted difference with N. A proper gcd gives a factor. Otherwise
+each difference is either zero or a unit, so the common answer is true
+exactly when all substituted differences vanish. The leaf is then
+constant across the group. Its size is the number of surjections from
+k labeled components onto S: permuting the pattern labels acts freely,
+so this size is divisible by |S| factorial. Every group with at least
+two patterns therefore contributes even parity. The remaining XOR is
+over the public tuples of signs, one tuple per singleton group. The same
+cancellation holds on the restricted domain of tuples having at least one
+mixed coordinate, where all singleton groups are absent.
+
+For two distinct prime factors, only singleton and pair groups occur.
+Simulating every such group costs O(4^m) times the per-path cost and
+requires no factorization. This gives an effective dichotomy for
+m=O(log log N): either the simulation exposes a factor or the full
+parity equals the XOR on public sign tuples. For arbitrary k the
+cancellation proof persists but enumerating all possible pattern sets
+can be expensive. This result is specific to arithmetic with modular
+equality branches and Boolean leaves. Ordered interval comparisons,
+weights computed outside the ring, and other aggregate representations
+require their own analysis.
+
 ### Quadratic products lose prefix parity at bounded precision
 
 For distinct odd primes with N=pq, omit the known root 1 and form
