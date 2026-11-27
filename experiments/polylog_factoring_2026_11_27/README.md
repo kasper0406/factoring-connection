@@ -715,6 +715,32 @@ The original seven fields can all fail on a product of three primes:
 for $N=7\cdot11\cdot13$, none of their radicands is a square at all three.
 This is a coverage limitation distinct from the cost of solving a selected conic.
 
+### Sharp ambiguity even with the full residue modulo the basis primes
+
+For the first $k+1$ prime generators put $M=8\prod_{i=2}^{k+1}p_i$ and
+$V=\mathbb F_2^{k+1}$. On units modulo $M$ the vector of Legendre signs on
+these generators defines a surjective homomorphism to $V^*$: choose the
+class modulo 8 equal to 1 or 5 and prescribe the quadratic character at each
+odd generator by CRT and reciprocity. Fix one unit class $C$ giving a nonzero
+sign functional $J$. Every nonzero $v\in\ker J$ occurs as the **unique**
+common split class for some squarefree $N\equiv C\pmod M$ with $k$ factors.
+
+Indeed $v^\perp$ is a $k$-dimensional space containing $J$. It has a basis
+whose sum is $J$, by applying an invertible linear map to any basis and
+its nonzero sum. Choose unit residue classes realizing the first $k-1$
+basis rows and take the final class to make their product $C$. Its signs
+then give the final row. Linnik's least-prime bound supplies a prime of
+size $M^{O(1)}$ in each class. Their independent rows make the primes
+distinct. Their product has precisely the claimed one-dimensional common
+kernel and has bit length $O(k^2\log(k+2))$.
+
+Hence a field selector restricted to $k$ and this full public residue must
+retain all $2^k-1$ possibilities in the chosen squareclass space. Even if
+the selector also knows the bit length, some length needs at least
+$(2^k-1)/O(k^2\log(k+2))$ entries by pigeonholing these inputs.
+This lower bound does not constrain use of other information in $N$ or
+radicands outside the specified span.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
