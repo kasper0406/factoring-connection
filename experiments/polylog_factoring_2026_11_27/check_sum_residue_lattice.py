@@ -16,29 +16,34 @@ def query(n, low, high, prime, residue):
     """
     if low > high or low*low < 4*n or low < 0 or prime % 4 != 3 or gcd(prime,n) != 1:
         raise ValueError('Invalid sum bounds or auxiliary modulus')
-    def upper_factor(s):
-        return (s + isqrt(s*s-4*n))//2
-    first_q = max(isqrt(n)+1, upper_factor(low))
-    last_q = upper_factor(high)
     disc = (residue*residue-4*n) % prime
     delta = pow(disc, (prime+1)//4, prime)
     if delta*delta % prime != disc:
         return None
-    inverse = pow(prime, -1, n)
-    for sign in set((delta, -delta)):
-        cls = (residue+sign)*pow(2,-1,prime) % prime
-        first = first_q + (cls-first_q) % prime
+    classes = {(residue+sign)*pow(2,-1,prime) % prime for sign in (delta, -delta)}
+    return query_classes(n, low, high, prime, classes, prime, residue)
+
+
+def query_classes(n, low, high, stride, classes, sum_modulus, residue):
+    """Search certified progressions for the larger factor, checking the sum."""
+    def upper_factor(s):
+        return (s + isqrt(s*s-4*n))//2
+    first_q = max(isqrt(n)+1, upper_factor(low))
+    last_q = upper_factor(high)
+    inverse = pow(stride, -1, n)
+    for cls in classes:
+        first = first_q + (cls-first_q) % stride
         if first > last_q:
             continue
-        span = (last_q-first)//prime
-        center = first + prime*(span//2)
+        span = (last_q-first)//stride
+        center = first + stride*(span//2)
         radius = max(1, (span+1)//2)
         if not _rigorous_ok(n, isqrt(n)+1, radius, 9, 4):
             raise ValueError('Progression exceeds the certified lattice radius')
         factor = small_root_divisor(n, center*inverse % n, radius, isqrt(n)+1, 9, 4)
         if factor:
             total = factor + n//factor
-            if low <= total <= high and total % prime == residue % prime:
+            if low <= total <= high and total % sum_modulus == residue % sum_modulus:
                 return factor
     return None
 
