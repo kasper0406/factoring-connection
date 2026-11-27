@@ -2,6 +2,21 @@
 
 The objective is a classical factoring algorithm with polynomial bit complexity, or progress toward a general algorithm below the number field sieve scale. The work here establishes stronger oracle reductions, a faster evaluator for one fixed scalar, and barriers for specific representations. The native polynomial-bit-time evaluation step remains open. [Original November 26 roadmap](https://github.com/kasper0406/factoring-connection/blob/9514cbfa013cd9ae3f030044db1dc3fb6bb4a9ed/notes/research_roadmap_nov26.md)
 
+## Working ledger for the quarter-parity evaluator
+
+**Open question.** Can a public kernel or weighted subspace sum evaluate the clipped root parity in polynomial bit time? The fixed translated-window reduction covers general odd inputs; several quarter-window decoders below assume two distinct prime factors. [General reduction](fixed-window-split.md)
+
+| Approach tried | Established result | What would justify reopening it |
+|---|---|---|
+| Lean subspace identity | The Gaussian-binomial sum collapses to a kernel dimension. Our quadratic fiber fails the affine midpoint test; a binary prefix can contain exactly three roots. [Comparison](single-quadratic-count.md#comparison-with-the-finite-subspace-identity-in-grh-lean) | A public encoding of the aggregate that preserves the cutoff without projecting individual roots from one affine space. |
+| Clipped inverse involution | Exact binary nullity formula. Its direct quarter matrix has one column per interval element; squaring recovers the prior inverse-pair count. [Derivation](single-quadratic-count.md#kernel-dimension-for-a-clipped-inverse-involution) | A compressed operator or a faster nullity calculation exploiting this particular map. |
+| Window and modulus symmetries | Binary prefixes handle the cutoff. Translation solves unit-scale quarter parity when four divides the modulus; doubling an odd modulus preserves its hard bit. [Results](single-quadratic-count.md#binary-prefixes-isolate-the-interval-condition) | A symmetry that evaluates the odd composite case. |
+| Salié sums and prediction | Exact and noisy decoders exist. A square-only sign predictor with inverse-polynomial advantage suffices on distinct odd semiprimes. Public direct summation still scans the units. [Sign reduction](salie-quarter.md#a-square-only-sign-predictor-needs-any-nonnegligible-advantage) | An estimator with a runtime or advantage guarantee on unfactored inputs. |
+| Public features | Interval tables, inverse bins, sparse phase fits and fixed shifted Jacobi probes have model-specific bounds. Held-out square-only scoring needs no factors. [Scoring method](salie-quarter.md#public-labels-for-square-only-learning-and-held-out-scoring) | A feature outside the recorded bound with reproducible held-out advantage. |
+| Individual square witnesses | Fixed levels, affine selectors and bounded-degree polynomial lift menus have negligible coverage under the stated size bounds. [Coverage proofs](salie-quarter.md#coverage-of-searching-integer-square-lifts) | A selector outside those families with a coverage argument. |
+
+For each proposed experiment, check the closest row and its linked proof first. Record the changed assumption, the result, and what remains open in that row. Add a row when the mathematical mechanism changes. Detailed proofs and runs belong in the linked notes.
+
 ## Priorities
 
 1. **General input: evaluate one clipped root count.** Use the parity of mixed roots of $u^2=1\pmod N$ in a translated window of length $(N-1)/2$. It suffices for deterministic bisection on any odd modulus with at least two distinct prime divisors. The same task is realized by signed disk counts modulo 4 at one cutoff and one discriminant. The forms are powers of a public class of known order, and query exponents take polynomial bit time to construct. The simple one-row formulation is the smaller test of a new evaluator. The class-group formulation supplies an alternative if the evaluator can exploit the order structure. [Fixed window](fixed-window-split.md) · [Common discriminant](fixed-discriminant-split.md) · [Cyclic class encoding](cyclic-class-queries.md)

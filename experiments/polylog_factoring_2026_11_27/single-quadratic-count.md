@@ -1172,3 +1172,28 @@ rounds angles to 1/4096 of a turn before exact rational backtracking.
 Both public-sum paths recovered verified factors on 15, 77, 143,
 323, 1147, 2021 and 10403. The earlier 184 rate-oracle simulations
 also passed after sharing the backtracking routine.
+
+### Kernel dimension for a clipped inverse involution
+
+For unit c, index a binary vector space by the integers x in the
+interval I. Define M e_x=e_y if x is a unit and y=c²/x mod N
+lies in I, and zero otherwise (use representatives in [0,N)).
+Set D=1+M. The exact number of roots in I is
+
+    2 nullity(D) - nullity(D²).
+
+A retained inverse pair gives a two-dimensional swap block and
+contributes nullities (1,2); a fixed root contributes (1,1);
+an unmatched or nonunit basis element contributes (0,0). Thus the
+formula counts exactly fixed roots. In particular the parity is
+nullity(D²) mod 2. But D²=1+M² is diagonal and its nullity counts
+all retained elements, which is the earlier ordered inverse-pair
+count. Simply squaring this operator returns us to the known
+cancellation. Testing binary ranks for all 1,964 unit scales at
+moduli 3 through 80 agreed with direct quarter counts.
+
+The representation respects the interval and has one basis vector
+per interval element. Constructing its columns on demand is cheap,
+but the quarter matrix has floor(N/4) columns. A genuine advance
+here would compress the aggregate into polynomial dimension or
+give a polynomial-bit nullity algorithm for this specific operator.
