@@ -1438,3 +1438,25 @@ on these nonempty fibers would suffice. The unresolved part is
 building such a kernel. Enumeration at all residues of the 45
 semiprimes formed from distinct odd primes through 31 verified
 the decision-function identity, including its nonunit extension.
+
+### Removing two-cycle kernel vectors for the existence test
+
+Use the clipped inverse matrix above with a sign on its edges.
+For unit y set z=y/x mod N on unit x in the prefix. Put J e_x=e_z
+when z is retained and x<=z, J e_x=-e_z when retained and x>z,
+and zero on every other column. Over F_3 or the reals let L=I-J.
+An unmatched index contributes [1], a fixed root contributes [0],
+and a retained two-cycle contributes a 2-by-2 block of determinant
+2. Thus the kernel has precisely the coordinate vectors of the
+retained roots as a basis. The use of odd characteristic matters.
+
+Over the reals L^T L is diagonal with respective entries 1,0,2.
+This yields an exact unit gap between zero and the positive singular
+values. It also exhibits the limitation: the root projector
+(I-L^T L)(2I-L^T L)/2 is just the diagonal of pointwise root
+indicators. The sign removes spurious vectors but leaves one
+coordinate per candidate; knowing how to compute a column or the
+spectral gap does not supply a small global kernel. A direct diagonal
+encoding of the root predicate would have the same dimension. Checked
+the Gram identity and zero coordinates at 310 unit inputs across
+seven odd moduli, including nonsquare unit inputs.
