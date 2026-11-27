@@ -69,10 +69,10 @@ class StationaryReference:
         if phase == 'cubic':
             if self.n % 3 == 0:
                 raise ValueError('the cubic stationary formula requires a modulus coprime to 3')
-            return fsum(cos(tau * ((scale * residue) % modulus) / modulus)
+            return fsum(cos(tau * (((scale * residue) % modulus) / modulus))
                         for residue in self.cubic_exponents)
         if phase == 'quartic':
-            angles = [(tau * ((scale * residue) % modulus) / modulus, weight)
+            angles = [(tau * (((scale * residue) % modulus) / modulus), weight)
                       for residue, weight in self.quartic_exponents]
             return complex(fsum(weight * cos(angle) for angle, weight in angles),
                            fsum(weight * sin(angle) for angle, weight in angles))
@@ -96,7 +96,8 @@ def check(components):
     elapsed = perf_counter() - started
     modulus = n * n
     direct_square_roots = [value for value in range(n) if (value * value - 1) % n == 0]
-    lifted_lower_roots = sorted((residue * pow(2, -1, n)) % n for residue in reference.cubic_exponents)
+    half = pow(2, -1, n)
+    lifted_lower_roots = sorted((residue * half) % n for residue in reference.cubic_exponents)
     assert lifted_lower_roots == direct_square_roots
     assert len(direct_square_roots) == 2 ** len(components)
 
