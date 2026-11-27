@@ -2251,6 +2251,41 @@ answer on unoccupied queries and supports repeated prime factors in
 the padded inputs. Exhaustive enumeration checked existence and both
 gcd conclusions for all 571 composites coprime to six through 3000.
 
+### Balancing with one squarefree odd multiplier
+
+For odd composite N≥3465 let K be the largest initial product of odd
+primes 3·5·7··· at most N/3. Let p be the next prime. Trial divide N
+through 6p, returning a proper divisor if found. Smaller inputs can be
+handled by trial division. This preprocessing is polynomial in log N:
+the index of p is O(log N), and the nth prime is O(n log(2n)).
+Now gcd(N,K)=1 and K>N/(3p).
+
+There is a chain of divisors of K covering [3,K/3] with consecutive
+ratios at most 5/3. For K=1155 the chain is
+3,5,7,11,15,21,33,35,55,77,105,165,231,385.
+On appending a prime q, merge the chain and its q-multiple. Their
+ranges overlap if q≤K/9, and the merged chain retains the ratio
+bound. This inequality holds initially for q=13. It persists since
+the following prime is less than 2q by Bertrand's postulate while
+the new primorial is Kq.
+
+For any nontrivial split N=uv with u≤v, the ideal divisor for padding
+u is x=√(Kv/u). We have x≥√K>3 and x≤K/3 because
+u>6p>3√(3p)>3√(N/K). Choose the chain divisor d nearest to x on a
+logarithmic scale. Then ud and vK/d differ by a factor at most 5/3:
+their ratio is (d/x)² and d is within a factor √(5/3) of x.
+The unknown split and d are used only to prove that the window is
+occupied. The algorithm constructs K from N alone.
+
+Query balanced interval occupancy on the single odd input NK and
+bisect to recover a sum. Every returned balanced pair splits N by
+gcd as in the preceding reduction because K≤N/3 and gcd(N,K)=1.
+The input NK is squarefree whenever N is squarefree. For
+N=1009·1000003 the multiplier is 111546435 and a verified balanced
+pair is (326232907,345001035), with gcds 1009 and 1000003.
+The padding introduces many known prime factors. An oracle promised
+only semiprime inputs is outside this reduction.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
