@@ -558,6 +558,32 @@ For larger combined periods the full-period argument gives no bound.
 Checked the exact local count for every nonzero input residue at every eligible
 odd prime below 100.
 
+### Simultaneous isolation of the norm witnesses
+
+Assuming GRH for Dirichlet L-functions, all primes $r\le C(\log N)^2$
+coprime to $10N$ together remove every false candidate in the reduced interval,
+for an absolute constant $C$. For $D=4N+5y^2\le5N$ nonsquare, the
+quadratic character of $\mathbb Q(\sqrt D)$ induces a nonprincipal
+character on the units modulo $m=40ND$ (its conductor divides $4D$).
+Bach's GRH bound for generators of the unit group gives a prime
+$r\nmid m$ of size $O(\log^2 m)$ outside its kernel. Thus $(D/r)=-1$.
+The same cutoff works simultaneously for all $y$, and a square always passes.
+The allowed residue tables can be built from $N$ in polynomial bit time.
+
+There is also an unconditional randomized isolation statement with larger
+moduli. Draw independent odd positive $u\le100N$ uniformly and reject a candidate
+when the Jacobi symbol $(D/u)=-1$. For each nonsquare $D$, in every full
+period modulo $4D$ exactly half the units give $-1$ by quadratic reciprocity
+and nonprincipality. Full periods cover at least half the sampling range,
+so a draw rejects this $D$ with probability $\Omega(1/\log\log N)$
+by the standard lower bound on $\varphi(4D)/(4D)$. Squares never give $-1$.
+A union bound over at most $\sqrt N$ candidates shows that
+$O(\log N\log\log N)$ draws with a sufficiently large constant isolate
+all witnesses with probability at least $0.99$. These Jacobi predicates
+are compact to evaluate on a given candidate, but their full residue tables
+may be large. Neither isolation statement gives an algorithm to list the
+surviving integers in polynomial bit time.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
