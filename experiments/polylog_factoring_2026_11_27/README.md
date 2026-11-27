@@ -46,6 +46,20 @@ On the 36-bit control $N=38942974393$, the positive $q=2$ bin at start 123917933
 uv run --no-project --with sympy --with python-flint==0.9.0 python reciprocal_range.py 38942974393 --start 12391793379 --width 131072
 ```
 
+## Recovering a factor from the full stationary magnitude
+
+Let $M=N^2=\prod_i q_i$, where $q_i$ are the complete prime-power components, and let $e_i$ be the CRT idempotents modulo $M$. For unit $t$, stationary phase gives the full normalized Kloosterman sum
+$$F(t)=K_M(1,t^2)/N=\sum_{u^2=1\bmod M}e_M(2ut)=\prod_i2\cos(4\pi e_i t/M).$$
+The product extends the signal to all $t$. A proper $\gcd(t,N)$ already splits the input. At the $1/N$ fraction where $t\equiv0\pmod N$, using zero in the transformed signal changes each Fourier coefficient by at most $O(\log N/N)$. [Stationary-phase identity](square-kloosterman.md)
+
+Use the smooth transform $H(t)=\log(1+|F(t)|)$. On uniform $t\bmod M$, put $C_i=\cos(8\pi e_it/M)$ and $X_i=\frac12\log(2+2C_i)$. The $X_i$ are independent, and $\mathbb E X_i=\log 2/q_i$ by taking absolute values in the product of $1+e_{q_i}(r)$ over $r\bmod q_i$. Their variances are bounded below and their centered fourth moments bounded above by absolute constants. In fact each of $C_i\ge1/2$ and $C_i\le-1/2$ contains a constant fraction of the odd grid. Also $|2\cos(2\pi r/q_i)|\ge2/q_i$, and counting grid points near the two cosine zeros gives $\Pr(X_i<-s)\le(3/2)e^{-s}$ for $s\ge0$. These estimates are uniform in the prime powers.
+
+Fix $i$ and write $S=\sum_{k\ne i}X_k$. If $Y=S-\mathbb ES$ and $\sigma^2=\mathbb EY^2$, independence and the fourth-moment bounds give $\mathbb EY^4\le C\sigma^4$ for an absolute $C$. Hölder gives $\mathbb E|Y|\ge\sigma/\sqrt C$. Since $\mathbb E Y=0$, Cauchy–Schwarz then gives $\Pr(Y>0)\ge1/(4C)$. Hence $\Pr(S\ge0)$ is bounded below. For fixed $S$, $H=\log(1+e^{S+X_i})$ is increasing in $C_i$. When $S\ge0$, its values on the two bands differ by at least $\log((1+\sqrt3)/2)$. The independent-copy formula for covariance now gives $\mathbb E[H C_i]\ge c$ for an absolute $c>0$. This is a real Fourier coefficient of $H$ at $4e_i$, and $\gcd(4e_i,N)=N/\sqrt{q_i}$ is proper whenever the input has at least two distinct prime divisors.
+
+The transform is 1-Lipschitz in the trace magnitude and is $O(\log N)$ in size. A sufficiently small constant RMS error in the normalized magnitude therefore leaves an inverse-polynomial heavy coefficient after rescaling and clipping. The sampled Fourier decoder works directly on uniform $t$ and can verify factors by gcd. Even one-bit magnitude comparisons suffice. Choose a public uniform threshold on a constant-mesh grid for $H$ and test the corresponding threshold $e^h-1$ on $|F|$. The mean answer approximates rescaled $H$, and a constant raw additive gap perturbs it only over an interval of thresholds of constant length. No lower-digit isolation window is needed. Computing the complete normalized magnitude without factors remains open. [Fourier recovery](quarter-fourier.md)
+
+The diagnostic verified the product identity on seven synthetic grids up to 50,625 points and checked 18 literal square-modulus Kloosterman sums. Quantizing the raw trace to a grid of step $1/64$ preserved the predicted nonunit coefficients. Dense Fourier recovery using the quantized values found a proper divisor on all six grids where it was run. Known prime powers generated the controls. [Diagnostic](stationary_log.py)
+
 ## Acceptance test for an evaluator
 
 Use the unfactored input and public window parameters. Compare the exact residue with a direct row scan on both sides of a transition. For the first check, use the two semiprime controls 11,009 and 38,942,974,393, then add repeated-factor inputs such as 315 and 1,575. Include queries with no mixed roots, queries containing multiple mixed roots, and shifts for which the public-root or axis correction changes the raw count. Charge preprocessing, empty blocks, endpoint corrections and any auxiliary modulus construction. After the finite check, give a bound in the bit length for the entire split, including every query the decoder needs.
@@ -73,5 +87,6 @@ python affine_parity.py
 python bounded_quadratic_roots.py
 python bernoulli_moment.py
 python reciprocal_range.py
+python stationary_log.py
 python tangent_progressions.py 38942974393
 ```
