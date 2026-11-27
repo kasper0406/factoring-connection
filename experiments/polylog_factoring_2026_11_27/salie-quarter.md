@@ -1446,3 +1446,37 @@ the observed ranks are 66.75% and 23.48%. Thus getting a split in
 this full-array diagnostic does not establish predictive advantage
 or efficient frequency recovery. The full FFT alone costs order
 N log N operations, and training used 100,000 public samples.
+
+## Threshold decisions with a gap around one
+
+Let R be the largest exact prime power dividing odd N. For uniform
+unit c and 0<ε≤1/2 the fraction with ||T_N(c)|−1|≤ε is
+O(√ε+1/R), with absolute constants. Condition on every CRT
+coordinate except the one modulo R. The remaining magnitude equals
+A·2|cos(2πx/R)| for a fixed A>0 and a uniform unit x mod R.
+The event is empty for A<(1−ε)/2. Otherwise the allowed local
+amplitudes occupy an interval of width 2ε/A≤8ε. Its phase preimage
+consists of a bounded number of intervals of total normalized length
+O(√ε), by the arcsine law, including at a cosine extremum. On the
+whole R-grid this gives O(R√ε+1) points; restricting to units and
+dividing by φ(R)≥2R/3 gives the asserted uniform bound.
+
+For semiprimes a sufficiently small fixed positive gap therefore
+suffices in the same-modulus threshold reduction. For general N
+use, for example, ε=(1+log N)^−3. With w=ω(N), w√ε→0 and w/R→0:
+for growing w the largest prime divisor is at least the w-th prime,
+and for bounded w the largest prime power grows with N. Consequently
+even arbitrary answers throughout the gap perturb each coefficient
+by o(1/w), within the preceding Ω(1/w) signal for sufficiently large
+N. This is a promise decision on requested unit inputs: below 1−ε
+return no, above 1+ε return yes. Return either bit in the gap. With
+the prime factors supplied the local cosine product solves this
+promise in polynomial bit time by evaluating to error less than ε/2.
+Together these directions give randomized polynomial-time equivalence
+to factoring for this inverse-polylogarithmic gap. The semiprime
+constant-gap statement uses an existence bound for the width.
+
+Direct enumeration on 10403 found 72 of 10,200 unit scales within
+0.01 of one and 12 within 0.001. On 1022117 the counts were 5,792
+and 628 out of 1,020,096, respectively. These two widths illustrate
+the ambiguity rate and are not claimed as certified universal choices.
