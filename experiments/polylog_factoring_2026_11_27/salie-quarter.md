@@ -487,3 +487,25 @@ for 1022117. For independent random validation draws the two-sided
 99% Hoeffding radius at this sample size is 0.515 percentage points
 per model. Fixed seeds are for reproducibility. These results do
 not establish sustained advantage as bit length grows.
+
+## Maximum public-label accuracy from the square
+
+Within each unit square fiber the two root pairs contribute two
+copies each of signs s(h/N) and s(uh/N). Thus the label distribution
+is either unanimous or exactly tied. The full Salié sign attains
+the best possible public-label accuracy: on a unanimous fiber the
+sum of the two cosine pairs has their common sign, and on a tied
+fiber either prediction is optimal. Its public-label score is
+precisely the public cosine rule's full-sign score (the same two
+signs are compared). Hence the exact floor sum above also computes
+the Bayes ceiling for any square-only public-label predictor,
+including one with unlimited computation. This ceiling is <=75%.
+
+More precisely, writing U for the probability of a unanimous
+fiber and a for a model's conditional accuracy on those fibers,
+its public-label score is 1/2+U(a-1/2). Its decisions on tied
+fibers are invisible to this score. At N=1009*1013 exactly
+127260 of 255024 unit squares are unanimous, giving ceiling
+74.95059%. Exhaustive fiber enumeration confirmed the floor-sum
+ceiling for the 45 products of distinct odd primes through 31 and
+also for 101*103 and 1009*1013.
