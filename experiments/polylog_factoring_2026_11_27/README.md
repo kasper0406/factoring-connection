@@ -1459,6 +1459,31 @@ the set of cells passing the sieve. A different computation that handles
 many surviving cells together would need a separate analysis. Products
 larger than the height range have no guaranteed full period here.
 
+### Large moduli can isolate all true heights implicitly
+
+For each independent uniformly random odd $m$ in $[1,8N]$, reject a
+height $y$ if the Jacobi symbol $(D/m)=-1$, where $D=N-y^2>0$.
+Squares always survive. For nonsquare $D$, quadratic reciprocity gives
+a nonprincipal quadratic character on the units modulo $Q=4D$ (its
+primitive character comes from the squarefree part of $D$). Half the
+units have value $-1$. Full periods cover at least half the sampling
+interval since $Q\le4N$. All units are odd, so even the conservative
+bound $\varphi(Q)/(4Q)$ suffices for the rejection probability.
+For $k$ distinct prime factors, ordering them gives $p_i\ge i+1$ and
+$\varphi(Q)/Q\ge1/(k+1)$, with $k\le\log_2 Q$.
+Hence $O(\log^2(2N))$ samples with a sufficiently large absolute constant
+reject every nonsquare height simultaneously with probability at least
+$1-1/N$, by independence and a union bound. Generating this list uses
+polynomial bit time and requires no prime search.
+
+For $N=10001$, Python Random seed 3020, denominators
+`2*r.randrange(4*N)+1`, the first nine tests left exactly heights 1 and 65
+in the first octant, verified by scanning all heights. This shows that
+sieve selectivity alone can be achieved. The tests specify the survivors
+implicitly. Integer square root already provides exact membership at a
+supplied height. To improve recovery one must exploit the modular form
+to locate solutions across an interval without scanning its heights.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
