@@ -118,3 +118,38 @@ A guarantee on a signed interval total alone is weaker. For example,
 on this particular input family the full interval always contains one
 divisor despite the full rank of the pointwise matrix. Adaptive bases
 and nonlinear evaluators also fall outside the claim.
+
+## A shared basis for single-divisor interval totals
+
+On the preceding family, encode the unique interval divisor's position
+as an n-bit integer u (offset from the first candidate, padding the
+domain to a power of two, n≥1). For all subintervals J simultaneously,
+the matrix with entries 1[u in J] has a deterministic approximation
+of rank O(n⁵) and entrywise error below 1/4.
+
+Choose a prime P between 8n² and 16n². For a binary prefix s of length
+d write its bits in order as coefficients of a polynomial H_s over
+the field of P elements. For two prefixes of the same length, the
+fraction of field elements a on which their evaluations agree is one
+if equal and at most n/P otherwise, by the polynomial root bound.
+Use the zero polynomial for the empty prefix.
+
+Index features by triples (d,a,v) with 0≤d≤n and a,v in the field.
+The row for u has a one when H evaluated on its length-d prefix at a
+equals v, and zero elsewhere. Decompose J into maximal aligned binary
+blocks. Each block specifies one prefix s, and there are at most 2n
+blocks (at most two per non-root depth, or just the root).
+For each block add 1/P to its column feature (length(s),a,H_s(a)) for
+every a. The row-column dot product counts a true matching block
+exactly and overcounts by at most 2n²/P < 1/4. The number of features
+is (n+1)P². Both feature vectors can be built in polynomial bit time
+given their respective inputs u and J.
+
+Taking differences of adjacent prefix-interval columns even gives a
+shared basis on candidate positions whose sums telescope to accurate
+interval answers (error below 1/4 since prefix errors lie in [0,1/4)).
+Thus the preceding rank barrier genuinely depends on summing absolute
+pointwise errors. The row construction needs the hidden position u.
+Efficiently obtaining rows from N that answer all such queries would
+already recover the unique divisor by bisection. This is a representation
+result for a single hidden divisor, without an arithmetic row algorithm.
