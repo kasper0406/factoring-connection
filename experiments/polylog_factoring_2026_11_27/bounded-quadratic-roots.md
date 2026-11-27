@@ -784,6 +784,32 @@ totient reduction, this gives randomized polynomial-time equivalence
 between general factoring and this near-one modular evaluation problem
 (at polynomial precision). Strip powers of 3 before totient recovery.
 
+### Varying coprime index multipliers at fixed precision
+
+Fix h≥1. For distinct primes p,q above 3 and N=pq, consider all
+queries Φ_(mN)(b) mod 3^h with gcd(m,N)=1 and b≡1 mod 3. For
+each admissible m,b, the answer depends on the prime factors only via
+their unordered residue classes modulo 3^h. This holds without a size
+bound on m.
+
+Write [u]_y=1+y+⋯+y^(u−1). For y≡1 mod 3 the geometric sum
+[3^h]_y vanishes mod 3^h: factor it into the h terms
+1+y^(3^j)+y^(2·3^j) for 0≤j<h, each divisible by 3.
+Thus [u]_y mod 3^h is periodic in u with period 3^h.
+The semiprime formula Φ_N(y)=[N]_y/([p]_y[q]_y) has unit
+denominators. This proves the assertion for m=1. For coprime m
+the cyclotomic divisor product gives
+Φ_(mN)(b)=∏_(d|m) Φ_N(b^d)^μ(m/d). Every factor is a ternary
+unit and every b^d is still 1 mod 3, giving the assertion for all m.
+
+For example, 35=5·7 and 3599=59·61 have matching prime residues
+modulo 27 and different residues modulo 81. Their outputs agreed on
+all 1,179 combinations of admissible multipliers through 200 and
+bases 1,4,…,25 modulo 27, checked with the factored evaluator.
+The bound concerns the information supplied by these queries at
+common parameters. Algorithms can also use N itself, and a multiplier
+with a proper gcd with N already supplies a factor.
+
 ### Evaluation at multiples of three
 
 For n>1 and 3 dividing b, the cyclotomic divisor product reduces modulo
