@@ -2929,6 +2929,35 @@ common order on most balanced semiprimes. It leaves open how often
 one can construct a point of known order whose local orders differ,
 which is the immediate-split case above.
 
+### Reducing a characteristic-zero torsion point
+
+A primitive complex mth root of unity satisfies Φ_m. At every
+prime ℓ not dividing m, its image in any residue field where it is
+reduced still has exact order m. Indeed X^m−1 is squarefree in that
+characteristic. Its cyclotomic factors Φ_d for d dividing m therefore
+have disjoint roots, and a root of Φ_m cannot be a root of X^d−1
+for any proper divisor d. The same proof works after adjoining
+the root formally and projecting to any field component. It does not
+depend on which embedding or conjugate one chooses. Local splitting
+degrees may still differ.
+
+On a rational quadratic norm-one conic a torsion unit lies in a
+quadratic field or in the split algebra. In the field case φ(m)≤2,
+hence m is 1,2,3,4 or 6. In the split case rational roots of unity
+are ±1. Thus reducing one such point, with coordinates defined at the
+primes and nondegenerate conic there, places it in the equal-order
+case whenever gcd(m,N)=1. This explains why the explicit order-six
+point gives a congruence but cannot trigger the order-mismatch gcd
+on the coprime inputs. It places no restriction on a modular point
+constructed directly using N and only known to satisfy X^m=1.
+
+For N=221, the modular point (137,85) on x²+3z²=1 illustrates the
+distinction. It equals the primitive sixth root (1/2,1/2) modulo 13
+and the identity modulo 17; gcd(137−1,85,221)=17. This example was
+constructed using the factors, so it supplies a check only. Polynomial
+gcd checks verified disjointness from every proper-order factor for
+288 coprime (m,ℓ) pairs with 2≤m≤23 and odd primes ℓ<50.
+
 ### Projecting the odd-prime sum sieve onto low bits
 
 For m=2^k the locally possible endings are the image of f(x)=x+N/x
