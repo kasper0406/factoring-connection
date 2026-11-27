@@ -4998,3 +4998,29 @@ This bound is unconditional for the specified linear model and
 sample range. The block-product algorithm can use fewer than 2m+1
 samples. The argument gives no such dimension bound for that
 shorter prefix alone or for directly computing its aggregate product.
+
+### Fixed linear transitions for aggregate factorials
+
+Fix block width m>=1, a prime r dividing N, and K=ceil(r/m).
+If a fixed d-dimensional linear realization u A^k v agrees modulo
+N with (mk)! for k=0,...,2K-2, then d>=K. Modulo r the last
+nonzero term is at k=K-1. In the K-by-K matrix with entries
+(m(i+j))!, the antidiagonal is therefore nonzero and every entry
+past it vanishes modulo r. Reversing the columns yields a triangular
+matrix of rank K, whereas the rows u A^i and columns A^j v give
+a factorization through dimension d.
+
+For squarefree N the minimum dimension for the entire sequence
+is exactly ceil(q/m), with q the largest prime divisor. The lower
+bound uses r=q. For the upper bound the sequence is identically
+zero modulo N from index ceil(q/m) onward, so a shift register
+initialized with its finite prefix suffices. This is an existence
+bound and does not supply the initial factorials efficiently.
+
+Even a scalar 0/1 output indicating gcd((mk)!,N)>1 has a delay
+K=ceil(p/m) for p the least prime divisor. A fixed homogeneous
+linear realization of dimension d<=K cannot give K initial zeros
+then a one: its characteristic polynomial gives a monic recurrence
+of order d. This argument concerns consecutive block indices.
+At dyadic cutoffs the number of initial zeros is only logarithmic,
+and a nonlinear gcd readout is outside the scalar-linear model.
