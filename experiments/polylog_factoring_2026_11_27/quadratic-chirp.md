@@ -4948,3 +4948,30 @@ gcd(B,N)>1, which is valid for every b. Dyadic search through
 the first crossing therefore costs softly O(sqrt(p)) ring
 operations. The dense block polynomial still has m+1 coefficients.
 This is a classical baseline, not a polylogarithmic evaluator.
+
+### Doubling depth and the Shub–Smale tau conjecture
+
+For H_m(X)=product_{i=1}^m(X+i), doubling gives
+H_{2m}(X)=H_m(X)H_m(X+m). At m=2^k the direct recursive
+expansion of H_m has k multiplication layers but m distinct
+leaf arguments. Reusing a subroutine description at two inputs
+still requires evaluating both calls. This accounts for the work
+of this expansion only.
+
+There is a conditional obstruction even if the exact block
+polynomial is replaced by a nonzero integer multiple in Z[X]
+(i.e. H_m divides the polynomial). The Shub–Smale tau conjecture
+bounds the number of distinct integer roots of any nonzero
+integer polynomial F by (1+tau(F))^C for an absolute C, where
+tau counts division-free straight-line operations from 1 and X.
+Every such multiple has the m distinct roots -1 through -m.
+Consequently poly(log m) size constant-free circuits for such
+multiples along any unbounded sequence of m would disprove the
+conjecture. Integer constants with poly(log m) bits can also be
+constructed within polynomial overhead using binary expansion.
+
+The desired gcd computation on residues is a weaker specification.
+For example H_m(-i)=0 modulo N for 1<=i<=m does not imply that an
+integer lift has even one of these exact roots. The conjecture
+therefore gives no lower bound here for modular scalar evaluation,
+and its use above is conditional.
