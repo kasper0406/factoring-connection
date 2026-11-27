@@ -917,3 +917,36 @@ constant-error reduction for sufficiently large inputs. This includes
 a bound poly(log m)·λ^ω(m) with any fixed 0<λ<√2. The zero estimator
 already meets the endpoint bound with λ=√2. This comparison does
 not classify smaller improvements such as a polynomial factor in w.
+
+**Control for an evaluator that only uses the known auxiliary coordinates.**
+Under uniform unit sampling write the padded target as A·Y with
+independent A (known factors) and Y=|T_n(c)| (original cofactor).
+Even granting the exact mean of Y, the best prediction from the
+auxiliary coordinates alone is A·E Y. By conditional variance its
+MSE is E[A²]Var(Y). Thus its MSE as a fraction of the zero
+estimator's MSE equals Var(Y)/E[Y²] for every padding size.
+The squared-weight transfer returns the constant E Y. More generally
+if a specified set of CRT coordinates is omitted, the residual MSE
+fraction is 1−∏(E a_r)²/E[a_r²], with the product over omitted
+factors (each ratio is inside the product).
+
+At n=35 direct complex root sums and least-squares fitting by
+auxiliary residue gave MSE 0.804479 without padding and 1.608958
+after adjoining 11². The residual fraction was 0.321792 in both
+cases. For a cofactor of two distinct primes both tending to infinity,
+the corresponding fraction tends to 1−(8/π²)², about 0.343.
+This follows from the unit-grid means E a_p→4/π and E a_p²→2.
+This control applies to estimators ignoring the original unit
+coordinate. A public estimator may use that coordinate.
+
+**Bounded-factor-count inputs.** A weaker evaluator guarantee
+2^(ω(m)/2)/ω(m)^a with fixed a>0 already suffices
+to split inputs with ω(n)≤C log log n, including semiprimes.
+Use k=ceil((log n)^B) auxiliary prime squares. The factor 2^(k/2)
+cancels, leaving at most 2^(ω(n)/2)/k^a.
+If a bit-length prefactor is also present, take
+auxiliary-size growth into account: if that degree is d, log m
+is of order k log k for B>1. This particular bound then improves
+with k only when a>d. Without any bit-length prefactor, any a>0
+suffices by taking B large relative to C/a. With the prefactor the
+same argument works for a>d by taking B sufficiently large.
