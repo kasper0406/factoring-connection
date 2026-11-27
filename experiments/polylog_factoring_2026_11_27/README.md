@@ -487,6 +487,29 @@ so matching the approximate table to tolerance 0.35 recovers the unique group
 factor is $\pm a\bmod r$ for every target $a$ simultaneously. The public
 selection uses only $N\bmod r$; evaluation at the selected points is still open.
 
+### One log-magnitude component decides restricted quadratic residuosity
+
+Take odd distinct primes $p,q$, $N=pq$, and a probe prime $r\equiv1\pmod4$
+coprime to $N$. Put $\chi(k)=(k/r)$, $z_k=e^{2\pi i k/r}$, and
+$C_r=\sum_{k=1}^{r-1}\chi(k)\log|1-z_k|$. The weighted log-magnitude sum is
+$$\sum_{k=1}^{r-1}\chi(k)\log|\Phi_N(z_k)|
+=C_r(1-\chi(p))(1-\chi(q)).$$
+This follows from the four chords by permuting $k$ by each exponent.
+The public constant is nonzero: the Abel-limit Fourier series for
+$\log|1-z_k|$, followed by the real quadratic Gauss sum, gives
+$C_r=-\sqrt r\,L(1,\chi)$, and Dirichlet nonvanishing applies.
+When $(r/N)=+1$, reciprocity says the two hidden signs agree.
+The sum is zero precisely when $r$ is a square modulo $N$, and $4C_r$
+otherwise. For Jacobi symbol $-1$ the sum is publicly zero.
+
+At $r=5$ a single magnitude already suffices on the Jacobi-positive promise.
+The two positive chord lengths are $u=2\sin(\pi/5)$ and $v=2\sin(2\pi/5)$.
+Both local symbols positive gives magnitude one; both negative gives
+$u^2/v^2=(3-\sqrt5)/2$, since $N\equiv\pm1\pmod5$. Thus even a fixed probe
+with 0.01 absolute error decides whether 5 is a square modulo a Jacobi-positive
+odd semiprime. This concerns specified small prime radicands. It supplies
+neither a reduction from arbitrary radicands nor a factoring algorithm.
+
 ## Reproduce the principal results
 
 Run these commands in this directory. The lattice and tangent programs use SymPy. The direct disk enumerators are controls with power-of-$N$ running time.
