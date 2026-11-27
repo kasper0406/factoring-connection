@@ -122,6 +122,26 @@ Even the short nonlinear forward-difference update gives a long exact linear rec
 $$\widehat f(k_0+Nj)=\frac1N\sum_{a\bmod N:\,tP'(a)=k_0\bmod N}e_M(tP(a)-k_0a)e_N(-ja).$$
 Each derivative fiber contains at most $R=(d-1)^2$ points by CRT. Hence every coefficient has magnitude at most $R/N$. By Parseval, at least $M/R^2$ coefficients are nonzero. Any approximation supported on $r$ frequencies of the same period has squared RMS error at least $1-rR^2/M$. An exact constant-coefficient recurrence for the period also needs order at least $M/R^2$, since its characteristic polynomial must vanish at every supported root of unity. These bounds apply even to the small-scale queries. The diagnostic checked 40 full-grid transforms against the fiber formula, with maximum discrepancy $1.25\times10^{-16}$. The smallest observed support fraction was $0.2746$. [Frequency diagnostic](polynomial_stream_limits.py)
 
+### Two prime components need only scales up to $2N$
+
+Assume $N$ has exactly two distinct odd prime divisors, allowing repeated powers, and write $M=N^2$. Small $N$ and the factor 3 can be removed by trial division. For the quartic, let $e$ be one primitive CRT idempotent modulo $M$. Reflect the angle of $v=2e-1\pmod{2M}$ to choose $0<v<M$. Then $v^2=1\pmod M$ and $v$ is mixed. For $c=\cos(\pi t/M)$ and $w=\cos(\pi vt/M)$, the magnitude of the normalized quartic is
+$$|G(t)|^2=(5c+4w)^2+9\sin^2(\pi t/M).$$
+Indeed, the two local phases multiply to $e_M(-t)$. Rotating the expanded product by $e^{\pi i t/M}$ gives real part $5c+4w$ and imaginary part $-3\sin(\pi t/M)$. At $t\le2N$ this real part is bounded away from zero for $N\ge 32$. A magnitude oracle with absolute error at most $10^{-7}$ therefore gives $w$ to error below $10^{-5}$ using the positive square root.
+
+The cubic magnitude has the same readout with $v=4(2e-1)\pmod{2M}$ reflected to $0<v<M$. Now $v^2=16\pmod M$ and the signed normalized trace is $2\cos(4\pi t/M)+2\cos(\pi vt/M)$. The second cosine is approximated by half the magnitude minus $\cos(4\pi t/M)$. The possible negative sign costs at most $2(1-\cos(4\pi t/M))\le 64\pi^2/N^2$ on the same scales. Thus the same accuracy bound holds for $N\ge 2^{14}$ after a constant-size trial-division precheck.
+
+For either readout, start with $t=1$. If the first cosine is near $-1$, reflect $v$ to $u=M-v$ and multiply each readout by $(-1)^t$. Otherwise take $u=v$. If the resulting first cosine is above $0.9$, double the scale until the estimated cosine crosses $0.9$. This produces an anchor $s$ with $\theta=\pi su/M$ having sine bounded below by $0.4$. The first crossing keeps the positive angle below $1$ in the doubling case. Any mixed $u$ satisfies $\min(u,M-u)\ge N$: for a smaller representative its square minus $1$ or $16$ could vanish modulo $M$ only by integer equality with the public root. In particular $s\le N/2$ after the precheck.
+
+At scale $s2^j$ query also $s(2^j+1)$ or $s(2^j-1)$. A proper gcd of any query scale with $N$ already suffices. The two shifted scales cannot both be multiples of odd $N$. The cosine addition law gives the sine of $2^j\theta$ to constant error using the anchor, so the circle angle is determined to error below $\rho=10^{-3}$. Dividing by $2^j$ and choosing the lift closest to the preceding estimate is unambiguous since $3\rho<\pi$. The error in $\theta$ after this step is at most $\rho/2^j$. Stop at the first $s2^j\ge N/2$. The largest queried scale is below $2N$, and the inferred $u$ has error at most $2\rho N/\pi<N/64$. The certified quadratic lattice for modulus $M$ recovers a root from this short interval, and the gcd of $u-1$ or $u-4$ with $N$ verifies the split. All public calculations and the $O(\log N)$ oracle calls are deterministic. [Quadratic lattice](lattice-window.md)
+
+The diagnostic checked the phase intervals on 54 synthetic controls with bounded noise, including endpoint stress phases and repeated prime powers. The largest queried scale was $1.179N$, and the largest coordinate error was $8.18\times10^{-8}N$. It exercises the numerical reconstruction separately from the lattice finish. Evaluating the polynomial sums at these scales in polynomial bit time remains open. [Phase interval checks](small_scale_phase_check.py)
+
+## One quadratic box count with no clipping
+
+There is also a complete count target using idempotents, with no arcs or windows. Count $0\le s,y<N$ satisfying $s(s-1)=sy=0\pmod N$. In a component $q_i=p_i^{e_i}$, the selector $s=0$ allows $q_i$ choices for $y$, while $s=1$ forces $y=0$. The count is $\prod_i(q_i+1)$. For two components it yields $q_1+q_2$ by subtracting $N+1$, and a quadratic equation recovers both. Two bounded quotient coordinates let one pack the congruences into one equation with quadratic part of rank two. Additive error below $1/2$ is sufficient by rounding.
+
+The same construction gives one count for general $N$ when the number of coordinates may grow. Add $r$ pairs $(z_j,w_j)$ with $w_j=s z_j$ and $z_j(w_j-1)=0\pmod N$. On $s=0$ the pairs vanish; on $s=1$ they give $A=2^r$ choices in place of one. The count becomes $P(A)=\prod_i(A+q_i)$. Choose $r=2\operatorname{bit\_length}(N)$, so $A>2^{\omega(N)}N$ exceeds every coefficient of $P$. Its base-$A$ digits give the exact polynomial, and integer polynomial roots give the components. For packing, bind each polynomial residue to a unique integer quotient. A base greater than twice the largest possible residual makes a single weighted sum of the residuals vanish only when they all vanish. The box, coefficients and count have polynomial bit length. This gives a deterministic one-query reduction to an ordinary count with one quadratic equation. A polynomial-bit evaluator for the count is open. [Count construction and checks](idempotent_count.py)
+
 ## Factor-supplied range control and hardness of arbitrary windows
 
 The retained reciprocal spectrum can be evaluated with $O((K+1)2^{\lceil\omega(N)/2\rceil}\operatorname{poly}(\log N))$ work per digit at fixed accuracy and a fixed number of denominator intervals, given the prime powers of $N$. For a retained slope $b$, square roots of $(1-b)^{-1}$ modulo the prime-power components of $N^2$ give CRT sign choices. Lift a candidate lower digit to $r=a+Nh$ with $(1-b)r^2=c^2\pmod{N^2}$. Then the phase at $a$ is $(2-2b)r+ba\pmod{N^2}$ by subtracting the lift change $Nbh$ from the phase at $r$. Its exponential factors across two half lists, with a single wrap correction $e_N(-b)$ when the lower digits sum to at least $N$. Sort the right half list by lower digit and take prefix sums of phase weights. Each left choice queries shifted right intervals where the geometric lift weight is constant. The ordering is reused between digits. Square roots and lifting are included in the setup. The input factorization is supplied. [CRT evaluator](crt_range.py)
@@ -165,6 +185,8 @@ python stationary_dual.py
 python stationary_cubic.py
 python stationary_window_reference.py
 python polynomial_stream_limits.py
+python small_scale_phase_check.py
+python idempotent_count.py
 python crt_range.py
 python stationary_hardness.py
 python tangent_progressions.py 38942974393
