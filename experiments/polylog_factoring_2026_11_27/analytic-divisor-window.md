@@ -30,3 +30,35 @@ The [prior analytic audit](../../notes/conn_ana.md) addresses the
 difficulty of recovering an exact divisor jump from smooth estimates.
 This calculation supplies a pointwise gap; it does not supply the
 global fast transform or assert priority for the kernel.
+
+## Moving the sum into the complex plane
+
+For positive integer N, extend the kernel meromorphically away from zero,
+
+$$
+K_N(z)=\frac{\cosh(1/z)-1}{\cosh(1/z)-\cos(2\pi N/z)}.
+$$
+
+The denominator vanishes when the two cosine arguments agree up to sign
+and a multiple of $2\pi$, using $\cosh u=\cos(iu)$. Thus in the right
+half-plane the poles are exactly
+$z_j^{\pm}=(N\pm i/(2\pi))/j$ for positive integers $j$.
+They are simple because the two solution families are disjoint and the
+sine at each solution is nonzero. The numerator is nonzero there since
+$1/z$ has positive real part. Taking a positive integer power $k$
+raises their order to $k$.
+
+A contour integral with sampling factor $\pi\cot(\pi z)$ recovers the
+integer samples by residues in a sufficiently thin rectangle. Moving its
+upper edge above the upper poles introduces one residue per $j$ with
+$N/U<j<N/L$ for vertical sides at $L,U$ (choose endpoints off poles
+and integers). For $L=\sqrt{N/2}$ and $U=\sqrt N$, that is
+$(\sqrt2-1)\sqrt N+O(1)$ distinct poles. Their real parts $N/j$
+parameterize complementary factor candidates. For $N=2,989,601,243$
+the integer indices run from 54,678 through 77,325, giving 22,648
+upper poles. Each has height $1/(2\pi j)$.
+
+This rules out a polylogarithmic cost for *listing* all crossed poles
+in this window. It leaves open a collective evaluation of their
+contributions. A candidate identity would need to bound total bit cost
+and absolute error uniformly, including endpoint contributions.
