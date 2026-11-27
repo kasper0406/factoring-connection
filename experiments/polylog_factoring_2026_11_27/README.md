@@ -6,6 +6,8 @@ The objective is a classical factoring algorithm with polynomial bit complexity,
 
 **Current target.** Given an unfactored odd modulus N and an aligned binary interval I in its lower half, compute the parity of the solutions to x² ≡ 1 (mod N) in I in polynomial bit time. A general evaluator remains open.
 
+**Where the search stalled.** The product, character, correlation, and run-count reductions all leave a global quantity to evaluate. The next benchmark is a public computation on a wide interval where the current evaluator returns unresolved. Report the interval width, bit-operation cost, and assumptions about N. A proved improvement on a specified family is worth recording even before it covers all N. For the CM proposal the corresponding benchmark is an explicit auxiliary value with certified divisibility and size, together with its public construction cost.
+
 | Approach | What we know | What would advance it |
 |---|---|---|
 | Prefix descent | At most half the bit length in parity queries, then lattice recovery. Verified on 676 odd moduli using exhaustive queries. [Lattice backend check](bounded-quadratic-roots.md#lattice-backend-check) [Decoder](check_lower_half_prefix.py) | Evaluate a wide query from N and I. |
