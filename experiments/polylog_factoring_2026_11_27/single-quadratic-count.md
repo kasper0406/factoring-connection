@@ -662,6 +662,30 @@ polynomial-bit smoothness exponent still falls under this bound.
 Constructing an arbitrary polynomial separately from the digits of
 each N need not yield a shared menu of this size.
 
+**Same-input trace collisions.** For two distinct public degrees
+0≤a<b put u=b−a and v=b+a. Modulo an odd prime r, let h_r be the
+fraction of field inputs x with D_a(x)=D_b(x). The exact formula is
+
+    2r h_r = sum over t=r−1,r+1 of [gcd(t,u)+gcd(t,v)−gcd(t,u,v)].
+
+The trace equality holds just when z^u=1 or z^v=1. Inclusion-exclusion
+counts this union in each cyclic group, and each trace input has two
+lifts across the disjoint union. Direct recurrence evaluation verified
+all 3,264 prime/degree-pair cases for odd primes below 100 and distinct
+degrees from 0 through 16.
+
+For a uniform input modulo N=pq the two equality events are independent,
+so the exact proper-gcd probability is h_p(1−h_q)+h_q(1−h_p).
+If it is at least δ, one h_r is at least δ/2 and one of the four gcds
+in its positive terms is at least rδ/4. Thus one of the cyclic groups
+of order t=r±1 has index t/gcd(t,w)≤8/δ for w either u or v.
+The public multiple uv·lcm(1,...,ceil(8/δ)) then covers that group
+order. The earlier scalar or norm-one decoder applies without a
+balance promise. For b=N, D_N equals D_q as a function modulo p
+and D_p modulo q by Frobenius and composition. That crossed degree
+identity alone gives no collision probability guarantee. The formula
+concerns fixed degrees independent of the sampled trace.
+
 As a check, using every reduced center with b≤bitlength(N), the
 numbers of covered positions in [⌊N/4⌋,⌊N/2⌋) were 7,869 / 366,015
 for N=1,464,059, 103,475 / 36,282,880 for N=145,131,521, and
