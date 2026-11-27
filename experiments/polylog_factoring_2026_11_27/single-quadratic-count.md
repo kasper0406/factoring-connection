@@ -1583,3 +1583,20 @@ For w near H/2 and K=floor(√N), even changing scales and complementing require
 Let N>1 be odd. To test a public polynomial P over ℤ/Nℤ as a map from the roots of 1 to themselves, evaluate v=P(1) and w=P(−1). The test v²=w²=1 mod N is necessary and sufficient. At any root r the idempotents (1±r)/2 are orthogonal with sum one, giving P(r)=(1+r)v/2+(1−r)w/2. Squaring this expression proves sufficiency. If v or w differs from both ±1, gcd(v−1,N) or gcd(w−1,N), respectively, is a proper factor. Otherwise the four possible pairs give only the two constant maps and r↦±r. In particular any different root permutation provided by a polynomial circuit immediately splits N by two public evaluations. This also applies to rational circuits whose division gates are units at both test inputs: their values at a root are the same idempotent combinations, and inverses glue componentwise. The argument includes repeated odd prime powers.
 
 This test concerns maps preserving the entire root set. Bit-dependent selection, a map only promised on some hidden roots, or an aggregate parity identity can require different information.
+
+### Quadratic products lose prefix parity at bounded precision
+
+For distinct odd primes with N=pq, omit the known root 1 and form
+B(t)=∏_{x=2}^t (x²−1). Every block of q consecutive integers contains
+an x equal to 1 modulo q, and likewise for p. Thus B(t) is zero modulo
+N^k once t−1 ≥ k max(p,q). Its residue then stays fixed even if a
+mixed root enters the prefix.
+
+For an explicit infinite family of collisions, take p and q of comparable
+size tending to infinity, and k polynomial in log N. Let r be the larger
+representative in the opposite pair of mixed roots. Then r>N/2, so both
+B(r−1) and B(r) vanish modulo N^k for sufficiently large N. The two
+prefix parities differ. For N=77 and k=1, the same collision already
+occurs at t=33 and 34, since 34²−1=15·77. This rules out reading parity
+from the product residue alone. It leaves open methods that also use the
+endpoint, subdivide the interval, or recover more than the truncated product.
