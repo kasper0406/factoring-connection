@@ -658,3 +658,34 @@ list and gcd(k-a,N) recover a split without knowing u or s, using
 s<=log2 N to set thresholds. This promise concerns predicting the
 sampled root's label, not the full Salié sign on all its conjugates.
 It supplies no predictor with that advantage.
+
+## Information limit for the sampled-root label at many prime factors
+
+Put s=omega(N). Even an unrestricted square-only predictor has
+population advantage at most O((1+s)^2 2^(-s/4)) for predicting
+the sampled root's public quarter sign. This qualifies the preceding
+sufficient condition: along families with s/log log N tending to
+infinity, the required inverse-polynomial advantage is impossible.
+
+For the proof extend the bounded predictor f(h²) by zero on nonunits.
+Its normalized Fourier transform is constant on each orbit under
+multiplication by all square roots of unity. For nonzero centered
+frequency a with |a|<=K=floor(2^(s/2)), at most log2 K components
+can have their full prime power dividing a. Every other component
+has two distinct sign choices on a, since N is odd. The orbit thus
+contains at least 2^(s/2) frequencies. Parseval bounds the absolute
+value of each corresponding coefficient by 2^(-s/4). The public
+quarter wave has constant coefficient of magnitude 1/N; its
+nonzero coefficients have magnitude <=1/|a| by the interval sum.
+The low-frequency contribution to correlation is therefore
+O((1+s)2^(-s/4)), and the tail costs O(K^(-1/2)) by Cauchy-Schwarz
+and Parseval. Convert full-grid correlation to unit correlation
+using N/phi(N)<=s+1, and divide by two for advantage.
+
+Exact majority scores obtained by enumerating every square fiber
+at N=15,105,1155,15015,255255 were respectively 4/8, 32/48,
+280/480, 3224/5760, 49684/92160. These examples are diagnostics,
+not a monotonicity claim. At N=15 the label is exactly balanced
+on every unit square. This obstruction concerns predicting a random
+preimage label; the aggregate window parity is deterministic on the
+square, and the bound does not transfer to that target.
