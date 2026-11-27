@@ -1640,3 +1640,27 @@ sign pattern occurs with probability 1−2^(1−h) and guarantees a proper
 gcd, even with repeated prime factors. Sampling a nonunit already
 yields a factor when sampling from 1 through N−1. Prime powers can be
 handled by exact integer root and primality tests.
+
+### Full-product evaluation given an arbitrary factorization
+
+Write P_N(u)=∏_{x=0}^{N−1}(x²−u). For each exact odd prime power
+p^e dividing N, compute the least residue b of −u(u^((p−1)/2)−1)²
+modulo p. Then P_N(u) ≡ b^(N/p) modulo p^e.
+
+To prove the lift, let A_j be the product on one period of length p^j.
+For j≥1 group the next period by x=a+t p^j with 0≤t<p.
+Modulo p^(j+1) the quadratic term in t drops out of each x²−u.
+In the product over t, terms with at least two linear corrections
+also vanish. The one-correction terms sum to a multiple of
+p^j ∑t, divisible by p^(j+1) for odd p. Thus A_(j+1) ≡ A_j^p
+modulo p^(j+1), including when constants are nonunits. Raising
+congruent integers modulo p^j to the pth power preserves congruence
+modulo p^(j+1) by the binomial theorem. Induction from the one-period
+formula A_1 ≡ b modulo p gives A_e ≡ b^(p^(e−1)) modulo p^e.
+There are N/p^e full periods. For 2^e exactly dividing N, half the
+factors are even and N/2 ≥ 2^(e−1) ≥ e, so the local residue is zero.
+
+CRT and modular exponentiation now evaluate the full product at any
+point in polynomial bit complexity given the prime factorization.
+Together with recursive random-unit splitting above, this establishes
+expected polynomial-time oracle equivalence for every N≥2.
