@@ -68,3 +68,21 @@ for a separate approximation to P(uc). For K=1024 the RMS errors
 on all unit shifts were 0.01354 at N=10403 and 0.01943 at N=11009,
 using a full Fourier transform for verification. This calculation
 requires no factorization in the truncated evaluator.
+
+**Public labels on random squares.** This is the interval version of
+the [existing square-only cosine predictor](salie-quarter.md#what-a-square-argument-determines).
+For uniform units c, the four roots conditional on z=c² are ±c,±uc.
+Since P is even, the label 2P(c) has conditional mean P(c)+P(uc),
+exactly the normalized interval target. Its conditional variance is
+(P(c)−P(uc))². Using the short Fourier approximation instead perturbs
+the conditional mean in RMS by at most twice its one-function RMS
+error (conditional expectation contracts the L² norm). The truncation
+length can therefore be increased to fit a smaller error budget.
+This generates approximate labels on random squares. It does not
+evaluate the conditional mean at a requested scale. Getting a different
+root modulo sign for a supplied square with known root c would itself
+split N by gcd. Exact grouping over all 2,550 and 2,700 unit squares
+at N=10403 and 11009 verified the mean identity. The single-label RMS
+deviations were 1.4280 and 1.4278 respectively, compared with the
+1/8 evaluator target. These two finite checks concern raw labels,
+not the risk attainable by a trained estimator.
