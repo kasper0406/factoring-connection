@@ -1659,6 +1659,36 @@ Let N>1 be odd. To test a public polynomial P over ℤ/Nℤ as a map from the ro
 
 This test concerns maps preserving the entire root set. Bit-dependent selection, a map only promised on some hidden roots, or an aggregate parity identity can require different information.
 
+### Adaptive modular equality tests on mixed roots
+
+Suppose a public decision procedure on an unknown mixed root uses
+addition, subtraction, multiplication modulo odd N, branches on equality
+of two registers modulo N, and Boolean leaves. Public constants and the
+next operation may depend on earlier branch answers. If the procedure
+gives different answers on two mixed roots, it yields a deterministic
+factor finder with constant many modular operations and gcds per step.
+
+Simulate one path, maintaining two residues per register by substituting
++1 and −1 for the input along that same path. These are formal
+substitutions even when neither public input would follow the simulated
+branches. At an equality gate subtract its two registers and take the gcd
+of each substituted difference with N. A proper gcd splits N. Otherwise
+each difference is either zero or a unit. Every mixed root uses the plus
+substitution on at least one prime-power component and the minus
+substitution on at least one other. Thus equality holds at every mixed
+root exactly when both differences are zero, and fails at every mixed
+root otherwise. Continue along this common branch. If simulation reaches
+a Boolean leaf, all mixed roots share its answer, contradicting the
+distinguishing promise. The reasoning allows repeated odd prime powers.
+
+In particular the lower-half predicate separates a mixed root from its
+negative. A polynomial-bit-time modular equality decision tree for that
+predicate, promised correct only on mixed roots, would already factor
+the modulus without receiving a root. The restriction to modular
+equality matters: comparison of canonical integer representatives reads
+the lower-half bit immediately on a supplied root. This argument does
+not classify algorithms that evaluate an aggregate directly.
+
 ### Quadratic products lose prefix parity at bounded precision
 
 For distinct odd primes with N=pq, omit the known root 1 and form
