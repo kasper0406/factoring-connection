@@ -566,3 +566,33 @@ Exact covered-residue counts for L=1,16,64 respectively were
 100,388,744 out of 2550 at N=101*103, and 1009,4024,8016 out
 of 255024 at N=1009*1013, by enumerating and deduplicating the
 unit square residues up to the stated root cutoff.
+
+## Integer-affine choices of the lift level
+
+Let the input representative range over 0<=y<N. An integer-affine
+choice k(y)=ay+b gives x²=(1+aN)y+bN. Put A=|1+aN| (nonzero)
+and B=bN. The nonnegative roots x lie in one interval of length
+at most sqrt(AN), since the nonnegative radicands span at most AN.
+Also x²=B mod A. We count roots of this last congruence as a
+union of progressions even when B has large square factors.
+
+For a prime power r^e exactly dividing A, if r^e divides B then
+x is zero modulo r^ceil(e/2). Otherwise existence forces the
+valuation of B to be even, say 2t<e. Divide x by r^t: the
+result is a unit square root modulo r^(e-2t). There are at most
+two unit roots for odd r and at most four for r=2. This gives
+at most that many classes for x modulo r^(e-t). Every local
+period is at least r^(e/2). CRT thus gives at most 2^(omega(A)+1)
+classes with a common period >=sqrt(A), also valid for A=1.
+Each class supplies at most sqrt(N)+1 values of x in the interval.
+Each x gives at most one input y. This bound is independent of b.
+
+For |a|<=N^C with fixed C, omega(A)=O(log N/log log N) since
+omega(A)!<=A. Even a menu of poly(log N) such rules, with any
+input-dependent selection among them, covers at most N^(1/2+o(1))
+residues. Dividing by phi(N)/4 gives hit probability at most
+N^(-1/2+o(1)) for uniform unit squares on distinct odd semiprimes.
+This includes piecewise-affine predictors with polynomially many
+pieces. It does not bound arbitrary polynomial-bit slopes of
+superpolynomial magnitude, or a nonlinear rule with no short
+affine menu. Prime-power decompositions are used only in the proof.
