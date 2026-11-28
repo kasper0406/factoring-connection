@@ -13,19 +13,26 @@ else:
 from src.thmA.arith import iroot
 
 
-def _recover_common_order(n, base, powered_order, stats):
-    # The first full baby repetition was preceded by no proper gcd. Thus both
-    # local powered orders equal powered_order. A dyadic stride preserves
-    # their odd parts. Recover the 2-part by squaring the remaining element.
-    odd = powered_order//(powered_order & -powered_order)
-    order, value = odd, pow(base, odd, n)
-    while value != 1:
-        divisor = gcd(value-1, n)
-        if 1 < divisor < n:
-            stats["status"] = "component_order"
-            return divisor
-        order *= 2
-        value = value*value % n
+def _recover_common_order(n, m, base, powered_order, modulus_primes, stats):
+    # At the first full repetition, both local orders of base^(m^2) equal i.
+    # Reconstruct each component removed by the stride; the other prime-power
+    # components of both local orders already agree with those in i.
+    annihilator = powered_order*m*m
+    order = powered_order
+    for prime in modulus_primes:
+        while order % prime == 0:
+            order //= prime
+        exponent = annihilator
+        while exponent % prime == 0:
+            exponent //= prime
+        value = pow(base, exponent, n)
+        while value != 1:
+            divisor = gcd(value-1, n)
+            if 1 < divisor < n:
+                stats["status"] = "component_order"
+                return divisor
+            order *= prime
+            value = pow(value, prime, n)
     divisor = gcd(order, n)
     if 1 < divisor < n:
         stats["status"] = "order_gcd"
@@ -40,7 +47,7 @@ def _recover_common_order(n, base, powered_order, stats):
     return divisor
 
 
-def _search_with_base(n, m, residues, buckets, lam, base, stats):
+def _search_with_base(n, m, residues, buckets, lam, base, stats, modulus_primes=(2,)):
     # Undo the single-class exponent normalization: every class then uses
     # exactly the same baby table with stride m^2.
     def giants():
@@ -51,21 +58,49 @@ def _search_with_base(n, m, residues, buckets, lam, base, stats):
 
     divisor = hh_collision(n, m, base, 1, lam, giants(), stats=stats)
     if divisor is None and stats["status"] == "short_order":
-        return _recover_common_order(n, base, stats["baby_count"], stats)
+        return _recover_common_order(n, m, base, stats["baby_count"], modulus_primes, stats)
     return divisor
 
 
-def factor_from_residue_list(n, m, residues, *, stats=None):
-    """If the list contains p mod m for the smaller prime p, return a divisor.
+def factor_from_residue_list(n, m, residues, *, modulus_primes=None, stats=None):
+    """Return a divisor if the list contains the smaller prime modulo m.
 
-    Input promise: n=p*q is odd with p<q<2p, m is a power of two >=2.
-    On a list missing p this may still return a verified incidental divisor.
+    Promise n=p*q with distinct odd primes p<q<2p. For a non-dyadic m,
+    supply its distinct prime divisors in modulus_primes. Incorrect classes
+    may still produce a verified incidental divisor.
     """
-    if n < 15 or n % 2 == 0 or m < 2 or m & (m-1):
-        raise ValueError("expected an odd balanced semiprime and a power of two")
+    if n < 15 or n % 2 == 0 or m < 2:
+        raise ValueError("expected an odd balanced semiprime and a modulus >= 2")
+    if modulus_primes is None:
+        if m & (m-1):
+            raise ValueError("a non-dyadic modulus needs its distinct prime divisors")
+        modulus_primes = (2,)
+    else:
+        from sympy import isprime
+        modulus_primes = sorted(set(modulus_primes))
+        remaining = m
+        for prime in modulus_primes:
+            if prime < 2 or remaining % prime or not isprime(prime):
+                raise ValueError("incorrect prime divisors for the modulus")
+            while remaining % prime == 0:
+                remaining //= prime
+        if remaining != 1:
+            raise ValueError("incomplete prime divisors for the modulus")
+    common = gcd(m, n)
+    if common != 1:
+        if common < n:
+            if stats is not None:
+                stats["status"] = "modulus_gcd"
+            return common
+        for prime in modulus_primes:
+            if n % prime == 0:
+                if stats is not None:
+                    stats["status"] = "modulus_gcd"
+                return prime
+        raise ValueError("modulus factorization inconsistent with the input")
     residues = sorted({r % m for r in residues})
-    if any(r % 2 == 0 for r in residues):
-        raise ValueError("factor residues must be odd")
+    if any(gcd(r, m) != 1 for r in residues):
+        raise ValueError("factor residues must be units modulo m")
     work = {} if stats is None else stats
     count = len(residues)
     work.update(classes=count, status="empty", baby_count=0, giant_count=0)
@@ -90,7 +125,7 @@ def factor_from_residue_list(n, m, residues, *, stats=None):
     if divisor:
         work["status"] = "order_setup"
         return divisor
-    return _search_with_base(n, m, residues, buckets, lam, base, work)
+    return _search_with_base(n, m, residues, buckets, lam, base, work, modulus_primes)
 
 
 def _shared_prefix_list(n, bits, shared, budget):
@@ -118,18 +153,21 @@ def _shared_prefix_list(n, bits, shared, budget):
     return [a for a, _ in states], tested
 
 
-def factor_from_shared_bits(n, bits, shared, *, stats=None):
+def factor_from_shared_bits(n, bits, shared, *, complete_list=False, stats=None):
     """Factor using the supplied low bits of p & q on an odd balanced semiprime.
 
     Increasing the binary-branch budget keeps every run finite and eventually
-    includes the true residue. Neither the XOR nor its weight is an input.
+    includes the true residue. complete_list=True grows the entire compatible
+    tree once. The latter has the sharp density-one entropy bound.
     """
     if n < 15 or n % 2 == 0 or bits < 1 or not 0 < shared < (1 << bits) or shared % 2 == 0:
         raise ValueError("expected an odd balanced semiprime and a low AND with bit zero set")
     modulus = 1 << bits
     tested = 0
     work = {} if stats is None else stats
-    for budget in range(bits-shared.bit_count()+1):
+    last_budget = bits-shared.bit_count()
+    budgets = (last_budget,) if complete_list else range(last_budget+1)
+    for budget in budgets:
         residues, visits = _shared_prefix_list(n, bits, shared, budget)
         tested += visits
         if not residues:
