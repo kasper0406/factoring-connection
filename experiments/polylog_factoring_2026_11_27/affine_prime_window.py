@@ -57,10 +57,8 @@ def _parameters(n, radius, lower):
     raise ValueError('no affine lattice certificate for this radius and divisor lower bound')
 
 
-def _integer_roots(polynomial, radius):
-    """Isolate possible integers with Sturm bisection on half-integer boundaries."""
-    if polynomial.degree() < 1:
-        return []
+def primitive_sturm_rows(polynomial):
+    """Integer coefficient rows for a squarefree Sturm chain, with positive scaling."""
     first = polynomial.sqf_part()
     second = first.diff()
     sturm = [first, second]
@@ -71,7 +69,14 @@ def _integer_roots(polynomial, radius):
         remainder = remainder.primitive()[1]
         first, second = second, remainder if scale_is_negative else -remainder
         sturm.append(second)
-    rows = [list(map(int, member.all_coeffs())) for member in sturm]
+    return [list(map(int, member.all_coeffs())) for member in sturm]
+
+
+def _integer_roots(polynomial, radius):
+    """Isolate possible integers with Sturm bisection on half-integer boundaries."""
+    if polynomial.degree() < 1:
+        return []
+    rows = primitive_sturm_rows(polynomial)
 
     def variations(twice_x):
         previous, changes = 0, 0
