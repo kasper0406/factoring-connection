@@ -20,9 +20,6 @@ from math import gcd, isqrt
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 from src.common.metrics import Metrics, NullMetrics
-from src.specialfam.copper import best_params, n_chunks, subdivide_search
-from src.specialfam.normbox import small_trial
-from src.specialfam.polyprod import block_products
 
 
 def smooth_part_ps(M: int, B: int, mt: Optional[Metrics] = None) -> Dict[int, int]:
@@ -32,6 +29,8 @@ def smooth_part_ps(M: int, B: int, mt: Optional[Metrics] = None) -> Dict[int, in
     then in-order block gcds; the first x with gcd(x, M_cur) > 1 is the least prime
     factor of M_cur in range, so no primality test is needed. Cost O~(sqrt B).
     """
+    from src.specialfam.polyprod import block_products
+
     mt = mt if mt is not None else NullMetrics()
     M = abs(M)
     out: Dict[int, int] = {}
@@ -135,6 +134,9 @@ def smoothcopp_factor(N: int, B: int, Dmin: int, band: Tuple[int, int],
                       Dmax_lat: int = 9, residues: str = "pm",
                       metrics: Optional[Metrics] = None, max_total_chunks: Optional[int] = None) -> Dict:
     """Algorithm B. residues: 'pm' (r^2 == 1, from N^2-1) or 'one' (r = 1, from N-1)."""
+    from src.specialfam.copper import best_params, subdivide_search
+    from src.specialfam.normbox import small_trial
+
     mt = metrics if metrics is not None else NullMetrics()
     t = small_trial(N, mt)
     if t:
@@ -176,6 +178,9 @@ def common_factor_factor(N: int, band: Tuple[int, int], residues: str = "one",
     Finds p when g = gcd(p-1, q-1) (residues='one') or g | gcd(p^2-1, q^2-1)
     (residues='pm') is large, with cost N^{max(gamma/2, beta(1-beta)-gamma)+o(1)}.
     """
+    from src.specialfam.copper import best_params, n_chunks, subdivide_search
+    from src.specialfam.normbox import small_trial
+
     mt = metrics if metrics is not None else NullMetrics()
     t0 = small_trial(N, mt)
     if t0:
