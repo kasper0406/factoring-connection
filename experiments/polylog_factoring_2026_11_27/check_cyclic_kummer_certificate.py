@@ -1,7 +1,9 @@
 """Check a cyclotomic Kummer splitting certificate from an unfactored odd input."""
 
 from dataclasses import dataclass
+from itertools import product
 from math import gcd, prod
+from random import Random
 from sympy import Poly, isprime, primerange, symbols
 
 
@@ -55,20 +57,47 @@ def _power(base, exponent, polynomial):
     return result
 
 
-def check_field_character(cert, factors, prime):
-    ell, scale, r = cert.order, cert.scale, cert.shift
+def kummer_class(ell, prime, coefficients):
+    """Return the exponent of zeta in the powered symbol, or None for a nonunit."""
     z = symbols('z')
+
     def poly(expression):
         return Poly(expression, z, modulus=prime)
+
     modulus = poly(sum(z**i for i in range(ell)))
     degree = next(f for f in range(1,ell) if pow(prime,f,ell) == 1)
     alpha = poly(1)
     for a in range(1,ell):
-        conjugate = poly(1+scale*(z**a-r))
+        conjugate = poly(sum((c % prime)*z**(a*j) for j, c in enumerate(coefficients)))
         alpha = (alpha*_power(conjugate, pow(a,-1,ell), modulus)).rem(modulus)
     value = _power(alpha,(prime**degree-1)//ell,modulus)
-    exponent = sum(character_terms(cert,factors,prime)) * degree % ell
-    assert value == _power(poly(z),exponent,modulus)
+    return next((j for j in range(ell) if value == poly(z**j).rem(modulus)), None)
+
+
+def check_local_distribution(ell, prime):
+    degree = next(f for f in range(1,ell) if pow(prime,f,ell) == 1)
+    counts = dict.fromkeys([None, *range(ell)], 0)
+    for coeff in product(range(prime), repeat=ell-1):
+        counts[kummer_class(ell, prime, coeff)] += 1
+    units = (prime**degree-1)**((ell-1)//degree)
+    assert counts[None] == prime**(ell-1)-units
+    assert [counts[j] for j in range(ell)] == [units//ell]*ell
+    return units//ell
+
+
+def check_random_certificates(cert, auxiliary_prime):
+    candidates = set(primerange(2, 101)) - {cert.order, auxiliary_prime}
+    counts = [len(candidates)]
+    random = Random(173)
+    for _ in range(6):
+        coefficients = [cert.scale*auxiliary_prime**2*random.randrange(10000)
+                        for _ in range(cert.order-1)]
+        coefficients[0] += 1-cert.scale*cert.shift
+        coefficients[1] += cert.scale
+        candidates = {s for s in candidates if kummer_class(cert.order,s,coefficients) == 0}
+        counts.append(len(candidates))
+    assert candidates == {7,13}
+    return counts
 
 
 def check():
@@ -85,12 +114,19 @@ def check():
     checks = 0
     for prime in primerange(2,350):
         if gcd(prime,cert.order*cert.norm) == 1:
-            check_field_character(cert,factors,prime)
+            ell = cert.order
+            degree = next(f for f in range(1,ell) if pow(prime,f,ell) == 1)
+            coefficients = (1-cert.scale*cert.shift,cert.scale)
+            observed = kummer_class(ell,prime,coefficients)
+            assert observed == sum(character_terms(cert,factors,prime))*degree % ell
             checks += 1
+    assert [check_local_distribution(ell,s) for ell,s in [(3,2),(3,7),(5,3)]] == [1,12,16]
     print(f"N={n}, cyclic degree {cert.order}, conductor {cert.norm}, "
           f"{checks} Frobenius comparisons")
     print("Local exponents at 7 and 13:", character_terms(cert,factors,7),
           character_terms(cert,factors,13))
+    print("Seeded degree-five filters, surviving primes through 100:",
+          check_random_certificates(cert,11))
 
 
 if __name__ == "__main__":
