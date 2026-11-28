@@ -1,0 +1,63 @@
+# Packing factor-revealing frames in a fixed quadratic field
+
+Let $N$ be a product of two distinct odd primes, and choose $x\ge0$ with $A=x^2+1$ and $(\frac{-A}{N})=-1$. There is an explicit sphere of squared radius **$M=A T^2$** whose individual congruence classes encode the original 72 ternary frames. All 72 packed points are primitive. The quadratic field $\mathbb Q(\sqrt{-M})=\mathbb Q(\sqrt{-A})$ is determined by the short parameter $x$ before the packing. In particular the Gaussian field suffices for every $N\equiv3\bmod4$ by taking $x=0$. For $N\equiv5\bmod8$, $x=1$ gives $\mathbb Q(\sqrt{-2})$. [Original frames](mixed-ternary-embeddings.md) · [Earlier single-scale packing](packed-ternary-decision.md) · [Public construction](fixed_field_packing.py)
+
+## Two public scales
+
+The frames satisfy $u\cdot u=A,\ u\cdot v=-Nx,\ v\cdot v=N^2$. For positive integers $B,t$, set $C=tN$ and
+$$
+ T=B^2+C^2,\qquad P=B^2-C^2-2xBC,\qquad Q=2ABt .
+$$
+Require $P>0,\ \gcd(P,Q)=1,\ \gcd(T,2AN)=1$. These conditions are checked directly. A deterministic choice takes $t=1$ and doubles $B$ from $2A$ until $B>(2x+2)N$. Then $P>0$, $P$ is odd, and every odd prime of $Q$ divides $B$ but does not divide $N$. At such a prime $P\equiv-N^2$, which proves coprimality. Also $T$ is odd and prime to $AN$. The public numbers have $O(\log N+\log(2+x))$ bits.
+
+The Gaussian identity
+$$
+ (xP+QN)+iP=(x+i)(B-iC)^2
+$$
+gives $(xP+QN)^2+P^2=A T^2$. Each frame maps to $W=Pu-Qv$, an integral vector of squared norm $M=A T^2$. Conversely, for fixed $u$, every point of this norm with $W\equiv Pu\bmod Q$ gives an integral $v=(Pu-W)/Q$ and satisfies
+$$
+ Q(v\cdot v-N^2)=2P(u\cdot v+xN),\qquad
+ \|v\|\le\sqrt A(P+T)/Q=(B-xC)/(t\sqrt A).
+$$
+Thus $ABt\mid u\cdot v+xN$, and the absolute value on the right of this divisibility is at most $B/t$. If $At^2>1$, it vanishes. Both remaining Gram conditions follow. The residue $Pu\bmod Q$ specifies $u$ uniquely among the first vectors since $P$ is invertible and $Q>2\sqrt A$.
+
+The boundary $A=t=1$ has $x=0$ and $u$ a signed coordinate unit. The only additional possibility is $v=Bu$, giving $W=-Tu$. Indeed $\|v\|\le B$, and equality in $|u\cdot v|=B$ forces $v=\pm Bu$. The negative sign fails the displayed norm identity. This one extra point has content $T$. It also fails every queried auxiliary condition $u\cdot v\equiv0\bmod\ell$ for $\ell\nmid B$.
+
+Each genuine $W$ is primitive. A prime dividing every coordinate divides $Q$ or all the minors of $(u,v)$, since $u\times W=-Q(u\times v)$. In the first case it would divide every coordinate of $u$, whereas $\gcd(A,Nx)=1$. In the second case the identity $\|u\times v\|^2=N^2$ makes it a divisor of $N$, whereas $\gcd(M,N)=1$.
+
+For a test prime $\ell\nmid 210ANQT$, enumerate the local pairs in the earlier reduction and query $W\equiv Pu-Qz\bmod Q\ell$. This gives exactly the original yes/no indicator of a partner $v\equiv z\bmod\ell$. Ordinary or primitive existence and multiplicity give the same answers to these queries, including the boundary case. The implementation recovers the factor by CRT applied to the degree-two and degree-three elementary symmetric polynomials in the three squared coordinates of $z$. The existing parity reduction also carries over because the bijection preserves each query's entire witness set. The work and query count are polynomial in $1+x,\log N$ with the default parameters. [CRT and parity proof](packed-ternary-decision.md)
+
+In the original single-scale map $W=u-Qv$, prescribing a fixed squarefree part $a$ instead requires $y^2+1=a s^2,\ y=x+QN$. The number of possible positive $y$ of at most $H$ bits is $O(H)$ uniformly in nonsquare $a$. Consecutive positive solutions determine, by division in $\mathbb Z[\sqrt a]$, a nontrivial positive norm-one unit $>1$ bounded away from $1$. For $a=1$ there is no positive solution. For each $y>x$ and each $x\le X$, the integer $y-x$ has at most $O(H/\log R)$ distinct prime divisors in $[R,2R]$. Therefore a prescribed list of $J$ squareclasses can serve at most $O(JH(X+1)(1+H/\log R)^2)$ balanced products from that interval. With $H,X,J$ polynomial in $\log R$, this is only polylogarithmically many products. Scaling the first vector is what removes this Pell restriction.
+
+## What the common primitive count computes
+
+Write $R(n)$ for the number of ordered, signed primitive three-square representations of $n$. When $A=a f^2$ with $a$ squarefree, the frame construction has $a\equiv1,2\bmod4$, $fT$ odd, and $\gcd(T,2A)=1$. Thus the imaginary quadratic order of discriminant $-4M$ has conductor $fT$ in the field of fundamental discriminant $-4a$. Gauss's primitive three-square class number formula and the ring class number formula give
+$$
+ \frac{R(AT^2)}{R(A)}=E(T)=
+ \prod_{p^e\Vert T}p^{e-1}\left(p-\left(\frac{-A}{p}\right)\right).
+$$
+The quaternion argument below gives the same identity directly, including $A=1$ with its extra units. For short $x$, $R(A)$ can be computed by enumerating just the base sphere. Knowing the factorization of $T$ gives the common primitive count. It also gives the ordinary count by summing the primitive counts over all possible contents. For an efficient computation of this last sum, write each possible content uniquely as $g h$ with $g^2\mid A,\ h\mid T$. The result is $\sum_{g^2\mid A} R(A/g^2)\prod_{p^e\Vert T}(1+(p-\chi(p))(1+p+\cdots+p^{e-1}))$, where $\chi(p)=(\frac{-A}{p})$. [Voight, Theorem 30.1.3, on Gauss's primitive representation formula](https://link.springer.com/chapter/10.1007/978-3-030-56694-4_30)
+
+Conversely, the exact integer $E(T)$ suffices to factor $T$ in randomized polynomial time. In the quadratic algebra $(\mathbb Z/T)[\sqrt{-A}]$, sample a uniform unit $z$ and put $w=z/\bar z$. A nonunit norm can already give a factor by taking a gcd. At each odd prime power $p^e\Vert T$ the algebra is split or unramified quadratic. The local map $z\mapsto z/\bar z$ has kernel the scalar units and maps onto the norm-one group of order $p^{e-1}(p-\chi(p))$. Its prime-to-$p$ subgroup is cyclic, by reduction to the finite-field norm or to $\mathbb F_p^\times$ in the split case. Thus the local 2-primary groups are independent cyclic groups of positive even order. Write $E=2^jE_0$ with $E_0$ odd. Successively square $w^{E_0}$, testing the gcd of the modulus and the two coefficients of $w^{2^iE_0}-1$. Distinct local 2-primary orders of the sampled element give a proper gcd. For any two components the probability that these orders coincide is at most $1/2$, since no specified order has probability greater than $1/2$ in a nontrivial cyclic 2-group. Integer perfect-power and primality tests handle components supported on a single prime. Unit rejection is efficient, with probability at least $(\varphi(T)/T)^2$, and the same multiple $E$ works on divisors. For $A=1$, every prime of $T=B^2+C^2$ splits in $\mathbb Q(i)$ since the coprimality conditions force $\gcd(B,C)=1$. Here $E(T)=\varphi(T)$. These are conclusions about $T$, which is coprime to the original $N$.
+
+## Uniform primitive sampling without factoring the conductor
+
+Choose a uniformly random primitive signed vector $s$ of norm $A$ from the small base shell and a uniformly random primitive integral quaternion $q$ of norm $T$. Regard $s$ as a pure quaternion. Return $w=q s\bar q$ when it is primitive, restarting with both choices otherwise. The existing primitive four-square sampler uses no factors of $T$. In the present packing, $B C^{-1}\bmod T$ supplies a square root of $-1$ directly since $\gcd(B,C)=1$. The earlier axis case has $A=1$. [Implementation](fixed_field_walk.py) · [Four-square sampling and its ideal correspondence](four-square-incidence.md) · [Axis case](ternary-sphere.md)
+
+Every primitive output $w$ has exactly eight preimages $(q,s)$. For each $p^e\Vert T$, use the identification of the integral quaternions over $\mathbb Z_p$ with two-by-two matrices. The matrix of $w$ is traceless, primitive, and has determinant divisible by $p^{2e}$. Its reduction modulo $p^e$ has a direct-summand image line, which is also its kernel by Cayley–Hamilton. This must be the image line of $q$ at that prime. Conversely the complete collection of lines specifies one right Hurwitz ideal with exactly eight integral generators of norm $T$, as in the four-square sampler. For any such $q$, put $s=q^{-1}wq/T$. To check integrality locally, use bases putting $q$ in Smith form $\operatorname{diag}(1,p^e)$, absorbing units. In the output basis both diagonal entries of $w$ vanish modulo $p^e$, the upper right is a unit and the lower left vanishes modulo $p^e$. Its determinant then forces the lower left to vanish modulo $p^{2e}$. This gives integral entries of $s$, with a unit upper right. At all other primes, $q$ and $T$ are units and the inverse preserves integrality and primitivity. Hence $s$ is a primitive integral vector of norm $A$.
+
+For each initial $s$, the output fails at $p\mid T$ exactly when the kernel line of $q\bmod p$ is an eigenline of $s$. The line is uniform and independent at distinct primes by the ideal correspondence applied to $\bar q$. There are $1+(\frac{-A}{p})$ eigenlines, since the characteristic polynomial is $X^2+A$. Thus the success probability is $\prod_{p\mid T}(p-(\frac{-A}{p}))/(p+1)$, at least $(\varphi(T)/T)^2$. The expected number of trials is $O((1+\log\log(3T))^2)$. Counting all accepted proposals, with $8T\prod_{p\mid T}(1+1/p)$ choices for $q$, gives the common primitive count above as well.
+
+Exactly 48 of the $R(AT^2)$ primitive points are the factor-revealing marked points across all first vectors. Their fraction under the uniform law is $48/R(AT^2)$. Since $E(T)\ge\varphi(T)$, this is $O(\log\log T/T)$ as $T$ increases. Conditioning the sampler on a particular residue is the step required by the factoring reduction.
+
+## Sampling all integer points
+
+The unrestricted sphere also admits exact uniform sampling from the public packing. Choose $s$ uniformly from **all** signed norm-$A$ points. Independently draw a divisor $g\mid T$ with mass proportional to $\psi(m)=m\prod_{p\mid m}(1+1/p)$ at $m=T/g$. The existing factor-free content sampler with one scalar does exactly this, because its weight is $g\,R_4^*(m^2)=8T\psi(m)$. Take one primitive quaternion $q$ of norm $m$. If $\gcd(m,\operatorname{content}(q s\bar q))=1$, return $gq s\bar q$. Otherwise restart the whole trial. The split computed at $T$ reduces to a split for every divisor $m$. [Content law and factor-free construction](four-square-incidence.md)
+
+For an output $W$, the coprimality of $A,T$ recovers $g=\gcd(T,\operatorname{content}(W))$: at each prime of $T$ of exponent $e$, the content exponent is at most $e$ by the norm identity. Dividing by $g$ leaves a vector primitive at each prime of $m$. The preceding local argument gives exactly eight quaternion and base-vector preimages, allowing arbitrary base content away from $T$. Each preimage receives the same probability because the content proposal's $\psi(m)$ cancels the $8\psi(m)$ quaternions. Since $A$ is a unit at every prime of $T$, all choices of $s,m$ pass the local content test with probability at least $(\varphi(T)/T)^2$. This gives expected polynomial bit time for short $x$. The resulting probability of hitting a marked noncoordinate point is $48/r_3(AT^2)$.
+
+## Finite controls
+
+At $(N,x)=(15,0),(35,0),(77,1),(65,4)$, the native sphere evaluator and symmetric CRT reconstruction returned factors $3,7,7,5$. The four runs used 112, 180, 272 and 472 scalar queries. Two independent auxiliary primes per input recovered all 72 primitive frames, checked by direct Gram enumeration. The six signed first vectors gave six additional coarse poles on each $x=0,t=1$ input. Taking $B=128,t=3$ at $N=15,x=0$ removed all six poles before the auxiliary condition. A 512-bit input using two distinct known prime constants with $x=2$ gave a packed norm of 2,064 bits. [Packing checks](check_fixed_field_packing.py)
+
+The primitive sampler check enumerated 46,896 quaternion and base-vector pairs on nine shells. All 3,654 primitive output points had exactly eight preimages. These controls also include conductors with repeated primes and primes dividing the base norm. On the 512-bit input, the public sampler produced a primitive point from the 1,031-bit conductor and verified its squared norm. Five unrestricted shells gave exactly equal proposal mass to all 3,384 points, including 1,578 imprimitive points. Both public samplers also produced a point of the required norm on the 512-bit input. [Sampler checks](check_fixed_field_walk.py)
