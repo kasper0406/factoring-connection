@@ -509,6 +509,76 @@ would already suffice. The input-index notation alone does not give
 an efficient circuit for the residue. This is a scalar equivalent to
 totient evaluation on the stated domain, not a new factoring algorithm.
 
+#### Value and derivative modulo the index
+
+For every integer a and n>1, Φ_n(a) modulo n is either 1 or the
+largest prime p dividing n, reduced modulo n. The second value occurs
+exactly when, writing n=p^e m with p∤m, a is a unit modulo p of
+multiplicative order m. In particular it requires m dividing p−1.
+
+To see this locally, take any p^e exactly dividing n and use the
+standard cyclotomic identity
+Φ_(p^e m)(X) Φ_m(X^(p^(e−1))) = Φ_m(X^(p^e)).
+The two arguments on the right and in the second factor agree modulo
+p^e by Euler's theorem for units. For multiples of p both vanish
+modulo p^e since p^(e−1)≥e. Because p∤m, X^m−1 has simple roots in
+characteristic p, and Φ_m selects its roots of exact order m.
+Consequently the second factor is invertible unless a has that order
+modulo p, and division gives Φ_n(a)≡1 modulo p^e in the unit case.
+
+When a has order m, use the polynomial identity
+Φ_(p^e)(X^m)=∏_(d|m) Φ_(p^e d)(X). Each factor for d<m is 1
+modulo p^e by the preceding argument. Also
+(a^m)^(p^(e−1))≡1 modulo p^e by successive p-th powering from
+a^m≡1 modulo p. Thus the left side is a geometric sum of p terms
+each congruent to 1, proving Φ_n(a)≡p modulo p^e. The condition
+m|p−1 forces p to exceed all other prime divisors and p≡1 modulo m.
+The Chinese remainder theorem now gives the asserted global value.
+
+There is a deterministic polynomial-time procedure in the input bit
+length that returns the residue or a proper divisor. Compute
+d=gcd(a^n−1,n) by modular powering. If d=1, return 1, since an
+exceptional prime would divide d. If 1<d<n, return d. If d=n, the
+smallest prime r dividing n has ord_r(a) dividing gcd(n,r−1)=1.
+Hence gcd(a−1,n)>1. Return that gcd if proper. Otherwise a≡1
+modulo n and Φ_n(1) is the prime base for a prime power and 1 for
+every other n>1. Primality and exact integer root tests suffice.
+For a promised product p q of two distinct primes, a split completes
+exact evaluation. With p<q, the result is q exactly if a^p≡1
+modulo q and a≢1 modulo q. As an example of what general exact
+evaluation tests, at n=p(p−1) for an odd prime p the result is p
+exactly when a is a primitive root modulo p.
+
+For a=2 and n=pq with distinct odd primes, d=n is impossible by the
+smallest-prime argument. On the d=1 branch the value is always 1,
+while its formal derivative satisfies
+
+    Φ'_n(2) ≡ 1 − (p+q) 2^(n−1)/(2^n−1)  (mod n).
+
+Logarithmically differentiate the standard semiprime identity
+Φ_n(X)=(X^n−1)(X−1)/((X^p−1)(X^q−1)). Each denominator at 2
+is a unit since 2^p−1 and 2^q−1 divide 2^n−1. Modulo p the
+n and p terms vanish, and 2^n≡2^q by Frobenius. Modulo q the
+roles reverse. Multiplying by Φ_n(2)≡1 gives the displayed identity.
+The coefficient of p+q is invertible and 0<p+q<n, so the derivative
+gives the exact sum and both factors. Conversely given p<q, use
+Φ_n(X)=S_q(X^p)/S_q(X), with S_q(X)=1+⋯+X^(q−1). Its denominator
+S_q(2)=2^q−1 is always a unit modulo n. Indeed it is 1 modulo q
+and the order of 2 modulo p is greater than 1 and smaller than q.
+Binary powering and geometric summation at X=2+ε with ε²=0 give
+the value and derivative in polynomial bit time on both gcd branches.
+Thus derivative evaluation at 2 and factoring are polynomial-time
+equivalent on distinct odd semiprimes.
+
+Comparison with explicit SymPy cyclotomic polynomials for 2≤n≤240
+and −4≤a≤12 verified 7,718
+prime-power congruences. The procedure returned the value on 2,525
+inputs and a proper factor on 1,538. Among the 91 odd semiprimes
+formed from distinct primes below 50, four split in the first gcd
+and the other 87 matched the generic derivative formula. Computing
+with the factors agreed with the explicit derivative on all 91.
+[Reproducible check](check_cyclotomic_at_index.py)
+
 **Fixed base, small moduli.** For distinct odd primes p,q and N=pq,
 let l be a prime not dividing N, M=4^l−1 and V=Φ_N(4) mod M.
 V is a unit: a prime dividing both would divide 4^N−1 and 4^l−1
