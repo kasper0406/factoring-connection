@@ -98,3 +98,42 @@ $$
  \log X < (\log L)^2/\log N+(\log G)^2/\log e .
 $$
 To see this, drop the positive LLL penalties from the certificate. For each multiplicity $m$ between zero and $D-1$, use $D(D-1)z^2-2Dmz+m(m+1)\ge0$ with $z=\log L/\log N$, and apply it again for $e,G$. The inequality follows by completing the square, or from its nonpositive discriminant. Therefore $G\ge N^{\sqrt\alpha/2-o(1)}$. The weighted decoder returns only divisors passing its chosen $G$. For $e=\lfloor\sqrt N\rfloor$, the counting argument bounds the mean success of this rule on balanced prime pairs by $N^{-1/(2\sqrt2)+o(1)}$. Its preliminary direct gcd costs no extra exponent in that bound. Conditional on one prime $r$, it requires a multiple of $r$ among $O(R)$ consecutive values of $e$, each attained by $O(1)$ partners. An input-dependent exponent with a different distribution remains a separate question.
+
+### Prime support of rounded fractional powers
+
+Fix $0<\alpha<1$ and a primitive nonconstant $F\in\mathbb Z[X]$. Choose distinct primes $p,q$ uniformly in $[R,2R]$, set $N=pq$, $J=\lfloor N^\alpha\rfloor$, and let $S$ contain every prime dividing $F(J)$. Omit zero values. All integer roots of the fixed $F$ eventually lie below $J$. Write $[v]_S=\prod_{\ell\in S}\ell^{v_\ell(v)}$, allowing the full valuations in $v$. The probability that $[r^2-1]_S\ge N^{1/4}$ at either prime $r$ is at most
+$$
+\begin{cases}
+R^{-1/2+o(1)}, &0<\alpha\le1/2,\\
+R^{-c_\alpha+o(1)}, &1/2<\alpha<1,
+\end{cases}
+\qquad
+c_\alpha=\max\bigl(3/2-2\alpha,\ \min(1/3,5/6-2\alpha/3)\bigr).
+$$
+In particular $\lfloor\sqrt N\rfloor$ and every fixed integer root $\lfloor N^{1/k}\rfloor$, $k\ge2$, give the upper bound $N^{-1/4+o(1)}$. This is a bound on the availability of the support even if its prime factorization is supplied. [Sparse-support recovery and the divisor witness](sparse-order-support.md)
+
+**Counting by the rounded value.** Put $Y=R^{2\alpha}$ and $T=\sqrt R$. For each $j\asymp Y$ with $F(j)\ne0$, the product of the distinct primes in $S_j=\{\ell:\ell\mid F(j)\}$ is $R^{O(1)}$. We first bound the number of eligible $p$ for this fixed $j$. A contributing prime $\ell>T$ dividing $p^2-1$ puts $p$ into at most two classes modulo $\ell$, so all such primes together account for $R^{1/2+o(1)}$ choices. Otherwise multiply contributing prime factors, counting repetitions, until their product first reaches $T$. This produces $T\le d\le T^2=R$, supported on $S_j$, with $p^2=1\bmod d$. There are at most $2^{1+\omega(d)}=R^{o(1)}$ classes for $p$, each containing $O(R/d)$ integers. For fixed $0<\eta<1$,
+$$
+\sum_{\substack{d\ge T\\ \ell\mid d\Rightarrow\ell\in S_j}}\frac1d
+\ \le\ T^{-1+\eta}\prod_{\ell\in S_j}(1-\ell^{-\eta})^{-1}
+\ =\ T^{-1+\eta}R^{o(1)}.
+$$
+The product estimate is uniform since $\omega(|F(j)|)=O(\log R/\log\log R)$ and each factor is bounded in terms of $\eta$. Taking arbitrarily small fixed $\eta$ bounds the number of eligible $p$ by $R^{1/2+o(1)}$. There are $O(Y)$ candidate values $j$. For fixed $p,j$, the derivative of $(pu)^\alpha$ on $[R,2R]$ is $\asymp_\alpha Y/R$, giving $O_\alpha(1+R/Y)$ integer partners $q$. Dividing by the $\asymp R^2/(\log R)^2$ ordered distinct prime pairs gives $R^{-1/2+o(1)}\max(1,Y/R)$. Interchanging $p$ and $q$ covers the other prime.
+
+**A second-derivative bound for $1/2<\alpha<1$.** Fix $p$ and a modulus $1\le m\le3R$. The congruence $J\equiv a\bmod m$ specifies the interval $[a/m,(a+1)/m)$ for the fractional part of $f(u)=(pu)^\alpha/m$, with $0\le a<m$. For each integer $h\ge1$, $|(hf)''|\asymp_\alpha hR^{2\alpha-2}/m$ on $[R,2R]$. Van der Corput's second-derivative estimate gives
+$$
+\frac1R\left|\sum_{R\le u\le2R}\exp(2\pi i h f(u))\right|
+\ll_\alpha R^{\alpha-1}\sqrt{h/m}+R^{-\alpha}\sqrt{m/h}.
+$$
+In the Erdős–Turán inequality the cutoff $H\asymp(mR^{2-2\alpha})^{1/3}$ balances $1/H$ with $R^{\alpha-1}\sqrt{H/m}$. The second term above contributes $O_\alpha(R^{-\alpha}\sqrt m)$ after summing with weights $1/h$. This is $O(R^{-1/3})$ for $m\le R^{2\alpha-2/3}$. For larger $m$, monotonicity gives $O_\alpha(1)$ preimages per $j$ and only $O(1+Y/m)$ values $j$ per residue, at most $O_\alpha(R^{2/3})$ integer partners. Thus uniformly in $a,m$ the number of partners divided by $R$ is
+$$
+\ll_\alpha m^{-1}+R^{-2(1-\alpha)/3}m^{-1/3}+R^{-1/3}.
+$$
+[Graham and Kolesnik, Theorem 2.2](https://assets.cambridge.org/97805213/39278/excerpt/9780521339278_excerpt.pdf) · [Erdős–Turán discrepancy inequality, Proposition 6.3.32](https://archive.ymsc.tsinghua.edu.cn/pacm_download/672/12637-dingjt-p2.pdf)
+
+For each fixed $p$, there are $O(\log R)$ contributing prime candidates $\ell>T$ dividing $p^2-1$, all at most $2R+1$. Apply the partner bound with $m=\ell$ to the at most $\deg F$ root residues of $F$. In the remaining case use the same divisor $T\le d\le R$ as above. There are $R^{1+o(1)}/d$ possible $p$ and $F$ has at most $(\deg F)^{\omega(d)}=R^{o(1)}$ roots modulo $m=\operatorname{rad}(d)$ by primitivity. For $\lambda=1$ or $1/3$,
+$$
+\sum_{T\le d\le R}\frac{1}{d\,\operatorname{rad}(d)^\lambda}
+\le T^{-\lambda+o(1)}.
+$$
+Indeed for fixed $0<\sigma<\lambda$ the Euler product for $\sum_{d\ge1}d^{\sigma-1}/\operatorname{rad}(d)^\lambda$ converges. The term for the first power of each prime $\ell$ is $\ell^{\sigma-1-\lambda}$ and its subsequent powers form a geometric series. For the partner error independent of $m$, $\sum_{T\le d\le R}1/d=O(\log R)$. Including both factor choices and the prime-count normalization gives $R^{o(1)}(T^{-1}+R^{-2(1-\alpha)/3}T^{-1/3}+R^{-1/3})$. Combining this with the count by $j$ proves the stated exponent.
