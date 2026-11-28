@@ -17,11 +17,13 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
 - **Rigorous record:** L[1/2, 1] (Lenstra–Pomerance 1992). Lee–Venkatesan (2018) rigorously find a
   congruence of squares in L[1/3], but cannot prove it is non-trivial ("fruitfulness"), so their result
   does not give rigorous factoring.
-- **Deterministic record:** N^{1/5} (Harvey 2021; Harvey–Hittmeir 2022).
+- **Deterministic factoring.** Harvey and Harvey–Hittmeir established $N^{1/5+o(1)}$ bounds. Recent tensor-contraction preprints report deterministic $N^{o(1)}$ time. Shunia gives $2^{O(n/\sqrt{\log n})}$ for an $n$-bit input under the cited contraction result. [Rudich–Rousseau](https://hexagonmath.org/2610.00600v1) · [Shunia, Theorem 1](https://hexagonmath.org/pdf/2610.00711v1#page=1)
 
 ## Research branch update (2026-11-28)
 
 Two prescribed one-sided count comparisons decide Subset Sum on constructed odd inputs, even with their factorization supplied. On products of two distinct odd primes, the same comparison is deterministically equivalent to factoring. The remaining evaluator targets are the specific semiprime search path and the general reduction's sampled trials. [Current checkpoint and proofs](experiments/polylog_factoring_2026_11_27/README.md#which-clipped-comparisons-are-worth-evaluating)
+
+The scaled quarter-bit reduction has a direct 1982 precedent. A literature comparison identifies the clipped-count classification and the two fixed binomial streams as the strongest candidates for separate results. [Prior work and open questions](experiments/polylog_factoring_2026_11_27/literature-novelty-audit.md)
 
 ## Research frontier (2026-11-26)
 

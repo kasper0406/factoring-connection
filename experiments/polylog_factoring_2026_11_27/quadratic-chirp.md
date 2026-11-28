@@ -5154,21 +5154,13 @@ on explicit representations of the full selected series only.
 
 ### Comparison with ePrint 2026/3020
 
-The abstract of Liu, Zhang and Ren, *A Deterministic
-Subexponential-time Algorithm for the Discrete Logarithm Problem*,
-reports a conditional deterministic bit-time bound
-2^{O(b/sqrt(log log b))} for discrete logarithms over a known prime
-field and on prime-order elliptic curves over a prime field.
-Here b is the field prime's bit length. The stated assumption
-is a Cauchy–Hermite Boolean tensor contraction construction.
-Our input is an unfactored composite N and the required bit bound
-is polynomial in its bit length. The abstract supplies neither
-a reduction of the binomial cutoff test to those group problems
-nor a polynomial bound for the contraction at that scale.
-The official IACR abstract confirms these parameters. Its two ingredients are a deterministic affine-interval factor base for group sumsets and a partial contraction retaining Θ(b) boundary wires before exact digitwise contraction. A transfer would require a public encoding of our composite-modulus prefix predicate and a polynomial bound on its complete contraction. A linear number of retained wires alone supplies neither. The PDF endpoint returned HTTP 403 during this check; this comparison is at abstract level.
+The revised preprint by Shuchang Liu, Bingsheng Zhang and Kui Ren addresses integer factoring directly in Proposition 2.6 (PDF pp. 10–11). For every $n$-bit integer $N\ge2$, it gives complete deterministic factorization in $2^{O(n/\sqrt{\log n})}$ bit operations and polynomial space, assuming its Theorem 2.2, the quantitative Boolean tensor contraction result attributed to OpenAI, Appendix D, Theorem D.1. The multiplication network enforces $d e=N$ with $2\le d<N$. Each valid divisor gives exactly one assignment to $e$ and the internal wires. Pinning one more leading bit of $d$ and counting completions recovers the least prime factor in at most $n$ further queries. Repeating yields all factors. The key cost is contracting the network with $O(n)$ edges and maximum degree $O(n^{3/4})$. [Revised ePrint record, November 28](https://eprint.iacr.org/2026/3020) · [Full text, Proposition 2.6](https://opencryptology.org/2026/3020.pdf#page=10)
 
-[Paper record](https://eprint.iacr.org/2026/3020) ·
-[Abstract](https://opencryptology.org/2026/3020)
+Rudich and Rousseau had already given the divisor-prefix reduction and a deterministic $N^{o(1)}$ algorithm in October. Their Lean repository formalizes least-prime-factor recovery. Joseph M. Shunia's October 30 preprint, Theorem 1, states the same $2^{O(n/\sqrt{\log n})}$ bound and polynomial space for complete factorization, using the quantitative contraction theorem and the linear-size multiplication encoding of Akshima et al. These results give a subexponential benchmark for a guide that tests whether some divisor extends a prefix. A polynomial-time evaluator for the project's binomial or square-root prefix predicates remains open. [Rudich–Rousseau preprint](https://hexagonmath.org/2610.00600v1) · [Formalization](https://github.com/IsaacRudich/SubexponentialDeterministicFactoring) · [Shunia, Theorem 1](https://hexagonmath.org/pdf/2610.00711v1#page=1)
+
+The ePrint's main Theorem 1.1 concerns discrete logarithms. For a supplied prime $p$ of bit length $b$, it gives deterministic time $2^{O(b/\sqrt{\log\log b})}$ in $\mathbf F_p^\times$ and on prime-order elliptic curves over $\mathbf F_p$ ($p>3$ for the curves), assuming the Cauchy–Hermite contraction construction. Its affine-interval factor bases and partial contraction retaining $\Theta(b)$ boundary wires address the cost of group exponentiation. Proposition 2.6 uses the simpler divisor multiplication network above. [Theorem 1.1 and technical overview](https://opencryptology.org/2026/3020.pdf#page=4)
+
+**Corollary for the project's bounded square roots.** Applying their Lemmas 2.3–2.4 and Theorem 2.2 also counts the canonical roots $0\le x<M$ with $x^2\equiv Y\pmod M$ and a prescribed binary prefix, for any $b$-bit modulus $M$ and $0\le Y<M$. This is an inference from their gadgets. Use one exact multiplication network for $x\cdot x$ and another for $k\cdot M$. Equality of the two copies of each input bit of $x$, complete-width addition and comparison enforce $x^2=kM+Y$, the range, and the pinned prefix with $O(b)$ extra edges of bounded degree. Each qualifying $x$ determines exactly one $b$-bit nonnegative quotient $k$, both full products, and all intermediate wires. The resulting network has $O(b)$ edges and maximum degree $O(b^{3/4})$. Under the same contraction theorem its exact count takes $2^{O(b/\sqrt{\log b})}$ deterministic time and polynomial space. Parity and existence follow from the count. [Arithmetic gadgets, Lemmas 2.3–2.4](https://opencryptology.org/2026/3020.pdf#page=8) · [Contraction bound, Theorem 2.2](https://opencryptology.org/2026/3020.pdf#page=7)
 
 #### A public tensor network for the prefix query
 

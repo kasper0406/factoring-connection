@@ -4,6 +4,8 @@ An odd input with exactly two distinct prime divisors can be split by $O(\log N)
 
 ## Read a mixed root by doubling
 
+For $N=pq$, Goldwasser, Micali and Tong's 1982 Example 4 already factors from this scaled root-parity information in $O(\log N)$ calls. The first-quarter parity below equals their oracle at $4c^2$. The diagonal-form construction here realizes those queries at a common cutoff. [Example 4](https://fog.misty.com/perry/Bleichenbacher/Goldwasser-1982-FOCS.pdf#page=5) · [Proof of the identity](literature-novelty-audit.md#the-scaled-quarter-bit-has-a-direct-precedent)
+
 Let $u$ be the lower of the two mixed roots of 1 modulo $N$. For $c_i=2^i\bmod N$, the roots of $x^2=c_i^2\pmod N$ are exactly $\pm c_i,\pm c_i u$. Put $K=\lfloor N/4\rfloor$. Suppose a query gives parity of the number of root pairs having a representative in $[1,K]$. Subtract the known pair's contribution, leaving a bit $q_i$ for the mixed pair.
 
 Write the binary expansion of $u/N$ as $.b_1b_2\dots$, with $b_1=0$. The fraction has no dyadic ambiguity because $N$ is odd and $u$ is a unit. The fractional part of $2^i u/N$ starts with $b_{i+1},b_{i+2}$. A representative of its signed pair is within the quarter window exactly when those two bits are equal. Hence

@@ -10,7 +10,7 @@ See [validation and provenance](../experiments/nov26_consolidation/README.md) an
 
 ## 1. Multiplication counting modulo 3
 
-Rudich–Rousseau, [arXiv:2610.00600](https://arxiv.org/abs/2610.00600), give a recursive
+Rudich–Rousseau, [Hexagon 2610.00600](https://hexagonmath.org/2610.00600v1), give a recursive
 multiplication-network count with deterministic subexponential (N^{o(1)}) runtime.
 This is not by itself a polynomial-time algorithm or a comparison with L[1/3].
 

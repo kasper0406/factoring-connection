@@ -4,6 +4,8 @@ For an odd $N$ with exactly two distinct prime divisors, a predictor for the sca
 
 ## Correlation exposes a hidden frequency
 
+The exact scaled bit on semiprimes is Goldwasser–Micali–Tong's Example 4 after folding the doubled roots and correcting for the known pair. The noisy hidden-multiplier decoder fits the multiplication-code framework of Akavia, Goldwasser and Safra. [Exact identification and sources](literature-novelty-audit.md#the-scaled-quarter-bit-has-a-direct-precedent) · [Multiplication codes, §5](https://www.cs.tau.ac.il/~safra/PapersAndTalks/hardcore.pdf)
+
 Let $u$ be a mixed root of 1. For a unit scale $c$, the quarter-window bit for the hidden pair $\pm cu$ is the sign
 $$g(c)=g_0(cu\bmod N),\qquad g_0(x)=2[\min(x,N-x)\le\lfloor N/4\rfloor]-1.$$
 A prediction of the signed disk bit gives a prediction of $g$ by removing the axis and the known pair $\pm c$. The premise applies after these public corrections, or directly to the hidden-pair bit.
