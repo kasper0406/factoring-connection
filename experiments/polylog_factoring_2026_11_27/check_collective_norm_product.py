@@ -2,7 +2,7 @@
 
 from functools import cache
 from itertools import combinations
-from math import gcd, isqrt, prod
+from math import gcd, isqrt, lcm, prod
 
 from sympy import divisors, factorint, kronecker_symbol, primerange
 
@@ -63,6 +63,67 @@ def evaluate_products(n, delta):
     return gcd(ideal_product, n), gcd(character_product, n)
 
 
+
+def check_cutoff(n, delta, split):
+    inert = n // split
+    first_negative = next(i for i in range(1, abs(delta)+1) if character(delta, i) == -1)
+    saturation = inert * first_negative
+    assert split < saturation
+    checkpoints = {split-1: 1, split: split, saturation-1: split, saturation: n}
+    residue = 1
+    for i in range(1, saturation+1):
+        if character(delta, i) == 1:
+            residue = residue*i % n
+        if i in checkpoints:
+            assert gcd(residue, n) == checkpoints[i]
+
+
+def check_half_unit_product(p, q):
+    n = p*q
+    h = 1
+    for i in range(1, (n+1)//2):
+        if gcd(i, n) == 1:
+            h = h*i % n
+    for s, t in ((p, q), (q, p)):
+        assert h % s == ((-1)**((t-1)//2) * character(t, s)) % s
+    assert h*h % n == 1
+    assert (1 < gcd(h-1, n) < n) == (p % 4 == 3 or q % 4 == 3)
+
+
+def check_known_periods():
+    # The fixtures supply a factored multiple of the global order.
+    cases = 0
+    for p, q in ((3, 5), (5, 7), (7, 11), (13, 17)):
+        n = p*q
+        multiple = lcm(p-1, q-1)
+        for b in range(1, n):
+            if gcd(b, n) != 1:
+                continue
+            cases += 1
+            ordinary = gcd(b-1, n)
+            if ordinary == n:
+                assert all(sum(pow(b, k, n) for k in range(j)) % n == j % n
+                           for j in range(1, isqrt(2*n)+1))
+                continue
+            if ordinary != 1:
+                assert ordinary in (p, q)
+                continue
+            order = multiple
+            for prime in factorint(multiple):
+                while order % prime == 0 and pow(b, order//prime, n) == 1:
+                    order //= prime
+            proper = [gcd(n, pow(b, order//prime, n)-1) for prime in factorint(order)]
+            local = [next(j for j in range(1, order+1) if pow(b, j, s) == 1)
+                     for s in (p, q)]
+            if local[0] != local[1]:
+                assert any(d in (p, q) for d in proper)
+            else:
+                geometric_sum = 0
+                for j in range(1, 2*order+1):
+                    geometric_sum = (b*geometric_sum + 1) % n
+                    assert gcd(geometric_sum, n) == (n if j % order == 0 else 1)
+    return cases
+
 def check():
     params = (0, 1, 2, 3, 4, 7, 8, 12)
     primes = list(primerange(3, 100))
@@ -85,13 +146,16 @@ def check():
             continue
         n = p*q
         assert q <= isqrt(2*n) < 2*p
+        check_half_unit_product(p, q)
         for x, delta in deltas.items():
             if gcd(n, x*x+1) != 1 or character(delta, n) != -1:
                 continue
             split = p if character(delta, p) == 1 else q
             assert evaluate_products(n, delta) == (split, split)
+            check_cutoff(n, delta, split)
             cases += 1
     print(f"{cases} mixed balanced fixtures, {len(set(deltas.values()))} field discriminants")
+    print(f"Known-period q-integer checks on {check_known_periods()} unit bases")
     print("N=437: two nonprincipal ideals of norm 23; both full-menu products give gcd 23")
 
 

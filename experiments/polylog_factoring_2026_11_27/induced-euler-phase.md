@@ -1,0 +1,23 @@
+# Constant-error values of an induced Euler quotient
+
+For balanced odd primes $N=rd$ with $\max(r,d)<2\min(r,d)$, take a public short quadratic character $\chi$ satisfying $\chi(r)=1$ and $\chi(d)=-1$. Its induced character is $\psi(n)=\chi(n)\mathbf1_{\gcd(n,N)=1}$. Evaluating $\psi$ at any specified integer is easy. Suppose one can also evaluate the quotient $R(it)=L(it,\psi)/L(it,\chi)$ to complex absolute error $1/256$. At $O(\log N)$ dyadic integer heights $t=O(N^{1/4})$, these values suffice to split $N$ with polynomial additional work. The requested precision is constant as $N$ grows. The cost of obtaining those samples from $N$ remains open. [Decoder](induced_euler_phase.py) · [Numerical checks](check_induced_euler_phase.py) · [Exact full-period integer moment](induced-character-moments.md)
+
+## Which arithmetic survives normalization?
+
+The Euler factors of an induced character give the entire continuation $R(s)=(1-r^{-s})(1+d^{-s})$. Put $a=(\log N)/2$, $h=(\log r-\log d)/2$. Then
+$$
+e^{as}R(s)=2\sinh(as)+2\sinh(hs).
+$$
+Thus the sole unknown sine $\sin(th)$ is half the imaginary part of $e^{iat}(R(it)-1)+e^{-iat}$. An error of $1/256$ in the ratio incurs an error at most $1/512$ in this reading. The parameter obeys $|h|<(\log2)/2$, and $r=e^{a+h}$. The same formula gives $R'(0)=2\log r$, and $N(R(1)-1)+1=r-d$. An approximation to a numerator or denominator by itself has a different error requirement. [NIST DLMF, induced character formula (25.15.4)](https://dlmf.nist.gov/25.15.E4)
+
+The identity $R(-s)=-N^sR(s)$, the simple zero at zero, and the property that all other zeros of these two factors lie on the imaginary axis hold for every real $h$ in the balanced interval when one formally sets $r=e^{a+h},d=e^{a-h}$. This explains why knowing this reflection identity and the line on which zeros occur is insufficient to locate the factor. An individual value or the actual spacing of the zeros does depend on $h$.
+
+## Recovery with fixed additive error
+
+Maintain an approximation to $Th$ within $1/32$. At $T=1$, invert sine on the balanced interval around zero, where its derivative exceeds $0.9$. For the next scale $2T$ the doubled estimate $v$ has error at most $1/16$. If $|\cos v|\ge1/2$, invert $\sin\theta$ on $[v-1/16,v+1/16]$. Its derivative magnitude exceeds $7/16$ throughout the interior. Otherwise $|\cos(2v)|>1/2$ and $\sin(2\theta)$ has derivative magnitude at least $3/4$ on the same interval. Its reading is available at twice the current frequency. In either case, project the noisy reading to the monotone image interval and bisect. The observation error and eighteen bisections leave a phase error below $1/32$. Repeated heights are cached. Evaluating the elementary rotations, reducing arguments and bisecting needs $O(\log N)$ working bits including guard bits. [Earlier dyadic phase decoders for a different observable](quadratic-chirp.md)
+
+Rounding the resulting $e^{a+v/T}$ to the nearest integer has error from $r$ at most $\sqrt{2N}/(16T)+1/2$. At $T\ge\sqrt{2N}$ the rounded integer equals $r$. To stop sooner, use the certified balanced-divisor interval routine when the integer radius $\lceil\lceil\sqrt{2N}\rceil/(16T)\rceil+1$ fits its bound. The code uses the conservative cutoff $\max(2,\lfloor N^{1/4}\rfloor/128)$ with integer rounding, so the last scale and its optional double are $O(N^{1/4})$. Even if both primes are close enough to fit the interval, the resulting division is verified. This step uses the standard partial-factor lattice result. The reused implementation checks the integer LLL bound on its output. [Existing affine-divisor routine](affine_prime_window.py) · [Coppersmith](https://doi.org/10.1007/s001459900030)
+
+## Cost of the available evaluations
+
+The input-only test at $N=15$ and $35$ computes the numerator and denominator from their public periods by the finite Hurwitz zeta formula. Each case recovered 5 using four distinct heights, the largest 16. The reference numerator pass has length $fN$ for character conductor $f$ and each summand also costs work. The larger checks supply the factors **to simulate the samples**, including adversarial errors in the measured quadrature. They validate the decoder through 256 input bits. Separate close-prime tests distinguish the two orientations by rounding. The full-period Fourier transform from the moment note shows that both sequences match explicit backgrounds below the smallest hidden prime. A faster method to evaluate the induced quotient would be the substantive factoring advance. [DLMF, finite Hurwitz expansion](https://dlmf.nist.gov/25.15.E3) · [Fourier support and arithmetic of the full period](induced-character-moments.md)
