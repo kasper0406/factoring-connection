@@ -1650,3 +1650,15 @@ For the efficiently evaluated high-degree map y↦y^e with fixed positive odd e,
 | 96 | 0 | 1 | 0 |
 
 This measures relation yield per target for the existing constructors; it is neither a timing comparison nor an asymptotic rate estimate.
+
+**All Euclidean convergents on the same targets.** Start the extended Euclidean algorithm at (N,0),(t,1), retaining each pair (u,v) from (t,1) up to the last positive remainder. Sort by increasing |uv| with ties in original order and test until the first usable relation, with precisely the budget, base, and acceptance conditions above. Columns count targets with a hit within the indicated prefix; the last column includes unsuccessful fraction checks.
+
+| Bits | First | First 4 | First 8 | Full scan | Fractions checked in full scan |
+|---:|---:|---:|---:|---:|---:|
+| 32 | 942 | 2,368 | 3,183 | 3,892 | 22,572 |
+| 48 | 182 | 611 | 986 | 2,056 | 79,579 |
+| 64 | 32 | 87 | 144 | 488 | 143,750 |
+| 80 | 2 | 12 | 19 | 73 | 190,104 |
+| 96 | 1 | 3 | 5 | 12 | 230,186 |
+
+All convergents satisfy |uv|≤N by the consecutive-remainder identity N=u_prev |v|+u |v_prev|. Hence even the full list lies within the earlier random-target short-rational count. Scanning more fractions improved yield per target at every tested size. At 96 bits it cost about 19,182 fraction checks per usable target versus 4,096 for the single Gauss stopping point in this sample. Candidate checks do not measure wall time.
