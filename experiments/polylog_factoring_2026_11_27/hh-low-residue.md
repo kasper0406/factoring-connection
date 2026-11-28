@@ -1,0 +1,35 @@
+# Deterministic factoring from a partially recovered dyadic residue
+
+Let $N=pq$, with distinct odd primes $p<q<2p$. Given the correct residue $r=p\bmod m$ for $m=2^k\le N$, the following deterministic bit bound includes the cost of finding a suitable group element:
+$$
+\left(1+\min\left\{N^{1/5}/m^{3/5},\;N^{1/4}/m\right\}\right)\operatorname{poly}(\log N).
+$$
+The two bounds meet at $m=N^{1/8}$. The first six extra low bits reduced the measured search on a 69-bit example by a factor of 12.1. The result gives a cost for finishing *after* a correct state has been recovered. Guessing that state incurs a separate cost. [Implementation](hh_low_residue.py) · [Reproduce the checks](check_hh_low_residue.py)
+
+## Search in one residue class
+
+Harvey and Hittmeir, Proposition 3.3, already compute integer weights $(a,b)$ per geometric interval $x\le p<(1+1/K)x$ and unit residue $r\bmod m$. They satisfy $b r^2\equiv aN\pmod m$. For $u=aq+bp$, the integer $u\bmod m^2$ is fixed at $\tau=aNr^{-1}+br\bmod m^2$. Their approximation to $u$ yields a public offset $j$ such that $u=j+m^2 i$ for some $0\le i\le 2\lambda$, where $\lambda=\lceil4\sqrt N/(mK)^{3/2}\rceil$. The balanced size interval uses $O(K)$ geometric buckets. Supplying one residue removes the loop over all $\varphi(m)$ units. Choosing $K\asymp T=N^{1/5}/m^{3/5}$ then gives $\lambda=O(T)$ for $m\le N^{1/8}$. The October audit already derived the full-class lists and implemented the geometric search. [Harvey–Hittmeir, Proposition 3.3 and Algorithm 4.3](https://arxiv.org/pdf/2105.11105#page=5) · [Earlier audit](../../notes/cycloharvey_results.md) · [Earlier all-class implementation](../../src/signsplit/hh.py)
+
+## Normalizing the collision exponents
+
+Set $g=\gcd(r-1,m)$. Modulo $g$, we have $p\equiv r\equiv1$, $q\equiv N$ and $b\equiv aN$. Hence $g\mid aq-b$, so
+$$
+(aN+b-u)/g=(p-1)(aq-b)/g\equiv0\pmod{p-1}.
+$$
+Also $g\mid aN+b-j$ for every bucket by its offset congruence. For an invertible base $\beta$, the list for $0\le i\le2\lambda$ uses $\beta^{(m^2/g)i}$. One giant per bucket is $\beta^{(aN+b-j)/g}$. The correct pair agrees modulo $p$. The step $m^2/g$ satisfies $\gcd(m^2/g,p-1)=g$. If $g<m$ this follows from $v_2(p-1)=v_2(g)$, and if $g=m$ the step itself equals $m$.
+
+Write $L=2\lambda+1$. Obtain a proper factor or a base of order $>mL$ modulo $N$. Successive powers detect any local period $d\le L$. If just one prime divides the difference from one, its gcd splits $N$. If the period $d$ occurs modulo $N$, the order of $\beta$ modulo $N$ divides $d m^2/g$. Its odd part therefore divides $d$. At $p$, the order of $\beta$ divides $dg$ because the powered local order divides $d$ and the stride can remove at most $g$. But the global order exceeds $md$. Its 2-primary order must consequently be greater at $q$ than at $p$: the odd parts already divide $d$, and the order at $p$ has 2-part at most $g$ times the 2-part of $d$. Strip the powers of two from the annihilator $d m^2/g$ and square successively, taking gcds to separate them.
+
+Otherwise the baby list is unique locally at both primes. A full-modulus equality gives one candidate $u$, verified by the quadratic with roots $aq,bp$ or exact division if a coefficient vanishes. Remove those giant steps. A product polynomial over the remaining giant steps and multipoint evaluation at the baby steps recover any local-only collision in $(K+\lambda)\operatorname{poly}(\log N)$ time. A saturated product is refined by a single scan of that giant list. The generator setup costs $\sqrt{mL}\operatorname{poly}(\log N)$, which is absorbed by $T$ throughout $m\le N^{1/8}$. Above that crossover, write $p=r+mz$ and cover $z$ with certified affine windows of radius $\asymp N^{1/4}$. There are $O(1+N^{1/4}/m)$ windows. [Certified affine recovery](coupled-rank-windows.md)
+
+## An elementary order-or-factor setup for the implementation
+
+Harvey–Hittmeir (2026), Theorem 1.1, gives the needed deterministic order-or-factor bound for arbitrary thresholds $D<N-1$. Our implementation needs only $\sqrt D\operatorname{poly}(\log N)$ on odd semiprimes. It uses their small-smooth-integer argument with products of two primes. Sieve to $B=O(\sqrt D\log(2D))$ until the number of unordered products of two primes at most $B$, allowing repetition, exceeds $D$. Build the least common multiple $M$ of orders modulo $N$ of the tested prime bases. Skip a base already annihilated by $M$. Bounded baby-step/giant-step computes each remaining order or certifies it exceeds $D$. A gcd using its prime-power factors either splits $N$ or proves that the same order holds locally at both primes. Coprime prime-power components combine to an element of order $M$. Every update at least doubles $M$; there are $O(\log D)$ bounded-order calculations, each within the stated cost. [Harvey–Hittmeir, Theorem 1.1 and Algorithm 3.1](https://arxiv.org/pdf/2601.11131#page=3)
+
+If the loop ends with $M\le D$, both primes equal one modulo $M$. Any factor prime exceeding $B^2$ would have more than $D$ distinct roots of $X^M-1$, one for each prime product. Every prime at most $B$ has already been checked by division, so $1,\ldots,B$ also give distinct roots modulo each factor, and $M\ge B$. Scanning $1+kM\le B^2$ therefore takes at most $B$ tests and must split the semiprime.
+
+## Scope and checks
+
+For $N=17179869209\cdot25769803799$, the same implementation took 8,885 baby steps and 12,316 giants using oddness alone. Giving $p\bmod128$ reduced these to 735 and 1,017. The smaller 60-bit example took 223 and 310 with that modulus. Both split through the polynomial collision search. The checker also covers 1,876 correct residue states, wrong-residue controls, 2,520 independent bounded-order checks, every collision exit and the certified affine crossover. An incidental divisor from an incorrect residue is still a valid split. If the hypothesis names either prime, one can include both $r$ and $Nr^{-1}\bmod m$ as possible residues of the smaller prime.
+
+The guarantee above specializes established search machinery to a known dyadic state and accounts for its deterministic order setup. Hales–Hiary's Lehman generalization concerns inputs with a power divisor $p^a\mid N$. Their theorem gives the ordinary one-fifth exponent for $a=1$. Coppersmith–Howgrave-Graham–Nagaraj's constructive residue-class theorem covers modulus $m>N^{1/4+\epsilon}$ for fixed positive $\epsilon$. Hales's later residue-class paper studies counts and extensions to other rings. Gao–Feng–Hu–Pan Theorem 5.3 already proves the $m^{-3/5}$ first term with an additive $N^{1/6}$ setup term when every prime factor lies in one prescribed class. Their Remark 5.5 distinguishes the one-divisor promise. The [list extension](hh-residue-lists.md) compares these hypotheses and supplies a second low-order fallback. None of these citations establishes that the specialization here is historically new. [Hales–Hiary](https://doi.org/10.1007/s11139-024-00959-7) · [Coppersmith–Howgrave-Graham–Nagaraj](https://doi.org/10.1090/S0025-5718-07-02007-8) · [Hales](https://doi.org/10.1016/j.jnt.2026.03.014) · [Gao–Feng–Hu–Pan](https://arxiv.org/abs/2512.19076)
