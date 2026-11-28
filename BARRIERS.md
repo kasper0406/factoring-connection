@@ -2,6 +2,8 @@
 
 Model theorems and negative results, not factoring lower bounds. Summarised in the README; listed here phase by phase. Every entry links to its results note; [`APPROACHES.md`](APPROACHES.md) has the full catalogue.
 
+**November 28, one-sided clipped counts.** A deterministic polynomial-time evaluator for every legal comparison would put Subset Sum in P. Two nonadaptive queries suffice, even with a factored odd modulus and the original threshold gap. The hard family has a growing number of distinct prime divisors and specially selected parameters. On distinct odd semiprimes the comparison is deterministically equivalent to factoring. The randomized reduction on arbitrary integers still admits an evaluator specialized to its own trial distribution. [Hardness construction](experiments/polylog_factoring_2026_11_27/clipped-gap-subset-hardness.md) · [Semiprime equivalence](experiments/polylog_factoring_2026_11_27/clipped-gap-kloosterman.md)
+
 - T1/T2: local designs need N^{1/6}.
 - Coverage cost ≥ N^{1/5}(λ⁴/J)^{1/5}.
 - Ratio gap peaking at 1/5.

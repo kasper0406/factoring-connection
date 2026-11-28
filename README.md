@@ -19,7 +19,11 @@ Notation: L_N[α, c] = exp((c + o(1))(log N)^α (log log N)^{1−α}).
   does not give rigorous factoring.
 - **Deterministic record:** N^{1/5} (Harvey 2021; Harvey–Hittmeir 2022).
 
-## Current research frontier (2026-11-26)
+## Research branch update (2026-11-28)
+
+Two prescribed one-sided count comparisons decide Subset Sum on constructed odd inputs, even with their factorization supplied. On products of two distinct odd primes, the same comparison is deterministically equivalent to factoring. The remaining evaluator targets are the specific semiprime search path and the general reduction's sampled trials. [Current checkpoint and proofs](experiments/polylog_factoring_2026_11_27/README.md#which-clipped-comparisons-are-worth-evaluating)
+
+## Research frontier (2026-11-26)
 
 **Classical polynomial-time factoring remains open.** On a balanced semiprime,
 one weighted residue from one public disk now suffices for a verified divisor,

@@ -2,6 +2,8 @@
 
 The gap oracle in the count comparison reduction can be stated as one ordinary lattice-point count at a public threshold. Its input is a bounded rational polytope in ten coordinates and one integer quadratic equation whose quadratic part has rank two. The reduction needs one count comparison for each sampled upper digit. A polynomial-time evaluator for this decision problem remains open. [Gap comparison and isolation](count-comparison.md)
 
+The guarantee on the evaluator matters. On unrestricted prescribed inputs, two one-sided threshold queries decide Subset Sum even with a supplied factorization. On distinct odd semiprimes, deterministic polynomial-time reductions hold in both directions between the gap and factoring. [Worst-case hardness](clipped-gap-subset-hardness.md) · [Semiprime equivalence](clipped-gap-kloosterman.md)
+
 ## Pack the signed contrast by complementation
 
 Let $M=N^2$, $H=(N-1)/2$, and $c_1=c_0+Nj$. Let $b_0$ be the isolation offset, $w$ the width, and $\alpha,\beta$ the affine sign parameters. The input and phase representatives are
