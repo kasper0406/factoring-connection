@@ -579,6 +579,8 @@ and the other 87 matched the generic derivative formula. Computing
 with the factors agreed with the explicit derivative on all 91.
 [Reproducible check](check_cyclotomic_at_index.py)
 
+At higher precision a public power map gives exact values for every index, and the first digit after reducing a lifted base to its canonical representative yields a random-input factoring reduction on distinct odd semiprimes. [Canonical bases, the carry and its decoder](canonical-cyclotomic-lifts.md)
+
 **Fixed base, small moduli.** For distinct odd primes p,q and N=pq,
 let l be a prime not dividing N, M=4^l−1 and V=Φ_N(4) mod M.
 V is a unit: a prime dividing both would divide 4^N−1 and 4^l−1
