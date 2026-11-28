@@ -34,10 +34,18 @@ def exhaustive_checks():
         n = p*q
         for radius in range(window_radius(n)+1):
             hits = set()
+            proper_products = 0
+            split_offsets = 0
             for x in range(n):
-                hits.add(compare(p, q, x, radius)[0])
+                selected, _ = compare(p, q, x, radius)
+                hits.add(selected)
+                proper_products += 1 < selected < n
+                split_offsets += any(1 < gcd(x+y, n) < n for y in range(-radius, radius+1))
                 count += 1
             assert hits == {1, p, q, n}
+            width = 2*radius+1
+            assert proper_products == width*(p+q-2*width)
+            assert split_offsets == proper_products + width*(width-1)
     return count
 
 
