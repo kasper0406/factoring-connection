@@ -105,16 +105,42 @@ class FactoredPacking:
         return factors
 
 
-def factored_packing(n, x, rng, *, prime_test=certified_prime):
-    """Input-only construction for a mixed odd semiprime. prime_test must be exact."""
+def _enough_prime_vectors(n, excluded, height, prime_test):
+    """Count to 4n+1 using one vector per rational prime, without constructing it."""
+    upper = height*height
+    first = upper // 2 + 1
+    eligible = 0
+    for p in range(first + (1-first) % 4, upper + 1, 4):
+        if gcd(p, excluded) == 1 and prime_test(p):
+            eligible += 1
+            if eligible > 4*n:
+                return True
+    return False
+
+
+def factored_packing(n, x, rng, *, prime_test=certified_prime, positive_scale=False):
+    """Construct a factored conductor; request positive_scale for the older narrow angle.
+
+    The default height is uniform for 0 <= x < n; either sign of P is valid.
+    The oracle prime_test must be exact.
+    """
     a = x*x + 1
     if n < 3 or n % 2 == 0 or x < 0 or jacobi_symbol(-a, n) != -1:
         raise ValueError("expected an odd input and a nonnegative mixed parameter")
-    bins = 8 * (x + 1)
-    height = (1 + isqrt(n * bins)) * n.bit_length()
+    bins = 8 * (x + 1) if positive_scale else 1
+    if positive_scale:
+        height = (1 + isqrt(n * bins)) * n.bit_length()
+    else:
+        height = 1 + isqrt(64 * n * n.bit_length() - 1)
+    return _search_lines(n, x, rng, prime_test, bins, height)
+
+
+def _search_lines(n, x, rng, prime_test, bins, height):
+    a = x*x + 1
     trials = 0
     while True:
-        for _ in range(16 * height.bit_length() ** 2):
+        rounds = 16 * height.bit_length() ** (2 if bins > 1 else 3)
+        for _ in range(rounds):
             u, v = rng.randrange(n), rng.randrange(n)
             if gcd(u, v, n) != 1:
                 continue
@@ -124,7 +150,9 @@ def factored_packing(n, x, rng, *, prime_test=certified_prime):
                 p = _norm(point)
                 if gcd(p, 2 * a * n) != 1 or not prime_test(p):
                     continue
-                key = bins * point[1] // point[0], point[0] % 2
+                key = point[0] % 2
+                if bins > 1:
+                    key = bins * point[1] // point[0], key
                 if key not in seen:
                     seen[key] = point
                     continue
@@ -137,5 +165,6 @@ def factored_packing(n, x, rng, *, prime_test=certified_prime):
                 primes = (_norm(other), p)
                 assert primes[0] != primes[1] and prod(primes) == params.T
                 return FactoredPacking(params, (other, point), primes, t, height, trials)
-        # Cover the finitely many small-input exceptions to the asymptotic prime count.
-        height *= 2
+        # Random misses alone should not enlarge the sign-free output bound.
+        if bins > 1 or not _enough_prime_vectors(n, 2*a*n, height, prime_test):
+            height *= 2

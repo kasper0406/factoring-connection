@@ -8,20 +8,19 @@ The frames satisfy $u\cdot u=A,\ u\cdot v=-Nx,\ v\cdot v=N^2$. For positive inte
 $$
  T=B^2+C^2,\qquad P=B^2-C^2-2xBC,\qquad Q=2ABt .
 $$
-Require $P>0,\ \gcd(P,Q)=1,\ \gcd(T,2AN)=1$. These conditions are checked directly. A deterministic choice takes $t=1$ and doubles $B$ from $2A$ until $B>(2x+2)N$. Then $P>0$, $P$ is odd, and every odd prime of $Q$ divides $B$ but does not divide $N$. At such a prime $P\equiv-N^2$, which proves coprimality. Also $T$ is odd and prime to $AN$. The public numbers have $O(\log N+\log(2+x))$ bits.
+Require \(AB^2>N^2,\ \gcd(P,Q)=1,\ \gcd(T,2AN)=1\). These conditions are checked directly. A deterministic choice takes \(t=1\) and doubles \(B\) from \(2A\) until \(B>(2x+2)N\). Then \(P\) is positive and odd, and every odd prime of \(Q\) divides \(B\) but does not divide \(N\). At such a prime \(P\equiv-N^2\), which proves coprimality. Also \(T\) is odd and prime to \(AN\). The public numbers have \(O(\log N+\log(2+x))\) bits. The construction also permits a negative \(P\). [Prime conductor and factored congruence modulus](fully-factored-packing.md)
 
 The Gaussian identity
 $$
  (xP+QN)+iP=(x+i)(B-iC)^2
 $$
 gives $(xP+QN)^2+P^2=A T^2$. Each frame maps to $W=Pu-Qv$, an integral vector of squared norm $M=A T^2$. Conversely, for fixed $u$, every point of this norm with $W\equiv Pu\bmod Q$ gives an integral $v=(Pu-W)/Q$ and satisfies
-$$
- Q(v\cdot v-N^2)=2P(u\cdot v+xN),\qquad
- \|v\|\le\sqrt A(P+T)/Q=(B-xC)/(t\sqrt A).
-$$
-Thus $ABt\mid u\cdot v+xN$, and the absolute value on the right of this divisibility is at most $B/t$. If $At^2>1$, it vanishes. Both remaining Gram conditions follow. The residue $Pu\bmod Q$ specifies $u$ uniquely among the first vectors since $P$ is invertible and $Q>2\sqrt A$.
+\[
+ Q(v\cdot v-N^2)=2P D,\qquad D=u\cdot v+xN=\frac{A(B^2-C^2)-u\cdot W}{Q}.
+\]
+Since \(\gcd(P,Q)=1\), we have \(ABt\mid D\). Cauchy's inequality \(|u\cdot W|\le AT\) gives the sharp interval \(-N^2t/B\le D\le B/t\), independently of the sign of \(P\). The lower endpoint exceeds \(-ABt\) by the condition \(AB^2>N^2\). If \(At^2>1\), the upper endpoint is less than \(ABt\), so \(D=0\). Both remaining Gram conditions follow. The residue \(Pu\bmod Q\) specifies \(u\) uniquely among the first vectors since \(P\) is invertible and \(Q>2\sqrt A\).
 
-The boundary $A=t=1$ has $x=0$ and $u$ a signed coordinate unit. The only additional possibility is $v=Bu$, giving $W=-Tu$. Indeed $\|v\|\le B$, and equality in $|u\cdot v|=B$ forces $v=\pm Bu$. The negative sign fails the displayed norm identity. This one extra point has content $T$. It also fails every queried auxiliary condition $u\cdot v\equiv0\bmod\ell$ for $\ell\nmid B$.
+The boundary \(A=t=1\) has \(x=0\) and \(u\) a signed coordinate unit. Its only additional possibility is \(D=B\), the upper Cauchy equality. This forces \(W=-Tu\) and \(v=Bu\). This point has content \(T\) and fails the auxiliary condition \(u\cdot v\equiv0\bmod\ell\) for \(\ell\nmid B\).
 
 Each genuine $W$ is primitive. A prime dividing every coordinate divides $Q$ or all the minors of $(u,v)$, since $u\times W=-Q(u\times v)$. In the first case it would divide every coordinate of $u$, whereas $\gcd(A,Nx)=1$. In the second case the identity $\|u\times v\|^2=N^2$ makes it a divisor of $N$, whereas $\gcd(M,N)=1$.
 

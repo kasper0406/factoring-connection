@@ -32,8 +32,10 @@ def packing_params(n, x, B, t):
     p = B*B - c*c - 2*x*B*c
     q = 2*a*B*t
     radius_factor = B*B + c*c
-    if p <= 0 or gcd(p, q) != 1 or gcd(radius_factor, 2*a*n) != 1:
-        raise ValueError("the Gaussian parameters must give positive coprime scales and a unit conductor")
+    if a*B*B <= n*n:
+        raise ValueError("the Gaussian parameters do not certify isolation of the required Gram")
+    if gcd(p, q) != 1 or gcd(radius_factor, 2*a*n) != 1:
+        raise ValueError("the packing scales must be coprime and the conductor a unit")
     return Parameters(B, p, q, radius_factor, a*radius_factor**2)
 
 
