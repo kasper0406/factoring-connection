@@ -61,6 +61,24 @@ Indeed $r\ge R/\sqrt2$ for both primes. Squaring the magnitude gives $\big||D_N(
 
 **The semiprime case already works at zero frequency if enough precision is supplied.** On a squarefree input each local factor of $D_N(3)$ is $(r^2+r+1)/r^2$. Thus $N^2D_N(3)=\sigma(N^2)$, exactly the zero-scalar count from the earlier four-square calculation divided by eight. On $N=pq$ with distinct primes and $S=p+q$, this integer equals $N^2+NS+S^2-N+S+1$. Consecutive candidate sums change $D_N(3)$ by more than $1/N$. One real reading to absolute error $1/(4N)$ recovers $S$ by binary search, and the roots of $X^2-SX+N$ give the primes. This uses the zero-frequency option of the extended evaluator. On semiprimes the obstacle was already visible in that single real number. [Earlier four-square identity](four-square-prefix.md)
 
+### Two real readings per split
+
+Write $H(m)=m^2D_m(3)=\sum_{d\mid m}(m/d)^2\psi(d)$ with $\psi(d)=d\eta(d)$. This is an integer. In the earlier four-square construction with three annihilating scalars, the number of tuples is precisely $8mH(m)$, by summing the counts at each content. That construction already gives an efficient uniform sampler. Here the required operation is to compute its total count to the last integer. [Earlier sampler and content counts](four-square-incidence.md#which-points-carry-a-factor)
+
+The function $H$ is multiplicative. Its value at $r^e$ is
+$$
+H(r^e)=r^{e-1}\left[r^{e+1}+(r+1)\sum_{j=0}^{e-1}r^j\right].
+$$
+When $e\equiv1\pmod 3$, the bracket is divisible by $\Phi_3(r)=r^2+r+1$. Modulo this integer, $r^3\equiv1$, and every block $1+r+r^2$ vanishes. Thus the sum is congruent to 1 and $r^{e+1}$ is congruent to $r^2$.
+
+For a noncube $N$ some $r^e\parallel N$ has $3\nmid e$. Either $e$ or $2e$ is 1 modulo 3, so $\Phi_3(r)$ divides $H(N)H(N^2)$. In fact the product covers every prime with $3\nmid e$. For each $m=N,N^2$, a real reading within $1/(4m^2)$ of $D_m(3)$ recovers $H(m)$ by rounding. The product has polynomial bit length because $H(m)\le m^3$. A single degree-three norm-one group suffices in the existing randomized splitter whenever at least two distinct primes remain. Strip powers of two, recognize primes and perfect powers by the usual polynomial-time algorithms, and repeat on composite pieces. This yields general expected-polynomial-time factoring conditional on a supplier whose cost is polynomial in the number of precision bits. The splitting algorithm comes from earlier work. The arithmetic observation here is the divisibility supplied by the pair of inputs. [Earlier proof for a supplied exponent](translated-batches.md#factoring-with-an-exponent-for-a-norm-one-group) · [Bach, Miller and Shallit](https://doi.org/10.1137/0215083)
+
+Passing to powers also preserves the accuracy obstruction. For a balanced $N=pq$, at every $t$ and every integer $j\ge1$ each local factor of $D_{N^j}(3+it)$ differs from 1 by at most $(1+1/r)/(r-1)\le2/r$. With $R=\sqrt N\ge8$, the entire product differs from 1 by at most $4\sqrt2/R+8/R^2\le7/R$. Thus adding powers or frequencies with the same coarse tolerance cannot force a reading distinguishable from 1.
+
+The check uses 52 pairs of real readings, including errors toward opposite ends of the promised intervals. For $N=77{,}175=3^2 5^2 7^3$, none of the three cubic orders divides $H(N)$. The second reading supplies the orders at 3 and 5 and the existing coefficient gcd returns 225. For the exact cube $3375=15^3$, the product misses both orders, and taking the integer cube root first gives a valid split of 15. [Two-reading routine](mellin_continuation.py) · [Controls](check_mellin_continuation.py)
+
+### What the complex readings add
+
 **Continuation from magnitude alone.** Fix $t$ and form the entire function
 $$F_t(x)=D_N(3+i(t+x))D_N(3-i(t+x)).$$
 For real $x$ it is the measured squared magnitude. At $x=ih$ it equals $D_N(3-h+it)D_N(3+h-it)$. For fixed $h=1$ or $3$, use the $m$ real nodes $j/m$, $0\le j<m$, and evaluate their Lagrange interpolant at $ih$. Each term of $F_t$ has frequency $\log(e/d)$ for divisors $d,e$ of $N$. The absolute frequencies are at most $\log N$, the sum of the absolute coefficients is at most $N^2$ since $\eta(d)\le d$, and the growth through height $h$ is at most $N^h$. With $b$ the bit length, the interpolation error for exact samples is therefore at most

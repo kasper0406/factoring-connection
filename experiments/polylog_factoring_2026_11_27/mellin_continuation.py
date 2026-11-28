@@ -114,6 +114,30 @@ def exponent_from_right_line(n, sample_squared):
     return round(scale * product.real)
 
 
+def cubic_exponent_from_real_magnitudes(n, read_magnitude):
+    """Recover H(n) H(n²) where H(m) = m² D_m(3) is an integer.
+
+    read_magnitude(m, delta) returns a rational within delta of D_m(3).
+    For a noncube n, the result covers the cubic norm-one group order
+    r²+r+1 for at least one prime divisor r. A factoring caller can take
+    an exact integer cube root first when n is a cube.
+    """
+    _check_modulus(n)
+    # H(m) = sum_{d|m} (m/d)^2 ψ(d) is multiplicative. At a prime power,
+    # H(r^e) = r^(e-1) [r^(e+1) + (r+1)(1+r+...+r^(e-1))].
+    # If e = 1 mod 3, the bracket reduces to r²+r+1 modulo r²+r+1,
+    # since 1+r+r² = 0 and r³ = 1 there. For each e not divisible by
+    # three, exactly one of e, 2e is 1 mod 3.
+    exponent = 1
+    for m in (n, n*n):
+        scale = m*m
+        value = read_magnitude(m, Fraction(1, 4 * scale))
+        if not isinstance(value, Rational):
+            raise TypeError("real magnitude readings must be rational")
+        exponent *= round(scale * value)
+    return exponent
+
+
 def critical_magnitude_bounds(n, a, epsilon, *, stats=None):
     """Enclose |D_n(2+i*pi/log(a))| within relative width 1+epsilon.
 

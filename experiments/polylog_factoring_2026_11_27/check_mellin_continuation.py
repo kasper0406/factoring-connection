@@ -6,21 +6,24 @@ from random import Random
 
 from mpmath.ctx_iv import MPIntervalContext
 from mpmath.libmp import to_rational
+from sympy import integer_nthroot
 
 if __package__:
     from .check_four_square_incidence import prime_powers
     from .check_four_square_prefix import divisor_weights
-    from .check_norm_one_exponent import split_norm_one_exponent
+    from .check_norm_one_exponent import exponent_trial, split_norm_one_exponent
     from .mellin_continuation import (
-        critical_magnitude_bounds, exponent_from_right_line, interpolate_mellin_product,
+        critical_magnitude_bounds, cubic_exponent_from_real_magnitudes,
+        exponent_from_right_line, interpolate_mellin_product,
     )
     from .mellin_right_line import right_line_magnitude, right_line_squared_magnitude
 else:
     from check_four_square_incidence import prime_powers
     from check_four_square_prefix import divisor_weights
-    from check_norm_one_exponent import split_norm_one_exponent
+    from check_norm_one_exponent import exponent_trial, split_norm_one_exponent
     from mellin_continuation import (
-        critical_magnitude_bounds, exponent_from_right_line, interpolate_mellin_product,
+        critical_magnitude_bounds, cubic_exponent_from_real_magnitudes,
+        exponent_from_right_line, interpolate_mellin_product,
     )
     from mellin_right_line import right_line_magnitude, right_line_squared_magnitude
 
@@ -171,14 +174,70 @@ def check_zero_frequency():
     return len(inputs), pairs
 
 
+def check_real_cubic_exponents():
+    squared_only = 3**2 * 5**2 * 7**3
+    cube = 15**3
+    inputs = [*range(1, 100, 2), squared_only, cube]
+    recovered = {}
+    for n in inputs:
+        readings = []
+
+        def native(m, delta):
+            assert delta == Fraction(1, 4 * m**2)
+            low, high = right_line_magnitude(m, None, delta / m)
+            assert high - low <= delta
+            # Perturb alternate readings in the two allowed directions.
+            answer = low + delta if not readings else high - delta
+            readings.append((m, round(m**2 * answer)))
+            return answer
+
+        exponent = cubic_exponent_from_real_magnitudes(n, native)
+        assert [m for m, _ in readings] == [n, n**2]
+        for m, h in readings:
+            terms = divisor_weights(prime_powers(m))
+            assert h == sum((m // d)**2 * (w // d) for d, w in terms)
+        first, second = (h for _, h in readings)
+        assert exponent == first * second
+        for p, e in prime_powers(n):
+            if e % 3:
+                covered = first if e % 3 == 1 else second
+                assert covered % (p**2 + p + 1) == 0
+        recovered[n] = (first, second)
+
+    def covers(h, p):
+        return h % (p**2 + p + 1) == 0
+
+    # For 15 the first reading covers both orders while the second covers neither.
+    first, second = recovered[15]
+    assert all(covers(first, p) and not covers(second, p) for p in (3, 5))
+    # With local exponents (2,2,3), only the squared input supplies a cubic order.
+    first, second = recovered[squared_only]
+    assert not any(covers(first, p) for p in (3, 5, 7))
+    assert all(covers(second, p) for p in (3, 5)) and not covers(second, 7)
+    for exponent in (second, first * second):
+        assert exponent_trial(squared_only, 3, exponent, Random(14)) == (225, "coefficients")
+    # On this exact cube even both readings together miss both orders.
+    first, second = recovered[cube]
+    assert not any(covers(first * second, p) for p in (3, 5))
+    root, exact = integer_nthroot(cube, 3)
+    assert exact and root == 15
+    first, second = recovered[root]
+    divisor = split_norm_one_exponent(root, 3, first * second, Random(37))
+    assert divisor in (3, 5) and cube % divisor == 0
+    return len(inputs), squared_only, divisor
+
+
 if __name__ == "__main__":
     critical, info = check_native_critical()
     complex_cases, product_calls = check_complex_interpolation()
     exponents, noisy_calls, native_calls, splits = check_exponents()
     squarefree, pairs = check_zero_frequency()
+    two_readings, squared_only, cube_divisor = check_real_cubic_exponents()
     print(f"{critical} native critical enclosures; N=1242079 used {info['samples']} samples, "
           f"{info['max_precision_bits']} working bits, {info['total_trial_candidates']} trial candidates")
     print(f"{complex_cases} noisy complex enclosures from {product_calls} samples plus exact N=1")
     print(f"{exponents} exact integer exponents from {noisy_calls} injected and {native_calls} native samples; "
           f"native exponent splits {splits}")
     print(f"{squarefree} exact squarefree zero-frequency counts, including {pairs} semiprime identities")
+    print(f"{two_readings} two-reading cubic exponents; second reading split {squared_only} "
+          f"with coefficient gcd 225; cube preprocessing gave divisor {cube_divisor} of 3375")
