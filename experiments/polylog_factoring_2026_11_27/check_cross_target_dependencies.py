@@ -101,11 +101,8 @@ def public_split(n, targets, records, witness):
     return None
 
 
-def measure(n, targets, groups, primes, allow_opaque):
-    base_pivots = {}
-    labelled_pivots = {}
-    records = []
-    rows = tested = splits = 0
+def projected_rows(groups, primes, allow_opaque, records):
+    """Yield parity, target labels, and source mask after cancelling whole cofactors."""
     for atom, group in groups.items():
         if atom != 1 and (not allow_opaque or len(group) < 2):
             continue
@@ -122,14 +119,23 @@ def measure(n, targets, groups, primes, allow_opaque):
                 base ^= anchor[0]
                 labels ^= anchor[1]
                 witness ^= anchor[2]
-            rows += 1
-            insert(base, 0, base_pivots)
-            row = base | (labels << (len(primes) + 1))
-            dependency = insert(row, witness, labelled_pivots)
-            if dependency is not None and tested < 40:
-                assert dependency
-                tested += 1
-                splits += public_split(n, targets, records, dependency) is not None
+            yield base, labels, witness
+
+
+def measure(n, targets, groups, primes, allow_opaque):
+    base_pivots = {}
+    labelled_pivots = {}
+    records = []
+    rows = tested = splits = 0
+    for base, labels, witness in projected_rows(groups, primes, allow_opaque, records):
+        rows += 1
+        insert(base, 0, base_pivots)
+        row = base | (labels << (len(primes) + 1))
+        dependency = insert(row, witness, labelled_pivots)
+        if dependency is not None and tested < 40:
+            assert dependency
+            tested += 1
+            splits += public_split(n, targets, records, dependency) is not None
     nullity = rows - len(base_pivots)
     label_rank = len(labelled_pivots) - len(base_pivots)
     zero_labels = nullity - label_rank
