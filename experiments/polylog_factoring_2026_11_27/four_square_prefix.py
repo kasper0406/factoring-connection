@@ -76,20 +76,14 @@ def approximate_factored_prefix(factors, B, epsilon, include_zero):
     return 8 * previous(B)
 
 
-def approximate_closed_prefix(n, B, epsilon):
-    """Lower estimate for the zero-inclusive prefix on an unfactored odd n.
-
-    The exact count is at most (1+epsilon) times the result. Trial division
-    removes small prime factors; the remaining cofactor stays intact.
-    """
-    if n < 1 or n % 2 == 0 or not 0 <= B < n:
-        raise ValueError("expected an odd positive n and 0 <= B < n")
-    precision = _precision(epsilon)
-    limit = ceil(12 * n.bit_length() / precision)
+def strip_small_prime_powers(n, limit):
+    """Trial-divide an odd positive n. Return known powers, cofactor and trial count."""
     residual = n
     factors = []
     candidate = 3
+    trials = 0
     while candidate <= limit and candidate * candidate <= residual:
+        trials += 1
         exponent = 0
         while residual % candidate == 0:
             residual //= candidate
@@ -100,6 +94,20 @@ def approximate_closed_prefix(n, B, epsilon):
     if residual > 1 and candidate * candidate > residual:
         factors.append((residual, 1))
         residual = 1
+    return factors, residual, trials
+
+
+def approximate_closed_prefix(n, B, epsilon):
+    """Lower estimate for the zero-inclusive prefix on an unfactored odd n.
+
+    The exact count is at most (1+epsilon) times the result. Trial division
+    removes small prime factors; the remaining cofactor stays intact.
+    """
+    if n < 1 or n % 2 == 0 or not 0 <= B < n:
+        raise ValueError("expected an odd positive n and 0 <= B < n")
+    precision = _precision(epsilon)
+    limit = ceil(12 * n.bit_length() / precision)
+    factors, residual, _ = strip_small_prime_powers(n, limit)
 
     # Linear term B times sum_{d|n} d eta(d), with each large-prime
     # multiplier rounded down to its leading prime power.
