@@ -38,15 +38,16 @@ def _left_gcd(dividend, divisor):
     return dividend
 
 
-def norm_minus_one(modulus, rng):
-    """Return (a,b) with a²+b² = −1 mod the odd modulus, without factoring."""
+def gaussian_norm_pair(modulus, target, rng):
+    """Find a²+b² = target modulo an odd modulus for any unit target."""
     if modulus < 1 or modulus % 2 == 0:
         raise ValueError("the modulus must be positive and odd")
     if modulus == 1:
         return (0, 0)
+    inverse_target = pow(target, -1, modulus)
     while True:
         x, y = rng.randrange(modulus), rng.randrange(modulus)
-        t = -(x * x + y * y) % modulus
+        t = (x * x + y * y) * inverse_target % modulus
         if t == 1:
             return x, y
         if t % 4 != 1 or gcd(t, modulus) != 1:
@@ -64,6 +65,11 @@ def norm_minus_one(modulus, rng):
             continue
         inverse = pow(t, -1, modulus)
         return (x * z + y * w) * inverse % modulus, (y * z - x * w) * inverse % modulus
+
+
+def norm_minus_one(modulus, rng):
+    """Return (a,b) with a²+b² = −1 mod the odd modulus, without factoring."""
+    return gaussian_norm_pair(modulus, -1, rng)
 
 
 def _doubled_units():
