@@ -40,8 +40,6 @@ from dataclasses import dataclass
 from math import comb, gcd, isqrt
 from typing import List, Optional, Tuple
 
-import flint
-
 try:  # fplll's LLL wrapper (provably (0.99,0.51)-reduced output); ~10x faster than flint here
     from fpylll import IntegerMatrix as _IM, LLL as _FPLLL
 except Exception:  # pragma: no cover
@@ -151,10 +149,14 @@ def lll_reduce(B: List[List[int]], backend: str = "fpylll") -> List[List[int]]:
         _FPLLL.reduction(A)
         d1, d2 = A.nrows, A.ncols
         return [[int(A[i, j]) for j in range(d2)] for i in range(d1)]
+    import flint
+
     return [[int(a) for a in row] for row in flint.fmpz_mat(B).lll().tolist()]
 
 
 def _int_roots(coeffs: List[int]) -> List[int]:
+    import flint
+
     poly = flint.fmpz_poly(coeffs)
     if poly.degree() < 1:
         return []
