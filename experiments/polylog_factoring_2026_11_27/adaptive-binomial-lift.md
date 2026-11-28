@@ -1,0 +1,57 @@
+# One central-binomial zero test at a time
+
+Let $N=pq$ for distinct odd primes $p<q$. An oracle returns the single bit $N\mid\binom{2t}{t}$ at any requested $t$. An adaptive algorithm recovers a factor in polynomial additional bit work using $O(\log^2N)$ such questions, with $t=\lfloor hN/d\rfloor$, $d$ a power of two and odd $0<h<d/4$. For $N\not\equiv7\bmod8$, the number of questions is $O(\log N)$. For every balanced semiprime, allowing an explicit additive shift of $t$ also gives $O(\log N)$ questions, including the exceptional residue class. This extends the earlier lift for one residue family. It uses a pure central binomial and allows its numerator parameter $h$ to vary. The fixed dyadic menu instead permitted products of two ratios. The cost of the oracle calls remains outside the bound. [Algorithm](adaptive_binomial_lift.py) · [Checks](check_adaptive_binomial_lift.py) · [Earlier BuildBit lift, §R4](../buildbit/ledger.md) · [Fixed-menu whole-modulus questions](cofactor-zero-queries.md)
+
+## Lifting two unordered residues
+
+For example, suppose the known residues modulo 8 are $\{3,7\}$ and $N\equiv5\bmod16$. The two possibilities modulo 16 are $\{3,7\}$ and $\{11,15\}$. Set $t=\lfloor N/16\rfloor$. The first pair puts both residues below 8 and gives a negative answer. The second puts both above 8 and gives a positive answer. Direct controls are $N=437$, where $\binom{54}{27}\equiv71\bmod437$, and $N=2021$, where $\binom{252}{126}\equiv0\bmod2021$. The multiplier below arranges such an alignment for general lifts, with a shift handling the exceptional balanced case.
+
+Start with all unordered pairs of odd residues modulo 4 whose product agrees with $N$. There are at most two. At a level $m$ we retain a set containing the true unordered pair modulo $m$. First test each residue by division into $N$. Any proper divisor finishes the algorithm. If no divisor was found then $p>m$, since otherwise the true pair includes $p$ itself.
+
+Put $d=2m$. Choose one representative $a$ of an endpoint with $0<a<m$, and let $b=Na^{-1}\bmod d$ in $[0,d)$. The two possible lifts are the unordered pairs
+$$
+\{a,b\},\qquad\{a+m,(b+m)\bmod d\}.
+$$
+Indeed changing either lift by $m$ requires changing both, as both endpoints are odd. For odd $h$ the two pairs have opposite upper-half bits coordinate by coordinate modulo $d$.
+
+Consider the case in which $ha$ and $hb$ are in the same half modulo $d$. On the true lift, **the binomial is zero modulo $N$ exactly when both are in the upper half**. For a prime $s\mid N$ let $v=N/s$ be its cofactor and write $hv=kd+r$, $0<r<d$ odd. The units digit of $t=\lfloor hN/d\rfloor$ in base $s$ is $\lfloor rs/d\rfloor$. Its doubling carries exactly when $r>d/2$ because $|r-d/2|\ge1$ and $s>d/2$. If both scaled cofactors are in the upper half there is a carry at both $p$ and $q$. If both are in the lower half, there is no units carry at the larger prime $q$ and no higher one, since $2t<N/2<q^2$. The assertion follows from the classical binomial valuation formula. Testing the previous residues for exact divisors is essential to the digit rounding in the unbalanced case. [Granville on Kummer's theorem](https://www.cecm.sfu.ca/organics/papers/granville/)
+
+For a false state an answer may retain another false state. It can retain at most one when the two lifts are distinguishable. The digit argument guarantees retention of the true lift at every level. Once $m>p$, the public exact division test finishes.
+
+## Finding a multiplier and bounding ambiguous states
+
+Write $c=ba^{-1}\bmod d$ and seek odd $x=ha$ such that $x$ and $cx$ are in the same half. If $c<d/2$, take $x=1$. Otherwise write $r=d-c$ and $s=\min(r,d/2-r)$. Multiplication by $d/2-1$ sends any odd $y$ to $d/2-y\bmod d$, preserving its half. Thus $rx$ and $sx$ always lie in the same half. When $s>1$, it is odd with $3\le s<d/4$. Take the least odd $x\ge d/(2s)$. Then $0<x<d/2$ and $d/2<s x<d$. Consequently $cx=-rx\bmod d$ is also in the lower half. Recover $h=xa^{-1}\bmod d$ and fold it by sign and by $h\mapsto d/2-h$ to $0<h<d/4$. These operations preserve half agreement, and the parity restriction prevents equality at the upper endpoint.
+
+There are exactly two multiplier exceptions, given by $s=1$. When $c=1+d/2$, the candidate endpoints differ by $m$, so the two lifts are already identical as unordered pairs. When $c=-1$, retain both. In this case $a^2\equiv-N\bmod d$; there are at most four such residues modulo a power of two. For each possible $a$ the other residue modulo $m$ is fixed by $N$. Thus each level adds at most four states to the previous width, irrespective of the answers on false states. The number of levels is $O(\log N)$, giving the asserted quadratic total. For $d\ge8$, the latter exception requires $N\equiv7\bmod8$ because odd squares are 1 modulo 8. In the other residue classes every level has at most its initial two states. [Earlier special multiplier for $c=3\bmod8$](../buildbit/ledger.md)
+
+## A shifted single test removes branching on balanced inputs
+
+Assume $q<2p$, let $d\ge16$ and suppose the two candidate lifts are opposite pairs. Choose $h=(d/2-1)a^{-1}\bmod d$ and fold as before to $0<h<d/4$. After multiplication by $h$, one lift has residue pair $\{d/2-1,d/2+1\}$ and the other has $\{1,d-1\}$. Folding can interchange the two descriptions; checking $ha\bmod d$ determines which is which. Set
+$$
+U=\lfloor\sqrt{2N}\rfloor+1,\qquad K=\lfloor U/d\rfloor+2,\qquad t=\lfloor hN/d\rfloor+K .
+$$
+Then $N\mid\binom{2t}{t}$ exactly on the center pair.
+
+To see this, $q<U\le2p$ and $q/d+1<K\le2p/d+2$. For $s=p,q$, the smaller central digit after adding $K$ is $\lfloor s/2-s/d\rfloor+K>s/2$. The larger central digit is at most $s/2+3s/d+2<s$. The last inequality uses $d\ge16$ and $s>d/2$. Thus there is no wrap around $s$, and both central digits double with carries. The digit at the edge residue 1 is at most $3s/d+2<s/2$, giving no units carry there. There is no higher carry at either prime: $K<N/d$ follows from $2p+2d<6p<N$, so $2t<N/2<p^2$. In particular the unknown orientation of the smaller prime is immaterial. Tiny primes have already been found by testing live representatives before this case can arise. The $d=8$ step may still branch, leaving at most four unordered states modulo 8. Every later state contributes at most one child. This yields the linear bound under the balance promise. The shifted coefficient still has just one Boolean output and $t<N/4$. The shift changes the family of indices compared with $t=\lfloor hN/d\rfloor$.
+
+The checker compared all 21,840 ordered unit pairs through $d=256$ with the exact exceptional classification. It recovered a prime in all 1,104 direct small cases, including 849 unbalanced cases, using 3,938 Boolean calls in the unshifted run. Rerunning the 255 balanced cases included 107 shifted states, and the two direct runs used 5,280 Boolean calls in total. It compared the oracle answers from actual integer binomials to the carry calculation. Eleven larger controls used the known factors **only to simulate the Boolean oracle**. A fixture with $p+q=2^{48}$ took 988 distinct per-level questions and reached 46 simultaneous states. The shifted variant on the same controlled fixture took 88 calls and reached two simultaneous states. This planted power-of-two sum tests the opposite-lift mechanism. Its known shape also permits a direct sum-and-product solution. [Reproduce](check_adaptive_binomial_lift.py)
+
+## Stopping after a quarter of the product bits
+
+On balanced inputs, the remaining high bits can be recovered by standard univariate Coppersmith completion. Let $L=\lceil\sqrt{N/2}\rceil$, $H=\lfloor\sqrt N\rfloor$ and $X=\max(2,\lfloor N^{1/4}/8\rfloor)$. The implementation offers this as `balanced=True, affine_finish=True`. It stops the Boolean queries at the first live modulus $m$ with $\lfloor(H-L)/m\rfloor\le2X$. This requires at most $\tfrac14\log_2 N+O(1)$ low bits of the smaller prime. [Existing affine divisor algorithm and certified radius](coupled-rank-windows.md)
+
+For each endpoint $a$ in each live pair, write a candidate smaller prime as $a+mz\in[L,H]$. The allowed integer interval $[l,h]$ for $z$ has diameter at most $2X$. With $c=\lfloor(l+h)/2\rfloor$, the affine reader tests the center $am^{-1}+c\bmod N$ at radius $h-c\le X$ for divisors at least $L$. On the true endpoint it sees $p$ at offset $z-c$, because $m$ is invertible modulo $N$ and $a+mz=p$. Its gcd there is exactly $p$. There are at most eight endpoint windows and each has polynomial bit cost. The open question narrows to evaluating from $N$ the early adaptive single-binomial tests needed to reach this modulus. Their indices $t$ can still grow proportionally to $N$.
+
+The factor-supplied Boolean controls verified that early completion asks a strict prefix of the full transcript on three inputs. For $N=802007\cdot1364009$, the ordinary balanced lift asked 34 questions. Early completion asked 16, stopped modulo 2048, and found a factor in four affine windows of dimension at most five. The two other controls reduced 10 and 23 questions to 5 and 9 respectively. The lattice stage received only $N$ and the public decoder state. [Reproduce](check_adaptive_binomial_lift.py)
+
+## How much does the fixed singleton menu leave ambiguous?
+
+For balanced inputs, the fixed ratios at $h=1$ from the cofactor-bit note yield the shared bits of the two primes. Here is a bound on a decoder that tries to use just these singleton answers and lift the product bit by bit. Let $P,Q$ be independent uniform odd residues modulo $2^k$ and put $w=k-1$. Give the decoder $PQ\bmod2^k$ and the $k$ low bits of $P\mathbin{\&}Q$. For every fixed $\epsilon>0$, with probability $1-\exp(-\Omega_\epsilon(k))$ their joint observation admits at least
+$$
+2^{(1-H_2(1/4)-\epsilon)w}
+$$
+ordered prefix pairs. The exponent $1-H_2(1/4)$ is about 0.18872. Passing to unordered pairs costs at most a factor two.
+
+Indeed the $w$ nonunit bit positions of the intersection are iid Bernoulli with parameter $1/4$. Except with exponentially small probability their weight fraction is in a fixed small interval about $1/4$, chosen so that there are at most $2^{(H_2(1/4)+\epsilon/2)w}$ such strings for large $w$. The odd product has at most $2^w$ possible values. Multiplying the number of joint observations by the proposed minimum cell size bounds the *total mass* in smaller typical cells by $2^{-\epsilon w/2}$, after division by the $2^{2w}$ possible input pairs. An extra $s$ adaptive binary readings on this prefix model can divide the stated lower bound by at most $2^s$ in the same high-probability counting argument.
+
+The conclusion also holds for two distinct primes chosen uniformly in $[R,2R]$ and $k\to\infty$ with $2^k\le R^{1-\delta}$ for fixed $\delta>0$. Brun–Titchmarsh bounds each odd residue's probability by $O_\delta(1/2^{k-1})$ using the prime number theorem for the denominator. The joint distribution is therefore bounded by a constant multiple of the uniform odd-residue distribution, including after conditioning on distinctness. These are counts of algebraically compatible **low prefixes**. Using the high bits of $N$, the actual primality of full-sized completions, or varying $h$ changes the information available. The bound addresses explicit branch enumeration and does not give a general factoring lower bound. [Montgomery–Vaughan](https://doi.org/10.1112/S0025579300004708) · [Earlier labelled-bit branch measurements](../../notes/trackE_candidates.md)

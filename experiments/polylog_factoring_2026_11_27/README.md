@@ -2,6 +2,18 @@
 
 The objective is a classical factoring algorithm with polynomial bit complexity, or progress toward a general algorithm below the number field sieve scale. The work here establishes stronger oracle reductions, a faster evaluator for one fixed scalar, and barriers for specific representations. The native polynomial-bit-time evaluation step remains open. [Original November 26 roadmap](https://github.com/kasper0406/factoring-connection/blob/9514cbfa013cd9ae3f030044db1dc3fb6bb4a9ed/notes/research_roadmap_nov26.md)
 
+## Current direction: evaluating adaptive central-binomial questions
+
+**What changed.** The earlier BuildBit experiment recovered a factor for one family of prime residues. We can now choose $t$ from $N$ and the answers so far so that the single bit $N\mid\binom{2t}{t}$ distinguishes two possible lifts of the hidden prime residues. Kummer's carry rule connects this public question to the next binary digits. All balanced distinct odd semiprimes take $O(\log N)$ such questions. Dropping balance gives $O(\log^2 N)$ questions. Direct integer binomials verified the decoder on 1,104 small semiprimes. The query count assumes the bit is supplied. [Adaptive reduction and earlier family](adaptive-binomial-lift.md)
+
+| What we tried | What it settles | What would advance the search |
+| --- | --- | --- |
+| Choose a fresh binomial after each answer | On balanced inputs only a bounded number of unordered pairs of factor prefixes survive each round. | Compute the answer on the actual adaptive indices from $N$ and the prefixes already learned, with polynomial bit cost. [Construction](adaptive-binomial-lift.md) |
+| Screen fixed dyadic bit masks using residues, size and integer division | Even $v=\lfloor N/u\rfloor$, balance and $uv\equiv N\bmod P$ together permit both locally possible answers through $P\le N^{1/4-\delta}$ for each fixed $\delta>0$. Witnesses are per question. | A deduction using the exact remainder or additional arithmetic information would go beyond these screens. [Residue and size tests](cofactor-bit-completions.md) · [Simultaneous floor check](cofactor-tangent-lifts.md) |
+| Batch exact divisibility checks over candidates with specified bits | Product batching handles scattered free bits. A lattice absorbs a contiguous window of free bits, sometimes yielding a polynomial-time answer for the specified mask. | Produce similarly structured, distinguishing queries on general inputs, or lower the evaluation cost for unrestricted patterns. The large fixture used masks chosen with knowledge of its factors. [Bounds and controls](submask-batch.md) |
+
+The native target can be narrower still. Supply $N$ and a hypothesized unordered pair modulo $2^j$. If this is the actual pair of factor residues, the procedure must choose its correct lift. On a false hypothesis either answer is acceptable when applying the procedure separately to each state. Each balanced state has at most one retained child after the initial rounds. Once $j=\tfrac14\log_2 N+O(1)$, the existing Coppersmith routine completes the factor from the remaining residue candidates. The two screens in the last two rows concern the fixed dyadic menu. Their bounds do not automatically extend to this conditional problem.
+
 ## Working ledger for the quarter-parity evaluator
 
 **Current factoring target.** Given an unfactored odd input with at least two distinct prime factors, select an occupied child along one descent to a short interval containing a mixed root of $x^2=1\bmod N$. The certified local algorithm can finish from a square-root-scale interval. A public polynomial-time guide remains open.
