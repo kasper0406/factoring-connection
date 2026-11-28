@@ -118,12 +118,16 @@ def _reduced_basis(basis):
     return Matrix(rows)
 
 
-def _line_points(n, inverse, line):
-    """Enumerate the norm-n generators of the right ideal of a projective line."""
+def _line_basis(n, inverse, line):
+    """Column HNF for the right ideal of a primitive projective line."""
     u, v = line
     # Matrices whose columns lie on (u,v) span this ideal modulo n.
     lifts = (inverse * Matrix([[u, 0], [0, u], [v, 0], [0, v]])).applyfunc(lambda x: x % n)
-    columns = hermite_normal_form((n*eye(4)).row_join(lifts))
+    return hermite_normal_form((n*eye(4)).row_join(lifts))
+
+
+def _shell_points(columns, n):
+    """List every point of norm n in a full-rank column lattice."""
     basis = _reduced_basis(columns.T)
     dual = basis.inv()
     # norm(x) >= ||x||²/2. Apply Cauchy–Schwarz to each dual basis vector.
@@ -134,6 +138,12 @@ def _line_points(n, inverse, line):
         point = tuple(sum(c*x for c, x in zip(coeffs, col)) for col in zip(*rows))
         if norm(point) == n:
             points.append(point)
+    return points
+
+
+def _line_points(n, inverse, line):
+    """Enumerate the norm-n generators of the right ideal of a projective line."""
+    points = _shell_points(_line_basis(n, inverse, line), n)
     if len(points) not in (0, 4):
         raise ArithmeticError("a principal line ideal must have four norm-n generators")
     return points
