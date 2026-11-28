@@ -8,7 +8,7 @@ Existence, counts and the genus of the complementary binary form are classical. 
 
 Put $D=N^2$, $O=\mathbb Z[i]$. Sample $z\bmod N$ uniformly with $|z|^2\equiv-A\pmod N$. One verified solution comes from the existing modular Gaussian norm routine. Multiplication by $w/\bar w$ for a uniform unit $w\bmod NO$ gives uniformity. Multiply an integer lift of $z$ by $1+kN$ to get $|z|^2\equiv-A\pmod D$, using the unit $2|z|^2$ to determine $k\bmod N$. The choice of lift leaves the final orbit unchanged. [Modular norm routine](four_square_sampler.py) · [Local norm fibers](ternary-shapes.md)
 
-In the rational span of $L$ with basis $e_1,e_2$ take $d=(-B e_1+A e_2)/D$. This generates $L^*/L$, has norm $A/D$, and pairs with $e_1,e_2$ as $0,1$. In a perpendicular Euclidean plane put $J_z=\mathbb Z z+NO$. This lattice has index $N$ in $O$. Adjoin the following vector to $L\oplus J_z$:
+In the rational span of $L$ with basis $e_1,e_2$ take $d=(-B e_1+A e_2)/D$. This generates $L^*/L$, has norm $A/D$, and pairs with $e_1,e_2$ as $0,1$. In a perpendicular Euclidean plane put $J_z=\mathbb Z z+NO$. This lattice has index $N$ in $O$. Enlarge $L\oplus J_z$ by the vector
 $$
 (d, iz/N).
 $$
